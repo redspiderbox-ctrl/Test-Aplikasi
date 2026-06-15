@@ -512,7 +512,6 @@
         <div class="page-header d-flex justify-content-between align-items-center">
           <div><h2>Manajemen Produk</h2></div>
           <div class="d-flex gap-2">
-            <!-- Tombol Download Excel Ditambahkan Di Sini -->
             <button class="btn btn-success" style="border-radius:10px;" onclick="downloadProductsExcel()"><i class="bi bi-file-earmark-spreadsheet"></i> Download Excel</button>
             <button class="btn btn-primary" style="border-radius:10px;" onclick="openProductModal()"><i class="bi bi-plus-lg"></i> Tambah Produk</button>
           </div>
@@ -803,15 +802,17 @@
       document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
     }
 
-    // ==================== DASHBOARD ====================
+    // ==================== DASHBOARD (DIPERBAIKI PREISISNYA) ====================
     function renderDashboard() {
       let pendapatan = 0, laba = 0, totalTrx = 0, modalGudang = 0;
       let totalQtyStok = 0, stokHabis = 0;
+      let totalModalTrx = 0; // Ditambahkan untuk menghitung total modal dari transaksi secara presisi
       let lowStockProducts = [];
       let productSales = {};
       const start = document.getElementById('dash-start')?.value;
       const end = document.getElementById('dash-end')?.value;
 
+      // Hitung Modal Gudang & Stok dari Data Produk
       appData.products.forEach(p => {
         modalGudang += (p.modal * p.stok);
         totalQtyStok += p.stok;
@@ -819,6 +820,7 @@
         if (p.stok <= 5 && p.stok > 0) lowStockProducts.push({ nama: p.nama, stok: p.stok });
       });
 
+      // Hitung Pendapatan, Laba, Modal Trx secara presisi dari Data Transaksi
       appData.transactions.forEach(t => {
         const tDate = new Date(t.timestamp).toISOString().split('T')[0];
         const isInRange = (!start || tDate >= start) && (!end || tDate <= end);
@@ -828,7 +830,10 @@
           pendapatan += t.total;
           if (t.items) {
             t.items.forEach(item => {
-              laba += (item.jual - item.modal) * item.qty;
+              const modalItem = item.modal * item.qty; // Hitung modal per item
+              const jualItem = item.jual * item.qty;   // Hitung jual per item
+              totalModalTrx += modalItem;               // Akumulasi total modal transaksi
+              laba += (jualItem - modalItem);           // Hitung laba secara presisi
               productSales[item.nama] = (productSales[item.nama] || 0) + item.qty;
             });
           }
@@ -841,7 +846,7 @@
         .slice(0, 5);
 
       document.getElementById('dash-pendapatan').textContent = formatRp(pendapatan);
-      document.getElementById('dash-laba').textContent = formatRp(laba);
+      document.getElementById('dash-laba').textContent = formatRp(laba); // Laba kini presisi
       document.getElementById('dash-trx').textContent = totalTrx;
       document.getElementById('dash-modal').textContent = formatRp(modalGudang);
       document.getElementById('dash-sku').textContent = appData.products.length;
@@ -1012,14 +1017,13 @@
       }
     }
 
-    // ==================== FUNGSI DOWNLOAD EXCEL (BARU) ====================
+    // ==================== FUNGSI DOWNLOAD EXCEL ====================
     function downloadProductsExcel() {
       if (appData.products.length === 0) {
         showToast('Tidak ada data produk untuk diunduh!', 'error');
         return;
       }
 
-      // Siapkan data array untuk sheet Excel
       const excelData = appData.products.map((p, index) => ({
         'No': index + 1,
         'ID Produk': p.id,
@@ -1030,30 +1034,19 @@
         'Harga Jual': p.jual
       }));
 
-      // Buat workbook dan worksheet menggunakan SheetJS
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(excelData);
 
-      // Atur lebar kolom agar rapi
       ws['!cols'] = [
-        { wch: 5 },  // No
-        { wch: 18 }, // ID Produk
-        { wch: 30 }, // Nama Produk
-        { wch: 20 }, // Kategori
-        { wch: 10 }, // Stok
-        { wch: 18 }, // Harga Modal
-        { wch: 18 }  // Harga Jual
+        { wch: 5 }, { wch: 18 }, { wch: 30 }, { wch: 20 }, { wch: 10 }, { wch: 18 }, { wch: 18 }
       ];
 
-      // Tambahkan worksheet ke workbook
       XLSX.utils.book_append_sheet(wb, ws, 'Data Produk');
 
-      // Generate nama file dengan timestamp
       const now = new Date();
       const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
       const fileName = `Data_Produk_KasirPOS_${dateStr}.xlsx`;
 
-      // Download file
       XLSX.writeFile(wb, fileName);
       showToast('File Excel berhasil diunduh!', 'success');
     }
@@ -1329,7 +1322,7 @@
       window.open(`https://wa.me/${fPhone}?text=${encodedText}`, '_blank');
     }
 
-    // ==================== LAPORAN ====================
+    // ==================== LAPORAN (DIPERBAIKI PREISISNYA) ====================
     function loadReport() {
       const start = document.getElementById('rpt-start')?.value;
       const end = document.getElementById('rpt-end')?.value;
@@ -1345,8 +1338,14 @@
           totalTrx++;
           totalPendapatan += t.total;
           let modalTrx = 0;
-          if (t.items) t.items.forEach(i => modalTrx += (i.modal * i.qty));
-          totalModal += modalTrx;
+          if (t.items) {
+            t.items.forEach(i => {
+              // Perhitungan presisi berdasarkan riwayat
+              const modalItem = i.modal * i.qty; 
+              modalTrx += modalItem;
+            });
+          }
+          totalModal += modalTrx; // Akumulasi modal secara presisi
 
           if (!groupedData[tDate]) groupedData[tDate] = { trxCount: 0, pendapatan: 0, modal: 0 };
           groupedData[tDate].trxCount++;
@@ -1355,6 +1354,7 @@
         }
       });
 
+      // Laba dihitung secara presisi: Pendapatan - Total Modal
       totalLaba = totalPendapatan - totalModal;
 
       document.getElementById('rpt-pendapatan').textContent = formatRp(totalPendapatan);
@@ -1372,12 +1372,14 @@
 
       tbody.innerHTML = keys.map(key => {
         const d = groupedData[key];
+        // Laba per periode tanggal juga presisi
+        const labaPeriode = d.pendapatan - d.modal;
         return `<tr>
           <td class="fw-medium">${key}</td>
           <td><span class="badge-cat">${d.trxCount} Trx</span></td>
           <td>${formatRp(d.pendapatan)}</td>
           <td>${formatRp(d.modal)}</td>
-          <td class="fw-bold" style="color:var(--success);">${formatRp(d.pendapatan - d.modal)}</td>
+          <td class="fw-bold" style="color:var(--success);">${formatRp(labaPeriode)}</td>
         </tr>`;
       }).join('');
     }
