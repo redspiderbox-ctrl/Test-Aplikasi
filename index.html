@@ -71,6 +71,9 @@
         .btn-warn:hover { background: rgba(245,158,11,0.25); }
         .btn-info { background: rgba(6,182,212,0.15); color: var(--info); padding: 10px 22px; border-radius: 10px; border: 1px solid rgba(6,182,212,0.3); font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
         .btn-info:hover { background: rgba(6,182,212,0.25); transform: translateY(-1px); }
+        .btn-info-sm { background: rgba(6,182,212,0.15); color: var(--info); padding: 6px 14px; border-radius: 7px; border: 1px solid rgba(6,182,212,0.3); font-weight: 500; font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+        .btn-info-sm:hover { background: rgba(6,182,212,0.25); }
+        .btn-disabled { background: rgba(100,116,139,0.1); color: rgba(100,116,139,0.4); padding: 6px 14px; border-radius: 7px; border: 1px solid rgba(100,116,139,0.15); font-weight: 500; font-size: 12px; cursor: not-allowed; font-family: inherit; }
 
         .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: 14px; font-family: inherit; transition: border-color 0.2s; outline: none; }
         .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
@@ -105,17 +108,10 @@
         @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        .loading-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         .page-section { display: none; animation: pageIn 0.3s ease; }
         .page-section.active { display: block; }
         @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
-        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
 
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
@@ -128,14 +124,11 @@
         .receipt-box { background: #fff; color: #111; padding: 30px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; max-width: 350px; margin: 0 auto; }
         .receipt-box h3 { text-align: center; font-size: 16px; margin-bottom: 4px; }
         .receipt-box .divider { border-top: 1px dashed #555; margin: 10px 0; }
-        .receipt-box .right { text-align: right; }
     </style>
 </head>
 <body>
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="p-6 border-b" style="border-color:var(--border)">
             <div class="flex items-center gap-3">
@@ -150,52 +143,29 @@
         </div>
         <nav class="py-4">
             <p class="px-8 py-2 text-xs font-semibold uppercase tracking-wider" style="color:var(--muted);opacity:0.5">Menu Utama</p>
-            <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
-                <i class="fas fa-chart-pie"></i> Dashboard
-            </div>
-            <div class="nav-item" data-page="terima" onclick="navigate('terima')">
-                <i class="fas fa-box-open"></i> Terima Barang
-            </div>
-            <div class="nav-item" data-page="daftar" onclick="navigate('daftar')">
-                <i class="fas fa-list-check"></i> Daftar Barang Service
-            </div>
-            <div class="nav-item" data-page="pengambilan" onclick="navigate('pengambilan')">
-                <i class="fas fa-hand-holding"></i> Pengambilan Barang
-            </div>
+            <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</div>
+            <div class="nav-item" data-page="terima" onclick="navigate('terima')"><i class="fas fa-box-open"></i> Terima Barang</div>
+            <div class="nav-item" data-page="daftar" onclick="navigate('daftar')"><i class="fas fa-list-check"></i> Daftar Barang Service</div>
+            <div class="nav-item" data-page="pengambilan" onclick="navigate('pengambilan')"><i class="fas fa-hand-holding"></i> Pengambilan Barang</div>
             <p class="px-8 py-2 mt-3 text-xs font-semibold uppercase tracking-wider" style="color:var(--muted);opacity:0.5">Pengaturan</p>
-            <div class="nav-item" data-page="jenis" onclick="navigate('jenis')">
-                <i class="fas fa-tags"></i> Jenis &amp; Biaya Service
-            </div>
-            <div class="nav-item" data-page="stok" onclick="navigate('stok')">
-                <i class="fas fa-warehouse"></i> Stok Sparepart
-            </div>
+            <div class="nav-item" data-page="jenis" onclick="navigate('jenis')"><i class="fas fa-tags"></i> Jenis &amp; Biaya Service</div>
+            <div class="nav-item" data-page="stok" onclick="navigate('stok')"><i class="fas fa-warehouse"></i> Stok Sparepart</div>
             <p class="px-8 py-2 mt-3 text-xs font-semibold uppercase tracking-wider" style="color:var(--muted);opacity:0.5">Laporan</p>
-            <div class="nav-item" data-page="riwayat" onclick="navigate('riwayat')">
-                <i class="fas fa-clock-rotate-left"></i> Riwayat Service
-            </div>
-            <div class="nav-item" data-page="laporan" onclick="navigate('laporan')">
-                <i class="fas fa-file-invoice-dollar"></i> Laporan
-            </div>
+            <div class="nav-item" data-page="riwayat" onclick="navigate('riwayat')"><i class="fas fa-clock-rotate-left"></i> Riwayat Service</div>
+            <div class="nav-item" data-page="laporan" onclick="navigate('laporan')"><i class="fas fa-file-invoice-dollar"></i> Laporan</div>
         </nav>
         <div class="absolute bottom-0 left-0 right-0 p-4 border-t" style="border-color:var(--border)">
             <div class="flex items-center gap-3 px-2">
                 <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:rgba(16,185,129,0.2);color:var(--accent)">AD</div>
-                <div>
-                    <p class="text-xs font-semibold" style="color:var(--text)">Admin</p>
-                    <p class="text-xs" style="color:var(--muted)">Operator</p>
-                </div>
+                <div><p class="text-xs font-semibold" style="color:var(--text)">Admin</p><p class="text-xs" style="color:var(--muted)">Operator</p></div>
             </div>
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Top Bar -->
         <header class="sticky top-0 z-40 px-8 py-4 flex items-center justify-between" style="background:rgba(8,13,25,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)">
             <div class="flex items-center gap-4">
-                <button class="mobile-toggle items-center justify-center w-10 h-10 rounded-lg" style="background:var(--card);border:1px solid var(--border)" onclick="document.getElementById('sidebar').classList.toggle('open')">
-                    <i class="fas fa-bars" style="color:var(--muted)"></i>
-                </button>
+                <button class="mobile-toggle items-center justify-center w-10 h-10 rounded-lg" style="background:var(--card);border:1px solid var(--border)" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars" style="color:var(--muted)"></i></button>
                 <h2 class="text-lg font-bold" id="pageTitle">Dashboard</h2>
             </div>
             <div class="flex items-center gap-3">
@@ -205,40 +175,24 @@
         </header>
 
         <div class="p-8">
-            <!-- ===================== DASHBOARD ===================== -->
+            <!-- DASHBOARD -->
             <section class="page-section active" id="page-dashboard">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8" id="dashStats"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                    <div class="lg:col-span-2 data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)">
-                            <h3 class="font-semibold text-sm">Pendapatan 7 Hari Terakhir</h3>
-                        </div>
-                        <div class="p-5"><canvas id="revenueChart" height="220"></canvas></div>
-                    </div>
-                    <div class="data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)">
-                            <h3 class="font-semibold text-sm">Distribusi Status Service</h3>
-                        </div>
-                        <div class="p-5"><canvas id="statusChart" height="220"></canvas></div>
-                    </div>
+                    <div class="lg:col-span-2 data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Pendapatan 7 Hari Terakhir</h3></div><div class="p-5"><canvas id="revenueChart" height="220"></canvas></div></div>
+                    <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Distribusi Status Service</h3></div><div class="p-5"><canvas id="statusChart" height="220"></canvas></div></div>
                 </div>
                 <div class="data-card mt-5">
-                    <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)">
-                        <h3 class="font-semibold text-sm">Service Terbaru</h3>
-                        <button class="btn-secondary btn-sm" onclick="navigate('daftar')">Lihat Semua <i class="fas fa-arrow-right ml-1"></i></button>
-                    </div>
+                    <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Service Terbaru</h3><button class="btn-secondary btn-sm" onclick="navigate('daftar')">Lihat Semua <i class="fas fa-arrow-right ml-1"></i></button></div>
                     <div class="overflow-x-auto"><table><thead><tr><th>No. Service</th><th>Pelanggan</th><th>Barang</th><th>Status</th><th>Tanggal</th></tr></thead><tbody id="dashRecentTable"></tbody></table></div>
                 </div>
             </section>
 
-            <!-- ===================== TERIMA BARANG ===================== -->
+            <!-- TERIMA BARANG (DIUBAH: posisi No. Seri sebelah Type) -->
             <section class="page-section" id="page-terima">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)">
-                            <h3 class="font-semibold">Form Penerimaan Barang</h3>
-                            <p class="text-xs mt-1" style="color:var(--muted)">Isi data barang yang diterima untuk service</p>
-                        </div>
+                        <div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold">Form Penerimaan Barang</h3><p class="text-xs mt-1" style="color:var(--muted)">Isi data barang yang diterima untuk service</p></div>
                         <form id="formTerima" class="p-5 space-y-4" onsubmit="return simpanTerima(event)">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div><label class="form-label">Nama Pelanggan</label><input type="text" class="form-input" id="tNama" placeholder="Nama lengkap" required></div>
@@ -249,13 +203,14 @@
                                 <div><label class="form-label">Jenis Barang</label><select class="form-input" id="tJenis" required><option value="">Pilih jenis barang</option></select></div>
                                 <div><label class="form-label">Merek / Model</label><input type="text" class="form-input" id="tMerek" placeholder="Contoh: Samsung UA43" required></div>
                             </div>
-                            <div><label class="form-label">Type</label><input type="text" class="form-input" id="tType" placeholder="Contoh: UA43T6500AKXXD" required></div>
+                            <!-- DIUBAH: Type dan No. Seri berdampingan -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="form-label">Type</label><input type="text" class="form-input" id="tType" placeholder="Contoh: UA43T6500AKXXD" required></div>
+                                <div><label class="form-label">No. Seri</label><input type="text" class="form-input" id="tSeri" placeholder="SN perangkat"></div>
+                            </div>
                             <div><label class="form-label">Keluhan / Masalah</label><textarea class="form-input" id="tKeluhan" rows="3" placeholder="Deskripsikan keluhan pelanggan..." required></textarea></div>
                             <div><label class="form-label">Kelengkapan Barang</label><input type="text" class="form-input" id="tKelengkapan" placeholder="Contoh: Charger, Remote, Kabel HDMI, Baterai" required></div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div><label class="form-label">No. Seri (opsional)</label><input type="text" class="form-input" id="tSeri" placeholder="SN perangkat"></div>
-                                <div><label class="form-label">Estimasi Biaya (Rp)</label><input type="number" class="form-input" id="tEstimasi" placeholder="0" min="0"></div>
-                            </div>
+                            <div><label class="form-label">Estimasi Biaya (Rp)</label><input type="number" class="form-input" id="tEstimasi" placeholder="0" min="0"></div>
                             <div class="pt-2 flex gap-3">
                                 <button type="submit" class="btn-primary"><i class="fas fa-check"></i> Simpan & Terima</button>
                                 <button type="reset" class="btn-secondary">Reset</button>
@@ -263,10 +218,7 @@
                         </form>
                     </div>
                     <div>
-                        <div class="data-card mb-5">
-                            <div class="p-5 border-b" style="border-color:var(--border)">
-                                <h3 class="font-semibold text-sm">Panduan Singkat</h3>
-                            </div>
+                        <div class="data-card mb-5"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Panduan Singkat</h3></div>
                             <div class="p-5 space-y-4 text-sm" style="color:var(--muted)">
                                 <div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">1</div><p>Isi data pelanggan dan barang dengan lengkap</p></div>
                                 <div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">2</div><p>Pilih jenis barang sesuai kategori yang tersedia</p></div>
@@ -274,101 +226,58 @@
                                 <div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">4</div><p>Bukti titip barang bisa diunduh setelah simpan</p></div>
                             </div>
                         </div>
-                        <div class="data-card">
-                            <div class="p-5 border-b" style="border-color:var(--border)">
-                                <h3 class="font-semibold text-sm">Barang Diterima Hari Ini</h3>
-                            </div>
-                            <div class="p-5" id="terimaHariIni"><p class="text-sm" style="color:var(--muted)">Belum ada barang hari ini</p></div>
-                        </div>
+                        <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Barang Diterima Hari Ini</h3></div><div class="p-5" id="terimaHariIni"><p class="text-sm" style="color:var(--muted)">Belum ada barang hari ini</p></div></div>
                     </div>
                 </div>
             </section>
 
-            <!-- ===================== DAFTAR BARANG SERVICE ===================== -->
+            <!-- DAFTAR BARANG SERVICE (DIUBAH: tambah kolom No. Seri, status diambil tidak bisa diubah) -->
             <section class="page-section" id="page-daftar">
                 <div class="data-card">
                     <div class="p-5 border-b flex flex-wrap items-center justify-between gap-4" style="border-color:var(--border)">
                         <div class="flex items-center gap-3 flex-wrap">
                             <input type="text" class="form-input" style="width:240px" placeholder="Cari no service / pelanggan..." id="searchDaftar" oninput="renderDaftar()">
                             <select class="form-input" style="width:160px" id="filterStatus" onchange="renderDaftar()">
-                                <option value="">Semua Status</option>
-                                <option value="masuk">Masuk</option>
-                                <option value="diperiksa">Diperiksa</option>
-                                <option value="proses">Dalam Proses</option>
-                                <option value="selesai">Selesai</option>
-                                <option value="diambil">Diambil</option>
+                                <option value="">Semua Status</option><option value="masuk">Masuk</option><option value="diperiksa">Diperiksa</option><option value="proses">Dalam Proses</option><option value="selesai">Selesai</option><option value="diambil">Diambil</option>
                             </select>
                         </div>
                         <button class="btn-primary" onclick="navigate('terima')"><i class="fas fa-plus"></i> Terima Barang Baru</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table>
-                            <thead><tr><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Type</th><th>Kelengkapan</th><th>Keluhan</th><th>Status</th><th>Aksi</th></tr></thead>
+                            <!-- DIUBAH: tambah kolom No. Seri sebelah Type -->
+                            <thead><tr><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Type</th><th>No. Seri</th><th>Kelengkapan</th><th>Keluhan</th><th>Status</th><th>Aksi</th></tr></thead>
                             <tbody id="daftarTable"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- ===================== PENGAMBILAN BARANG (DIUBAH) ===================== -->
+            <!-- PENGAMBILAN BARANG -->
             <section class="page-section" id="page-pengambilan">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)">
-                            <h3 class="font-semibold text-sm">Cari Barang</h3>
-                        </div>
+                        <div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Cari Barang</h3></div>
                         <div class="p-5 space-y-4">
                             <div><label class="form-label">Nomor Service</label><input type="text" class="form-input" id="cariNoService" placeholder="SVC-XXXXXXXX"></div>
                             <button class="btn-primary w-full" onclick="cariPengambilan()"><i class="fas fa-search"></i> Cari</button>
                         </div>
-                        <div class="px-5 pb-5">
-                            <p class="text-xs mb-3 font-semibold" style="color:var(--muted)">Barang Siap Diambil</p>
-                            <div id="listSiapAmbil" class="space-y-2"></div>
-                        </div>
+                        <div class="px-5 pb-5"><p class="text-xs mb-3 font-semibold" style="color:var(--muted)">Barang Siap Diambil</p><div id="listSiapAmbil" class="space-y-2"></div></div>
                     </div>
                     <div class="lg:col-span-2">
-                        <div class="data-card mb-5" id="detailPengambilan" style="display:none">
-                            <div class="p-5 border-b" style="border-color:var(--border)">
-                                <h3 class="font-semibold text-sm">Detail Service</h3>
-                            </div>
-                            <div class="p-5" id="detailAmbilContent"></div>
-                        </div>
+                        <div class="data-card mb-5" id="detailPengambilan" style="display:none"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Detail Service</h3></div><div class="p-5" id="detailAmbilContent"></div></div>
                         <div class="data-card mb-5" id="formPengambilanCard" style="display:none">
-                            <div class="p-5 border-b" style="border-color:var(--border)">
-                                <h3 class="font-semibold text-sm">Form Pengambilan</h3>
-                            </div>
+                            <div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Form Pengambilan</h3></div>
                             <form class="p-5 space-y-4" id="formAmbil" onsubmit="return prosesPengambilan(event)">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div><label class="form-label">Biaya Service (Rp)</label><input type="number" class="form-input" id="aBiaya" required min="0"></div>
                                     <div><label class="form-label">Total Biaya Sparepart (Rp)</label><input type="number" class="form-input" id="aSparepart" value="0" min="0" readonly style="background:var(--card2);cursor:not-allowed"></div>
                                 </div>
                                 <div class="p-4 rounded-xl" style="background:var(--bg2);border:1px solid var(--border)">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h4 class="text-sm font-semibold" style="color:var(--accent)"><i class="fas fa-puzzle-piece mr-2"></i>Sparepart Digunakan</h4>
-                                        <button type="button" class="btn-secondary btn-sm" onclick="tambahBarisSparepart()"><i class="fas fa-plus"></i> Tambah</button>
-                                    </div>
-                                    <div class="overflow-x-auto">
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th style="background:transparent;padding:8px 6px;font-size:11px">Sparepart</th>
-                                                    <th style="background:transparent;padding:8px 6px;font-size:11px">Harga</th>
-                                                    <th style="background:transparent;padding:8px 6px;font-size:11px;width:70px">Stok</th>
-                                                    <th style="background:transparent;padding:8px 6px;font-size:11px;width:80px">Qty</th>
-                                                    <th style="background:transparent;padding:8px 6px;font-size:11px">Subtotal</th>
-                                                    <th style="background:transparent;padding:8px 6px;font-size:11px;width:40px"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="sparepartPickerBody">
-                                                <tr id="sparepartEmptyRow">
-                                                    <td colspan="6" class="text-center py-3 text-xs" style="color:var(--muted)">Klik "Tambah" untuk memilih sparepart</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <div class="flex items-center justify-between mb-3"><h4 class="text-sm font-semibold" style="color:var(--accent)"><i class="fas fa-puzzle-piece mr-2"></i>Sparepart Digunakan</h4><button type="button" class="btn-secondary btn-sm" onclick="tambahBarisSparepart()"><i class="fas fa-plus"></i> Tambah</button></div>
+                                    <div class="overflow-x-auto"><table><thead><tr><th style="background:transparent;padding:8px 6px;font-size:11px">Sparepart</th><th style="background:transparent;padding:8px 6px;font-size:11px">Harga</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:70px">Stok</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:80px">Qty</th><th style="background:transparent;padding:8px 6px;font-size:11px">Subtotal</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:40px"></th></tr></thead><tbody id="sparepartPickerBody"><tr id="sparepartEmptyRow"><td colspan="6" class="text-center py-3 text-xs" style="color:var(--muted)">Klik "Tambah" untuk memilih sparepart</td></tr></tbody></table></div>
                                 </div>
                                 <div><label class="form-label">Catatan Teknisi</label><textarea class="form-input" id="aCatatan" rows="2" placeholder="Hasil perbaikan..."></textarea></div>
-                                <!-- DIUBAH: Tambah tombol Download PDF di sebelah Cetak Struk -->
                                 <div class="flex gap-3 flex-wrap">
                                     <button type="submit" class="btn-primary"><i class="fas fa-hand-holding"></i> Proses Pengambilan</button>
                                     <button type="button" class="btn-secondary" onclick="cetakStruk()"><i class="fas fa-print"></i> Cetak Struk</button>
@@ -381,61 +290,23 @@
                 </div>
             </section>
 
-            <!-- ===================== JENIS BARANG & BIAYA ===================== -->
+            <!-- JENIS BARANG & BIAYA -->
             <section class="page-section" id="page-jenis">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)">
-                            <h3 class="font-semibold text-sm">Tambah Jenis Barang</h3>
-                        </div>
-                        <form class="p-5 space-y-4" id="formJenis" onsubmit="return simpanJenis(event)">
-                            <div><label class="form-label">Nama Jenis Barang</label><input type="text" class="form-input" id="jNama" placeholder="Contoh: Televisi LED" required></div>
-                            <div><label class="form-label">Biaya Service Dasar (Rp)</label><input type="number" class="form-input" id="jBiaya" placeholder="0" required min="0"></div>
-                            <div><label class="form-label">Deskripsi</label><textarea class="form-input" id="jDeskripsi" rows="2" placeholder="Keterangan tambahan..."></textarea></div>
-                            <button type="submit" class="btn-primary w-full"><i class="fas fa-plus"></i> Simpan Jenis</button>
-                        </form>
-                    </div>
-                    <div class="lg:col-span-2 data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)">
-                            <h3 class="font-semibold text-sm">Daftar Jenis Barang & Biaya</h3>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table><thead><tr><th>Nama Jenis</th><th>Biaya Dasar</th><th>Deskripsi</th><th>Aksi</th></tr></thead><tbody id="jenisTable"></tbody></table>
-                        </div>
-                    </div>
+                    <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Tambah Jenis Barang</h3></div><form class="p-5 space-y-4" id="formJenis" onsubmit="return simpanJenis(event)"><div><label class="form-label">Nama Jenis Barang</label><input type="text" class="form-input" id="jNama" placeholder="Contoh: Televisi LED" required></div><div><label class="form-label">Biaya Service Dasar (Rp)</label><input type="number" class="form-input" id="jBiaya" placeholder="0" required min="0"></div><div><label class="form-label">Deskripsi</label><textarea class="form-input" id="jDeskripsi" rows="2" placeholder="Keterangan tambahan..."></textarea></div><button type="submit" class="btn-primary w-full"><i class="fas fa-plus"></i> Simpan Jenis</button></form></div>
+                    <div class="lg:col-span-2 data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Daftar Jenis Barang & Biaya</h3></div><div class="overflow-x-auto"><table><thead><tr><th>Nama Jenis</th><th>Biaya Dasar</th><th>Deskripsi</th><th>Aksi</th></tr></thead><tbody id="jenisTable"></tbody></table></div></div>
                 </div>
             </section>
 
-            <!-- ===================== STOK SPAREPART ===================== -->
+            <!-- STOK SPAREPART -->
             <section class="page-section" id="page-stok">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)">
-                            <h3 class="font-semibold text-sm">Tambah Sparepart</h3>
-                        </div>
-                        <form class="p-5 space-y-4" id="formStok" onsubmit="return simpanSparepart(event)">
-                            <div><label class="form-label">Nama Sparepart</label><input type="text" class="form-input" id="sNama" placeholder="Contoh: Kapasitor 450V" required></div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div><label class="form-label">Jumlah</label><input type="number" class="form-input" id="sJumlah" placeholder="0" required min="0"></div>
-                                <div><label class="form-label">Harga (Rp)</label><input type="number" class="form-input" id="sHarga" placeholder="0" required min="0"></div>
-                            </div>
-                            <div><label class="form-label">Kategori</label><input type="text" class="form-input" id="sKategori" placeholder="Contoh: Kapasitor, IC, Kabel"></div>
-                            <button type="submit" class="btn-primary w-full"><i class="fas fa-plus"></i> Simpan Sparepart</button>
-                        </form>
-                    </div>
-                    <div class="lg:col-span-2 data-card">
-                        <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)">
-                            <h3 class="font-semibold text-sm">Daftar Stok Sparepart</h3>
-                            <input type="text" class="form-input" style="width:200px" placeholder="Cari sparepart..." id="searchStok" oninput="renderStok()">
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table><thead><tr><th>Nama</th><th>Kategori</th><th>Stok</th><th>Harga</th><th>Aksi</th></tr></thead><tbody id="stokTable"></tbody></table>
-                        </div>
-                    </div>
+                    <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Tambah Sparepart</h3></div><form class="p-5 space-y-4" id="formStok" onsubmit="return simpanSparepart(event)"><div><label class="form-label">Nama Sparepart</label><input type="text" class="form-input" id="sNama" placeholder="Contoh: Kapasitor 450V" required></div><div class="grid grid-cols-2 gap-3"><div><label class="form-label">Jumlah</label><input type="number" class="form-input" id="sJumlah" placeholder="0" required min="0"></div><div><label class="form-label">Harga (Rp)</label><input type="number" class="form-input" id="sHarga" placeholder="0" required min="0"></div></div><div><label class="form-label">Kategori</label><input type="text" class="form-input" id="sKategori" placeholder="Contoh: Kapasitor, IC, Kabel"></div><button type="submit" class="btn-primary w-full"><i class="fas fa-plus"></i> Simpan Sparepart</button></form></div>
+                    <div class="lg:col-span-2 data-card"><div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Daftar Stok Sparepart</h3><input type="text" class="form-input" style="width:200px" placeholder="Cari sparepart..." id="searchStok" oninput="renderStok()"></div><div class="overflow-x-auto"><table><thead><tr><th>Nama</th><th>Kategori</th><th>Stok</th><th>Harga</th><th>Aksi</th></tr></thead><tbody id="stokTable"></tbody></table></div></div>
                 </div>
             </section>
 
-            <!-- ===================== RIWAYAT SERVICE ===================== -->
+            <!-- RIWAYAT SERVICE (DIUBAH: tombol download PDF struk) -->
             <section class="page-section" id="page-riwayat">
                 <div class="data-card">
                     <div class="p-5 border-b flex flex-wrap items-center justify-between gap-4" style="border-color:var(--border)">
@@ -447,54 +318,33 @@
                         </div>
                     </div>
                     <div class="overflow-x-auto">
+                        <!-- DIUBAH: tambah kolom aksi PDF -->
                         <table><thead><tr><th>No. Service</th><th>Tgl Masuk</th><th>Tgl Ambil</th><th>Pelanggan</th><th>Barang</th><th>Total Biaya</th><th>Struk</th></tr></thead><tbody id="riwayatTable"></tbody></table>
                     </div>
                 </div>
             </section>
 
-            <!-- ===================== LAPORAN ===================== -->
+            <!-- LAPORAN -->
             <section class="page-section" id="page-laporan">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6" id="laporanStats"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
-                    <div class="data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Pendapatan Bulanan</h3></div>
-                        <div class="p-5"><canvas id="monthlyChart" height="250"></canvas></div>
-                    </div>
-                    <div class="data-card">
-                        <div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Jenis Barang Terbanyak</h3></div>
-                        <div class="p-5"><canvas id="jenisChart" height="250"></canvas></div>
-                    </div>
+                    <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Pendapatan Bulanan</h3></div><div class="p-5"><canvas id="monthlyChart" height="250"></canvas></div></div>
+                    <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Jenis Barang Terbanyak</h3></div><div class="p-5"><canvas id="jenisChart" height="250"></canvas></div></div>
                 </div>
                 <div class="data-card">
-                    <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)">
-                        <h3 class="font-semibold text-sm">Detail Laporan</h3>
-                        <div class="flex gap-2">
-                            <input type="month" class="form-input" style="width:180px" id="laporanBulan" onchange="renderLaporan()">
-                            <button class="btn-primary btn-sm" onclick="exportLaporan()"><i class="fas fa-download"></i> Export</button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table><thead><tr><th>No</th><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Biaya Service</th><th>Sparepart</th><th>Total</th></tr></thead><tbody id="laporanTable"></tbody></table>
-                    </div>
+                    <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Detail Laporan</h3><div class="flex gap-2"><input type="month" class="form-input" style="width:180px" id="laporanBulan" onchange="renderLaporan()"><button class="btn-primary btn-sm" onclick="exportLaporan()"><i class="fas fa-download"></i> Export</button></div></div>
+                    <div class="overflow-x-auto"><table><thead><tr><th>No</th><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Biaya Service</th><th>Sparepart</th><th>Total</th></tr></thead><tbody id="laporanTable"></tbody></table></div>
                     <div class="p-5 flex justify-end" id="laporanTotal"></div>
                 </div>
             </section>
         </div>
     </main>
 
-    <!-- Modal Edit -->
     <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-        <div class="modal-box">
-            <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)">
-                <h3 class="font-semibold" id="modalTitle">Edit</h3>
-                <button onclick="closeModal()" style="color:var(--muted);font-size:18px;background:none;border:none;cursor:pointer"><i class="fas fa-xmark"></i></button>
-            </div>
-            <div class="p-5" id="modalBody"></div>
-        </div>
+        <div class="modal-box"><div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)"><h3 class="font-semibold" id="modalTitle">Edit</h3><button onclick="closeModal()" style="color:var(--muted);font-size:18px;background:none;border:none;cursor:pointer"><i class="fas fa-xmark"></i></button></div><div class="p-5" id="modalBody"></div></div>
     </div>
 
     <script>
-    // ==================== FIREBASE INIT ====================
     const firebaseConfig = {
         apiKey: "AIzaSyALL4Gow1dY0jW7Kf6R6DfyrW_WbaH5nXE",
         authDomain: "service-elektronik-41369.firebaseapp.com",
@@ -503,11 +353,9 @@
         messagingSenderId: "356056353058",
         appId: "1:356056353058:web:befadc3180e8f33419bd7b"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ==================== VARIABEL GLOBAL ====================
     let currentPage = 'dashboard';
     let allServices = [];
     let allJenis = [];
@@ -520,325 +368,142 @@
     let sparepartRows = [];
     let sparepartRowCounter = 0;
 
-    // ==================== UTILITAS ====================
-    function formatRupiah(num) {
-        if (!num && num !== 0) return 'Rp 0';
-        return 'Rp ' + Number(num).toLocaleString('id-ID');
-    }
+    function formatRupiah(num) { if (!num && num !== 0) return 'Rp 0'; return 'Rp ' + Number(num).toLocaleString('id-ID'); }
+    function formatDate(ts) { if (!ts) return '-'; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }); }
+    function formatDateTime(ts) { if (!ts) return '-'; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+    function generateNoService() { const now = new Date(); return `SVC-${now.getFullYear().toString().slice(-2)}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`; }
 
-    function formatDate(ts) {
-        if (!ts) return '-';
-        const d = ts.toDate ? ts.toDate() : new Date(ts);
-        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    }
+    function showToast(msg, type = 'success') { const c = document.getElementById('toastContainer'); const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' }; const t = document.createElement('div'); t.className = `toast toast-${type}`; t.innerHTML = `<i class="fas ${icons[type]||icons.info}"></i> ${msg}`; c.appendChild(t); setTimeout(() => t.remove(), 3000); }
+    function statusBadge(status) { const labels = { masuk: 'Masuk', diperiksa: 'Diperiksa', proses: 'Dalam Proses', selesai: 'Selesai', diambil: 'Diambil' }; return `<span class="badge badge-${status}">${labels[status]||status}</span>`; }
+    function openModal(title, bodyHTML) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalBody').innerHTML = bodyHTML; document.getElementById('modalOverlay').classList.add('show'); }
+    function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
 
-    function formatDateTime(ts) {
-        if (!ts) return '-';
-        const d = ts.toDate ? ts.toDate() : new Date(ts);
-        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    }
-
-    function generateNoService() {
-        const now = new Date();
-        const y = now.getFullYear().toString().slice(-2);
-        const m = String(now.getMonth() + 1).padStart(2, '0');
-        const d = String(now.getDate()).padStart(2, '0');
-        const h = String(now.getHours()).padStart(2, '0');
-        const mi = String(now.getMinutes()).padStart(2, '0');
-        const s = String(now.getSeconds()).padStart(2, '0');
-        return `SVC-${y}${m}${d}${h}${mi}${s}`;
-    }
-
-    function showToast(msg, type = 'success') {
-        const c = document.getElementById('toastContainer');
-        const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
-        const t = document.createElement('div');
-        t.className = `toast toast-${type}`;
-        t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${msg}`;
-        c.appendChild(t);
-        setTimeout(() => t.remove(), 3000);
-    }
-
-    function statusBadge(status) {
-        const labels = { masuk: 'Masuk', diperiksa: 'Diperiksa', proses: 'Dalam Proses', selesai: 'Selesai', diambil: 'Diambil' };
-        return `<span class="badge badge-${status}">${labels[status] || status}</span>`;
-    }
-
-    function openModal(title, bodyHTML) {
-        document.getElementById('modalTitle').textContent = title;
-        document.getElementById('modalBody').innerHTML = bodyHTML;
-        document.getElementById('modalOverlay').classList.add('show');
-    }
-
-    function closeModal() {
-        document.getElementById('modalOverlay').classList.remove('show');
-    }
-
-    // ==================== PDF: Bukti Titip Barang ====================
+    // ==================== PDF FUNCTIONS ====================
     function downloadBuktiTitip(serviceData) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ unit: 'mm', format: [80, 200] });
-
+        const pageW = 80, marginL = 4, marginR = 4, contentW = pageW - marginL - marginR;
+        let y = 6;
         const d = serviceData.tanggalMasuk?.toDate ? serviceData.tanggalMasuk.toDate() : new Date();
         const tglStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
         const jamStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-        const pageW = 80;
-        const marginL = 4;
-        const marginR = 4;
-        const contentW = pageW - marginL - marginR;
-        let y = 6;
+        function centerText(text, yPos, size, style) { doc.setFontSize(size); doc.setFont('helvetica', style==='bold'?'bold':'normal'); const tw = doc.getTextWidth(text); doc.text(text, marginL+(contentW-tw)/2, yPos); }
+        function dashedLine(yPos) { doc.setLineDashPattern([1.5,1],0); doc.line(marginL,yPos,pageW-marginR,yPos); doc.setLineDashPattern([],0); }
+        function addField(label, value, yPos, lw) { doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text(label, marginL, yPos); doc.setFont('helvetica','normal'); const w=lw||22; const lines=doc.splitTextToSize(value||'-',contentW-w); doc.text(lines,marginL+w,yPos); return Math.max(4,lines.length*3.5); }
 
-        function centerText(text, yPos, size, style) {
-            doc.setFontSize(size);
-            if (style === 'bold') doc.setFont('helvetica', 'bold');
-            else doc.setFont('helvetica', 'normal');
-            const tw = doc.getTextWidth(text);
-            doc.text(text, marginL + (contentW - tw) / 2, yPos);
-        }
-
-        function dashedLine(yPos) {
-            doc.setLineDashPattern([1.5, 1], 0);
-            doc.line(marginL, yPos, pageW - marginR, yPos);
-            doc.setLineDashPattern([], 0);
-        }
-
-        centerText('SERVICE PRO', y, 12, 'bold'); y += 5;
-        centerText('Service Elektronik Profesional', y, 6, 'normal'); y += 4;
-        centerText('BUKTI TITIP BARANG', y, 9, 'bold'); y += 6;
-        dashedLine(y); y += 4;
-
-        doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-        doc.text('No. Service', marginL, y);
-        doc.setFont('helvetica', 'normal');
-        doc.text(':', marginL + 22, y);
-        doc.text(serviceData.noService || '-', marginL + 24, y);
-        y += 4;
-
-        doc.setFont('helvetica', 'bold');
-        doc.text('Tanggal', marginL, y);
-        doc.setFont('helvetica', 'normal');
-        doc.text(':', marginL + 22, y);
-        doc.text(`${tglStr} ${jamStr}`, marginL + 24, y);
-        y += 5;
-
-        dashedLine(y); y += 4;
-
-        doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-        doc.text('IDENTITAS PELANGGAN', marginL, y); y += 5;
-
-        const fields = [
-            ['Nama', serviceData.namaPelanggan],
-            ['Telepon', serviceData.noTelp],
-            ['Alamat', serviceData.alamat],
-        ];
-        fields.forEach(([label, val]) => {
-            doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-            doc.text(label, marginL, y);
-            doc.setFont('helvetica', 'normal');
-            const lines = doc.splitTextToSize(val || '-', contentW - 22);
-            doc.text(lines, marginL + 22, y);
-            y += Math.max(4, lines.length * 3.5);
-        });
-
-        y += 2; dashedLine(y); y += 4;
-
-        doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-        doc.text('DATA BARANG', marginL, y); y += 5;
-
-        const barangFields = [
-            ['Jenis', serviceData.jenisBarang],
-            ['Merek', serviceData.merek],
-            ['Type', serviceData.typeBarang],
-            ['No. Seri', serviceData.noSeri],
-            ['Kelengkapan', serviceData.kelengkapan],
-            ['Keluhan', serviceData.keluhan],
-        ];
-        barangFields.forEach(([label, val]) => {
-            doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-            doc.text(label, marginL, y);
-            doc.setFont('helvetica', 'normal');
-            const lines = doc.splitTextToSize(val || '-', contentW - 26);
-            doc.text(lines, marginL + 26, y);
-            y += Math.max(4, lines.length * 3.5);
-        });
-
-        y += 2; dashedLine(y); y += 4;
-
-        doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-        doc.text('Estimasi Biaya', marginL, y);
-        doc.setFont('helvetica', 'normal');
-        doc.text(formatRupiah(serviceData.estimasiBiaya), marginL + 26, y);
-        y += 6;
-
-        dashedLine(y); y += 5;
-
-        doc.setFontSize(7); doc.setFont('helvetica', 'normal');
-        doc.text('Petugas,', marginL + 2, y);
-        doc.text('Pemilik,', marginL + contentW - 25, y);
-        y += 16;
-        doc.text('(.................)', marginL + 2, y);
-        doc.text('(.................)', marginL + contentW - 25, y);
-        y += 6;
-
-        dashedLine(y); y += 4;
-
-        centerText('Simpan bukti ini sebagai tanda penitipan', y, 6, 'normal'); y += 3;
-        centerText('Barang yang tidak diambil lebih dari 30 hari', y, 6, 'normal'); y += 3;
-        centerText('menjadi hak bengkel service.', y, 6, 'normal');
-
-        doc.save(`Bukti_Titip_${serviceData.noService}.pdf`);
-        showToast('Bukti titip barang berhasil diunduh');
+        centerText('SERVICE PRO',y,12,'bold'); y+=5; centerText('Service Elektronik Profesional',y,6,'normal'); y+=4; centerText('BUKTI TITIP BARANG',y,9,'bold'); y+=6;
+        dashedLine(y); y+=4;
+        y+=addField('No. Service',serviceData.noService,y); y+=addField('Tanggal',`${tglStr} ${jamStr}`,y); y+=2; dashedLine(y); y+=4;
+        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('IDENTITAS PELANGGAN',marginL,y);y+=5;
+        [['Nama',serviceData.namaPelanggan],['Telepon',serviceData.noTelp],['Alamat',serviceData.alamat]].forEach(([l,v])=>{y+=addField(l,v,y);});
+        y+=2;dashedLine(y);y+=4;
+        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('DATA BARANG',marginL,y);y+=5;
+        [['Jenis',serviceData.jenisBarang],['Merek',serviceData.merek],['Type',serviceData.typeBarang],['No. Seri',serviceData.noSeri],['Kelengkapan',serviceData.kelengkapan],['Keluhan',serviceData.keluhan]].forEach(([l,v])=>{y+=addField(l,v,y,26);});
+        y+=2;dashedLine(y);y+=4;
+        doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text('Estimasi Biaya',marginL,y);doc.setFont('helvetica','normal');doc.text(formatRupiah(serviceData.estimasiBiaya),marginL+26,y);y+=6;
+        dashedLine(y);y+=5;doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Petugas,',marginL+2,y);doc.text('Pemilik,',marginL+contentW-25,y);y+=16;doc.text('(.................)',marginL+2,y);doc.text('(.................)',marginL+contentW-25,y);y+=6;
+        dashedLine(y);y+=4;centerText('Simpan bukti ini sebagai tanda penitipan',y,6,'normal');y+=3;centerText('Barang yang tidak diambil lebih dari 30 hari',y,6,'normal');y+=3;centerText('menjadi hak bengkel service.',y,6,'normal');
+        doc.save(`Bukti_Titip_${serviceData.noService}.pdf`); showToast('Bukti titip barang berhasil diunduh');
     }
 
-    // ==================== BARU: PDF Struk Pengambilan ====================
     function downloadStrukPDF() {
-        if (!selectedAmbilId) {
-            showToast('Pilih barang terlebih dahulu', 'error');
-            return;
-        }
-        const s = allServices.find(x => x.id === selectedAmbilId);
+        if (!selectedAmbilId) { showToast('Pilih barang terlebih dahulu','error'); return; }
+        const s = allServices.find(x=>x.id===selectedAmbilId); if(!s)return;
+        const biayaService=Number(document.getElementById('aBiaya').value)||0, biayaSparepart=Number(document.getElementById('aSparepart').value)||0, catatanTeknisi=document.getElementById('aCatatan').value.trim(), total=biayaService+biayaSparepart;
+        const { jsPDF } = window.jspdf; const doc = new jsPDF({ unit:'mm',format:[80,250] }); const pageW=80,marginL=4,marginR=4,contentW=pageW-marginL-marginR; let y=6;
+        const now=new Date(), tglStr=now.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}), jamStr=now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+        function centerText(text,yPos,size,style){doc.setFontSize(size);doc.setFont('helvetica',style==='bold'?'bold':'normal');const tw=doc.getTextWidth(text);doc.text(text,marginL+(contentW-tw)/2,yPos);}
+        function dashedLine(yPos){doc.setLineDashPattern([1.5,1],0);doc.line(marginL,yPos,pageW-marginR,yPos);doc.setLineDashPattern([],0);}
+        function addField(label,value,yPos,lw){doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(label,marginL,yPos);doc.setFont('helvetica','normal');const w=lw||22;const lines=doc.splitTextToSize(value||'-',contentW-w);doc.text(lines,marginL+w,yPos);return Math.max(4,lines.length*3.5);}
+
+        centerText('SERVICE PRO',y,12,'bold');y+=5;centerText('Service Elektronik Profesional',y,6,'normal');y+=4;centerText('STRUK PENGAMBILAN BARANG',y,8,'bold');y+=6;
+        dashedLine(y);y+=4;y+=addField('No. Service',s.noService,y);y+=addField('Tanggal',tglStr,y);y+=addField('Jam',jamStr,y);y+=2;dashedLine(y);y+=4;
+        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('PELANGGAN',marginL,y);y+=5;
+        y+=addField('Nama',s.namaPelanggan,y);y+=addField('Telepon',s.noTelp||'-',y);y+=addField('Alamat',s.alamat||'-',y,22);y+=2;dashedLine(y);y+=4;
+        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('BARANG',marginL,y);y+=5;
+        y+=addField('Jenis',s.jenisBarang,y);y+=addField('Merek',s.merek,y);y+=addField('Type',s.typeBarang||'-',y);y+=addField('No. Seri',s.noSeri||'-',y,22);y+=addField('Kelengkapan',s.kelengkapan||'-',y,22);y+=addField('Keluhan',s.keluhan||'-',y,22);
+        if(catatanTeknisi){y+=addField('Catatan',catatanTeknisi,y,22);}y+=2;dashedLine(y);y+=4;
+        if(sparepartRows.length>0&&sparepartRows.some(r=>r.sparepartId)){doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('SPAREPART',marginL,y);y+=5;sparepartRows.forEach(row=>{const sp=allSparepart.find(x=>x.id===row.sparepartId);if(sp){const sub=Number(sp.harga)*row.qty;doc.setFontSize(7);doc.setFont('helvetica','normal');const nl=doc.splitTextToSize(`${sp.nama} x${row.qty}`,contentW-22);doc.text(nl,marginL,y);const ss=formatRupiah(sub);doc.text(ss,pageW-marginR-doc.getTextWidth(ss),y);y+=Math.max(4,nl.length*3.5);}});y+=2;dashedLine(y);y+=4;}
+        doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text('Biaya Service',marginL,y);doc.setFont('helvetica','normal');const bs1=formatRupiah(biayaService);doc.text(bs1,pageW-marginR-doc.getTextWidth(bs1),y);y+=4;
+        doc.setFont('helvetica','bold');doc.text('Biaya Sparepart',marginL,y);doc.setFont('helvetica','normal');const bp1=formatRupiah(biayaSparepart);doc.text(bp1,pageW-marginR-doc.getTextWidth(bp1),y);y+=5;dashedLine(y);y+=4;
+        doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('TOTAL',marginL,y);const ts1=formatRupiah(total);doc.text(ts1,pageW-marginR-doc.getTextWidth(ts1),y);y+=6;dashedLine(y);y+=5;
+        doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Petugas,',marginL+2,y);doc.text('Pemilik,',marginL+contentW-25,y);y+=16;doc.text('(.................)',marginL+2,y);doc.text('(.................)',marginL+contentW-25,y);y+=6;dashedLine(y);y+=4;
+        centerText('Terima kasih atas kepercayaan Anda',y,6,'normal');y+=3;centerText('Barang yang telah diterima bukan tanggung jawab bengkel',y,5.5,'normal');
+        doc.save(`Struk_${s.noService}.pdf`); showToast('Struk PDF berhasil diunduh');
+    }
+
+    // BARU: Download Struk PDF dari Riwayat
+    function downloadStrukRiwayatPDF(id) {
+        const s = allServices.find(x => x.id === id);
         if (!s) return;
 
-        const biayaService = Number(document.getElementById('aBiaya').value) || 0;
-        const biayaSparepart = Number(document.getElementById('aSparepart').value) || 0;
-        const catatanTeknisi = document.getElementById('aCatatan').value.trim();
+        const biayaService = Number(s.biayaService || 0);
+        const biayaSparepart = Number(s.biayaSparepart || 0);
+        const catatanTeknisi = s.catatanTeknisi || '';
         const total = biayaService + biayaSparepart;
 
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ unit: 'mm', format: [80, 250] });
-
-        const pageW = 80;
-        const marginL = 4;
-        const marginR = 4;
-        const contentW = pageW - marginL - marginR;
+        const doc = new jsPDF({ unit: 'mm', format: [80, 280] });
+        const pageW = 80, marginL = 4, marginR = 4, contentW = pageW - marginL - marginR;
         let y = 6;
 
-        const now = new Date();
-        const tglStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-        const jamStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        const dAmbil = s.tanggalAmbil?.toDate ? s.tanggalAmbil.toDate() : new Date();
+        const tglStr = dAmbil.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        const jamStr = dAmbil.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-        function centerText(text, yPos, size, style) {
-            doc.setFontSize(size);
-            if (style === 'bold') doc.setFont('helvetica', 'bold');
-            else doc.setFont('helvetica', 'normal');
-            const tw = doc.getTextWidth(text);
-            doc.text(text, marginL + (contentW - tw) / 2, yPos);
-        }
+        function centerText(text, yPos, size, style) { doc.setFontSize(size); doc.setFont('helvetica', style === 'bold' ? 'bold' : 'normal'); const tw = doc.getTextWidth(text); doc.text(text, marginL + (contentW - tw) / 2, yPos); }
+        function dashedLine(yPos) { doc.setLineDashPattern([1.5, 1], 0); doc.line(marginL, yPos, pageW - marginR, yPos); doc.setLineDashPattern([], 0); }
+        function addField(label, value, yPos, lw) { doc.setFontSize(7); doc.setFont('helvetica', 'bold'); doc.text(label, marginL, yPos); doc.setFont('helvetica', 'normal'); const w = lw || 22; const lines = doc.splitTextToSize(value || '-', contentW - w); doc.text(lines, marginL + w, yPos); return Math.max(4, lines.length * 3.5); }
 
-        function dashedLine(yPos) {
-            doc.setLineDashPattern([1.5, 1], 0);
-            doc.line(marginL, yPos, pageW - marginR, yPos);
-            doc.setLineDashPattern([], 0);
-        }
-
-        function addField(label, value, yPos, labelW) {
-            doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-            doc.text(label, marginL, yPos);
-            doc.setFont('helvetica', 'normal');
-            const w = labelW || 22;
-            const lines = doc.splitTextToSize(value || '-', contentW - w);
-            doc.text(lines, marginL + w, yPos);
-            return Math.max(4, lines.length * 3.5);
-        }
-
-        // Header
         centerText('SERVICE PRO', y, 12, 'bold'); y += 5;
         centerText('Service Elektronik Profesional', y, 6, 'normal'); y += 4;
         centerText('STRUK PENGAMBILAN BARANG', y, 8, 'bold'); y += 6;
-
         dashedLine(y); y += 4;
 
-        // Info transaksi
         y += addField('No. Service', s.noService, y);
-        y += addField('Tanggal', `${tglStr}`, y);
-        y += addField('Jam', `${jamStr}`, y);
-
+        y += addField('Tanggal', tglStr, y);
+        y += addField('Jam', jamStr, y);
         y += 2; dashedLine(y); y += 4;
 
-        // Identitas Pelanggan
-        doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-        doc.text('PELANGGAN', marginL, y); y += 5;
-
+        doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.text('PELANGGAN', marginL, y); y += 5;
         y += addField('Nama', s.namaPelanggan, y);
         y += addField('Telepon', s.noTelp || '-', y);
         y += addField('Alamat', s.alamat || '-', y, 22);
-
         y += 2; dashedLine(y); y += 4;
 
-        // Data Barang
-        doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-        doc.text('BARANG', marginL, y); y += 5;
-
+        doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.text('BARANG', marginL, y); y += 5;
         y += addField('Jenis', s.jenisBarang, y);
         y += addField('Merek', s.merek, y);
         y += addField('Type', s.typeBarang || '-', y);
+        y += addField('No. Seri', s.noSeri || '-', y, 22);
         y += addField('Kelengkapan', s.kelengkapan || '-', y, 22);
         y += addField('Keluhan', s.keluhan || '-', y, 22);
-        if (catatanTeknisi) {
-            y += addField('Catatan', catatanTeknisi, y, 22);
-        }
-
+        if (catatanTeknisi) { y += addField('Catatan', catatanTeknisi, y, 22); }
         y += 2; dashedLine(y); y += 4;
 
-        // Sparepart
-        if (sparepartRows.length > 0 && sparepartRows.some(r => r.sparepartId)) {
-            doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-            doc.text('SPAREPART', marginL, y); y += 5;
-
-            sparepartRows.forEach(row => {
-                const sp = allSparepart.find(x => x.id === row.sparepartId);
-                if (sp) {
-                    const sub = Number(sp.harga) * row.qty;
-                    doc.setFontSize(7); doc.setFont('helvetica', 'normal');
-                    const namaLines = doc.splitTextToSize(`${sp.nama} x${row.qty}`, contentW - 22);
-                    doc.text(namaLines, marginL, y);
-                    const subStr = formatRupiah(sub);
-                    doc.text(subStr, pageW - marginR - doc.getTextWidth(subStr), y);
-                    y += Math.max(4, namaLines.length * 3.5);
-                }
+        if (s.sparepartDigunakan && s.sparepartDigunakan.length > 0) {
+            doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.text('SPAREPART', marginL, y); y += 5;
+            s.sparepartDigunakan.forEach(sp => {
+                doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+                const nl = doc.splitTextToSize(`${sp.nama} x${sp.qty}`, contentW - 22);
+                doc.text(nl, marginL, y);
+                const ss = formatRupiah(sp.subtotal);
+                doc.text(ss, pageW - marginR - doc.getTextWidth(ss), y);
+                y += Math.max(4, nl.length * 3.5);
             });
-
             y += 2; dashedLine(y); y += 4;
         }
 
-        // Biaya
-        doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-        doc.text('Biaya Service', marginL, y);
-        doc.setFont('helvetica', 'normal');
-        const bsStr = formatRupiah(biayaService);
-        doc.text(bsStr, pageW - marginR - doc.getTextWidth(bsStr), y);
-        y += 4;
-
-        doc.setFont('helvetica', 'bold');
-        doc.text('Biaya Sparepart', marginL, y);
-        doc.setFont('helvetica', 'normal');
-        const bpStr = formatRupiah(biayaSparepart);
-        doc.text(bpStr, pageW - marginR - doc.getTextWidth(bpStr), y);
-        y += 5;
-
+        doc.setFontSize(7); doc.setFont('helvetica', 'bold'); doc.text('Biaya Service', marginL, y); doc.setFont('helvetica', 'normal'); const bs1 = formatRupiah(biayaService); doc.text(bs1, pageW - marginR - doc.getTextWidth(bs1), y); y += 4;
+        doc.setFont('helvetica', 'bold'); doc.text('Biaya Sparepart', marginL, y); doc.setFont('helvetica', 'normal'); const bp1 = formatRupiah(biayaSparepart); doc.text(bp1, pageW - marginR - doc.getTextWidth(bp1), y); y += 5;
         dashedLine(y); y += 4;
 
-        // Total
-        doc.setFontSize(10); doc.setFont('helvetica', 'bold');
-        doc.text('TOTAL', marginL, y);
-        const totStr = formatRupiah(total);
-        doc.text(totStr, pageW - marginR - doc.getTextWidth(totStr), y);
-        y += 6;
-
+        doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.text('TOTAL', marginL, y); const ts1 = formatRupiah(total); doc.text(ts1, pageW - marginR - doc.getTextWidth(ts1), y); y += 6;
         dashedLine(y); y += 5;
 
-        // Tanda tangan
-        doc.setFontSize(7); doc.setFont('helvetica', 'normal');
-        doc.text('Petugas,', marginL + 2, y);
-        doc.text('Pemilik,', marginL + contentW - 25, y);
-        y += 16;
-        doc.text('(.................)', marginL + 2, y);
-        doc.text('(.................)', marginL + contentW - 25, y);
-        y += 6;
-
+        doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.text('Petugas,', marginL + 2, y); doc.text('Pemilik,', marginL + contentW - 25, y); y += 16; doc.text('(.................)', marginL + 2, y); doc.text('(.................)', marginL + contentW - 25, y); y += 6;
         dashedLine(y); y += 4;
-
         centerText('Terima kasih atas kepercayaan Anda', y, 6, 'normal'); y += 3;
         centerText('Barang yang telah diterima bukan tanggung jawab bengkel', y, 5.5, 'normal');
 
@@ -851,272 +516,46 @@
         currentPage = page;
         document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-        const section = document.getElementById(`page-${page}`);
-        if (section) section.classList.add('active');
-
-        const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
-        if (navItem) navItem.classList.add('active');
-
-        const titles = {
-            dashboard: 'Dashboard', terima: 'Terima Barang', daftar: 'Daftar Barang Service',
-            pengambilan: 'Pengambilan Barang', jenis: 'Jenis Barang & Biaya Service',
-            stok: 'Stok Sparepart', riwayat: 'Riwayat Service', laporan: 'Laporan'
-        };
-        document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
-
+        const section = document.getElementById(`page-${page}`); if (section) section.classList.add('active');
+        const navItem = document.querySelector(`.nav-item[data-page="${page}"]`); if (navItem) navItem.classList.add('active');
+        const titles = { dashboard:'Dashboard',terima:'Terima Barang',daftar:'Daftar Barang Service',pengambilan:'Pengambilan Barang',jenis:'Jenis Barang & Biaya Service',stok:'Stok Sparepart',riwayat:'Riwayat Service',laporan:'Laporan' };
+        document.getElementById('pageTitle').textContent = titles[page]||'Dashboard';
         document.getElementById('sidebar').classList.remove('open');
-
-        if (page === 'dashboard') renderDashboard();
-        else if (page === 'daftar') renderDaftar();
-        else if (page === 'pengambilan') renderPengambilan();
-        else if (page === 'jenis') renderJenis();
-        else if (page === 'stok') renderStok();
-        else if (page === 'riwayat') renderRiwayat();
-        else if (page === 'laporan') renderLaporan();
-        else if (page === 'terima') renderTerima();
+        if(page==='dashboard')renderDashboard();else if(page==='daftar')renderDaftar();else if(page==='pengambilan')renderPengambilan();else if(page==='jenis')renderJenis();else if(page==='stok')renderStok();else if(page==='riwayat')renderRiwayat();else if(page==='laporan')renderLaporan();else if(page==='terima')renderTerima();
     }
 
-    // ==================== LOAD DATA ====================
-    async function loadAllData() {
-        try {
-            const [svcSnap, jenisSnap, spareSnap] = await Promise.all([
-                db.collection('services').orderBy('tanggalMasuk', 'desc').get(),
-                db.collection('jenisBarang').orderBy('nama').get(),
-                db.collection('sparepart').orderBy('nama').get()
-            ]);
-
-            allServices = svcSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-            allJenis = jenisSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-            allSparepart = spareSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-        } catch (err) {
-            console.error('Load error:', err);
-            showToast('Gagal memuat data: ' + err.message, 'error');
-        }
-    }
+    async function loadAllData() { try { const [svcSnap,jenisSnap,spareSnap]=await Promise.all([db.collection('services').orderBy('tanggalMasuk','desc').get(),db.collection('jenisBarang').orderBy('nama').get(),db.collection('sparepart').orderBy('nama').get()]); allServices=svcSnap.docs.map(d=>({id:d.id,...d.data()})); allJenis=jenisSnap.docs.map(d=>({id:d.id,...d.data()})); allSparepart=spareSnap.docs.map(d=>({id:d.id,...d.data()})); } catch(err){ console.error('Load error:',err); showToast('Gagal memuat data: '+err.message,'error'); } }
 
     // ==================== DASHBOARD ====================
-    async function renderDashboard() {
-        await loadAllData();
-
-        const totalMasuk = allServices.length;
-        const totalProses = allServices.filter(s => s.status === 'proses').length;
-        const totalSelesai = allServices.filter(s => s.status === 'selesai').length;
-        const totalDiambil = allServices.filter(s => s.status === 'diambil');
-        const pendapatan = totalDiambil.reduce((a, s) => a + (Number(s.biayaService || 0) + Number(s.biayaSparepart || 0)), 0);
-
-        document.getElementById('dashStats').innerHTML = `
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(6,182,212,0.15)"><i class="fas fa-boxes-stacked" style="color:#06B6D4"></i></div>
-                    <span class="text-xs font-mono" style="color:var(--muted)">TOTAL</span>
-                </div>
-                <p class="text-2xl font-bold">${totalMasuk}</p>
-                <p class="text-xs mt-1" style="color:var(--muted)">Barang Diterima</p>
-            </div>
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(245,158,11,0.15)"><i class="fas fa-gears" style="color:#F59E0B"></i></div>
-                    <span class="text-xs font-mono" style="color:var(--muted)">AKTIF</span>
-                </div>
-                <p class="text-2xl font-bold">${totalProses}</p>
-                <p class="text-xs mt-1" style="color:var(--muted)">Sedang Dikerjakan</p>
-            </div>
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-circle-check" style="color:#10B981"></i></div>
-                    <span class="text-xs font-mono" style="color:var(--muted)">SIAP</span>
-                </div>
-                <p class="text-2xl font-bold">${totalSelesai}</p>
-                <p class="text-xs mt-1" style="color:var(--muted)">Siap Diambil</p>
-            </div>
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-money-bill-wave" style="color:#34D399"></i></div>
-                    <span class="text-xs font-mono" style="color:var(--muted)">POMAS</span>
-                </div>
-                <p class="text-2xl font-bold">${formatRupiah(pendapatan)}</p>
-                <p class="text-xs mt-1" style="color:var(--muted)">Total Pendapatan</p>
-            </div>
-        `;
-
-        const recent = allServices.slice(0, 5);
-        document.getElementById('dashRecentTable').innerHTML = recent.length ? recent.map(s => `
-            <tr>
-                <td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td>
-                <td>${s.namaPelanggan}</td>
-                <td>${s.merek || '-'}</td>
-                <td>${statusBadge(s.status)}</td>
-                <td class="text-xs" style="color:var(--muted)">${formatDate(s.tanggalMasuk)}</td>
-            </tr>
-        `).join('') : '<tr><td colspan="5" class="text-center py-8" style="color:var(--muted)">Belum ada data service</td></tr>';
-
-        renderRevenueChart();
-        renderStatusChart();
+    async function renderDashboard() { await loadAllData(); const totalMasuk=allServices.length,totalProses=allServices.filter(s=>s.status==='proses').length,totalSelesai=allServices.filter(s=>s.status==='selesai').length,totalDiambil=allServices.filter(s=>s.status==='diambil'),pendapatan=totalDiambil.reduce((a,s)=>a+(Number(s.biayaService||0)+Number(s.biayaSparepart||0)),0);
+        document.getElementById('dashStats').innerHTML=`<div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(6,182,212,0.15)"><i class="fas fa-boxes-stacked" style="color:#06B6D4"></i></div><span class="text-xs font-mono" style="color:var(--muted)">TOTAL</span></div><p class="text-2xl font-bold">${totalMasuk}</p><p class="text-xs mt-1" style="color:var(--muted)">Barang Diterima</p></div><div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(245,158,11,0.15)"><i class="fas fa-gears" style="color:#F59E0B"></i></div><span class="text-xs font-mono" style="color:var(--muted)">AKTIF</span></div><p class="text-2xl font-bold">${totalProses}</p><p class="text-xs mt-1" style="color:var(--muted)">Sedang Dikerjakan</p></div><div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-circle-check" style="color:#10B981"></i></div><span class="text-xs font-mono" style="color:var(--muted)">SIAP</span></div><p class="text-2xl font-bold">${totalSelesai}</p><p class="text-xs mt-1" style="color:var(--muted)">Siap Diambil</p></div><div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-money-bill-wave" style="color:#34D399"></i></div><span class="text-xs font-mono" style="color:var(--muted)">POMAS</span></div><p class="text-2xl font-bold">${formatRupiah(pendapatan)}</p><p class="text-xs mt-1" style="color:var(--muted)">Total Pendapatan</p></div>`;
+        const recent=allServices.slice(0,5);
+        document.getElementById('dashRecentTable').innerHTML=recent.length?recent.map(s=>`<tr><td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td><td>${s.namaPelanggan}</td><td>${s.merek||'-'}</td><td>${statusBadge(s.status)}</td><td class="text-xs" style="color:var(--muted)">${formatDate(s.tanggalMasuk)}</td></tr>`).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--muted)">Belum ada data service</td></tr>';
+        renderRevenueChart(); renderStatusChart();
     }
-
-    function renderRevenueChart() {
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        if (revenueChartInstance) revenueChartInstance.destroy();
-
-        const days = [];
-        const revenues = [];
-        for (let i = 6; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            const key = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
-            const dateStr = d.toDateString();
-            days.push(key);
-
-            const rev = allServices.filter(s => {
-                if (s.status !== 'diambil' || !s.tanggalAmbil) return false;
-                const tgl = s.tanggalAmbil.toDate ? s.tanggalAmbil.toDate() : new Date(s.tanggalAmbil);
-                return tgl.toDateString() === dateStr;
-            }).reduce((a, s) => a + Number(s.biayaService || 0) + Number(s.biayaSparepart || 0), 0);
-            revenues.push(rev);
-        }
-
-        revenueChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: days,
-                datasets: [{
-                    label: 'Pendapatan',
-                    data: revenues,
-                    backgroundColor: 'rgba(16,185,129,0.3)',
-                    borderColor: '#10B981',
-                    borderWidth: 2,
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { ticks: { color: '#64748B', callback: v => 'Rp ' + (v/1000) + 'k' }, grid: { color: 'rgba(31,45,71,0.5)' } },
-                    x: { ticks: { color: '#64748B' }, grid: { display: false } }
-                }
-            }
-        });
-    }
-
-    function renderStatusChart() {
-        const ctx = document.getElementById('statusChart').getContext('2d');
-        if (statusChartInstance) statusChartInstance.destroy();
-
-        const counts = { masuk: 0, diperiksa: 0, proses: 0, selesai: 0, diambil: 0 };
-        allServices.forEach(s => { if (counts[s.status] !== undefined) counts[s.status]++; });
-
-        statusChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Masuk', 'Diperiksa', 'Proses', 'Selesai', 'Diambil'],
-                datasets: [{
-                    data: Object.values(counts),
-                    backgroundColor: ['#06B6D4', '#F59E0B', '#A78BFA', '#10B981', '#64748B'],
-                    borderWidth: 0,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', padding: 12, font: { size: 11 } } } },
-                cutout: '65%'
-            }
-        });
-    }
+    function renderRevenueChart(){const ctx=document.getElementById('revenueChart').getContext('2d');if(revenueChartInstance)revenueChartInstance.destroy();const days=[],revenues=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const key=d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'});const dateStr=d.toDateString();days.push(key);const rev=allServices.filter(s=>{if(s.status!=='diambil'||!s.tanggalAmbil)return false;const tgl=s.tanggalAmbil.toDate?s.tanggalAmbil.toDate():new Date(s.tanggalAmbil);return tgl.toDateString()===dateStr;}).reduce((a,s)=>a+Number(s.biayaService||0)+Number(s.biayaSparepart||0),0);revenues.push(rev);}revenueChartInstance=new Chart(ctx,{type:'bar',data:{labels:days,datasets:[{label:'Pendapatan',data:revenues,backgroundColor:'rgba(16,185,129,0.3)',borderColor:'#10B981',borderWidth:2,borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#64748B',callback:v=>'Rp '+(v/1000)+'k'},grid:{color:'rgba(31,45,71,0.5)'}},x:{ticks:{color:'#64748B'},grid:{display:false}}}}});}
+    function renderStatusChart(){const ctx=document.getElementById('statusChart').getContext('2d');if(statusChartInstance)statusChartInstance.destroy();const counts={masuk:0,diperiksa:0,proses:0,selesai:0,diambil:0};allServices.forEach(s=>{if(counts[s.status]!==undefined)counts[s.status]++;});statusChartInstance=new Chart(ctx,{type:'doughnut',data:{labels:['Masuk','Diperiksa','Proses','Selesai','Diambil'],datasets:[{data:Object.values(counts),backgroundColor:['#06B6D4','#F59E0B','#A78BFA','#10B981','#64748B'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#94A3B8',padding:12,font:{size:11}}}},cutout:'65%'}});}
 
     // ==================== TERIMA BARANG ====================
-    function renderTerima() {
-        const sel = document.getElementById('tJenis');
-        sel.innerHTML = '<option value="">Pilih jenis barang</option>';
-        allJenis.forEach(j => {
-            sel.innerHTML += `<option value="${j.nama}" data-biaya="${j.biaya}">${j.nama} - ${formatRupiah(j.biaya)}</option>`;
-        });
+    function renderTerima(){const sel=document.getElementById('tJenis');sel.innerHTML='<option value="">Pilih jenis barang</option>';allJenis.forEach(j=>{sel.innerHTML+=`<option value="${j.nama}" data-biaya="${j.biaya}">${j.nama} - ${formatRupiah(j.biaya)}</option>`;});sel.onchange=function(){const opt=sel.options[sel.selectedIndex];if(opt.dataset.biaya)document.getElementById('tEstimasi').value=opt.dataset.biaya;};const today=new Date().toDateString();const hariIni=allServices.filter(s=>{const d=s.tanggalMasuk?.toDate?s.tanggalMasuk.toDate():null;return d&&d.toDateString()===today;});const container=document.getElementById('terimaHariIni');if(hariIni.length===0){container.innerHTML='<p class="text-sm" style="color:var(--muted)">Belum ada barang hari ini</p>';}else{container.innerHTML=hariIni.map(s=>`<div class="flex items-center justify-between py-2 border-b" style="border-color:var(--border)"><div><p class="text-sm font-semibold">${s.noService}</p><p class="text-xs" style="color:var(--muted)">${s.merek} - ${s.namaPelanggan}</p></div>${statusBadge(s.status)}</div>`).join('');}}
 
-        sel.onchange = function() {
-            const opt = sel.options[sel.selectedIndex];
-            if (opt.dataset.biaya) document.getElementById('tEstimasi').value = opt.dataset.biaya;
-        };
+    async function simpanTerima(e){e.preventDefault();const noService=generateNoService();const data={noService,namaPelanggan:document.getElementById('tNama').value.trim(),noTelp:document.getElementById('tTelp').value.trim(),alamat:document.getElementById('tAlamat').value.trim(),jenisBarang:document.getElementById('tJenis').value,merek:document.getElementById('tMerek').value.trim(),typeBarang:document.getElementById('tType').value.trim(),keluhan:document.getElementById('tKeluhan').value.trim(),kelengkapan:document.getElementById('tKelengkapan').value.trim(),noSeri:document.getElementById('tSeri').value.trim(),estimasiBiaya:Number(document.getElementById('tEstimasi').value)||0,status:'masuk',tanggalMasuk:firebase.firestore.FieldValue.serverTimestamp(),biayaService:0,biayaSparepart:0,catatanTeknisi:'',tanggalAmbil:null};try{await db.collection('services').add(data);showToast(`Barang diterima! No: ${noService}`);data.tanggalMasuk=new Date();downloadBuktiTitip(data);document.getElementById('formTerima').reset();await loadAllData();renderTerima();}catch(err){showToast('Gagal menyimpan: '+err.message,'error');}return false;}
 
-        const today = new Date().toDateString();
-        const hariIni = allServices.filter(s => {
-            const d = s.tanggalMasuk?.toDate ? s.tanggalMasuk.toDate() : null;
-            return d && d.toDateString() === today;
-        });
-
-        const container = document.getElementById('terimaHariIni');
-        if (hariIni.length === 0) {
-            container.innerHTML = '<p class="text-sm" style="color:var(--muted)">Belum ada barang hari ini</p>';
-        } else {
-            container.innerHTML = hariIni.map(s => `
-                <div class="flex items-center justify-between py-2 border-b" style="border-color:var(--border)">
-                    <div>
-                        <p class="text-sm font-semibold">${s.noService}</p>
-                        <p class="text-xs" style="color:var(--muted)">${s.merek} - ${s.namaPelanggan}</p>
-                    </div>
-                    ${statusBadge(s.status)}
-                </div>
-            `).join('');
-        }
-    }
-
-    async function simpanTerima(e) {
-        e.preventDefault();
-        const noService = generateNoService();
-        const data = {
-            noService,
-            namaPelanggan: document.getElementById('tNama').value.trim(),
-            noTelp: document.getElementById('tTelp').value.trim(),
-            alamat: document.getElementById('tAlamat').value.trim(),
-            jenisBarang: document.getElementById('tJenis').value,
-            merek: document.getElementById('tMerek').value.trim(),
-            typeBarang: document.getElementById('tType').value.trim(),
-            keluhan: document.getElementById('tKeluhan').value.trim(),
-            kelengkapan: document.getElementById('tKelengkapan').value.trim(),
-            noSeri: document.getElementById('tSeri').value.trim(),
-            estimasiBiaya: Number(document.getElementById('tEstimasi').value) || 0,
-            status: 'masuk',
-            tanggalMasuk: firebase.firestore.FieldValue.serverTimestamp(),
-            biayaService: 0,
-            biayaSparepart: 0,
-            catatanTeknisi: '',
-            tanggalAmbil: null,
-        };
-
-        try {
-            await db.collection('services').add(data);
-            showToast(`Barang diterima! No: ${noService}`);
-            data.tanggalMasuk = new Date();
-            downloadBuktiTitip(data);
-            document.getElementById('formTerima').reset();
-            await loadAllData();
-            renderTerima();
-        } catch (err) {
-            showToast('Gagal menyimpan: ' + err.message, 'error');
-        }
-        return false;
-    }
-
-    // ==================== DAFTAR BARANG SERVICE ====================
+    // ==================== DAFTAR BARANG SERVICE (DIUBAH) ====================
     function renderDaftar() {
         const search = (document.getElementById('searchDaftar')?.value || '').toLowerCase();
         const filter = document.getElementById('filterStatus')?.value || '';
-
         let data = allServices;
         if (filter) data = data.filter(s => s.status === filter);
-        if (search) data = data.filter(s =>
-            (s.noService || '').toLowerCase().includes(search) ||
-            (s.namaPelanggan || '').toLowerCase().includes(search) ||
-            (s.merek || '').toLowerCase().includes(search)
-        );
+        if (search) data = data.filter(s => (s.noService || '').toLowerCase().includes(search) || (s.namaPelanggan || '').toLowerCase().includes(search) || (s.merek || '').toLowerCase().includes(search));
 
         const tbody = document.getElementById('daftarTable');
-        if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8" style="color:var(--muted)">Tidak ada data ditemukan</td></tr>';
-            return;
-        }
+        if (data.length === 0) { tbody.innerHTML = '<tr><td colspan="10" class="text-center py-8" style="color:var(--muted)">Tidak ada data ditemukan</td></tr>'; return; }
 
-        tbody.innerHTML = data.map(s => `
+        // DIUBAH: tambah kolom No. Seri, dan status diambil tidak bisa diubah
+        tbody.innerHTML = data.map(s => {
+            const isDiambil = s.status === 'diambil';
+            return `
             <tr>
                 <td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td>
                 <td class="text-xs" style="color:var(--muted)">${formatDate(s.tanggalMasuk)}</td>
@@ -1125,45 +564,51 @@
                     <div class="text-xs" style="color:var(--muted)">${s.noTelp || ''}</div>
                     <div class="text-xs" style="color:var(--muted)">${s.alamat ? s.alamat.substring(0, 30) + (s.alamat.length > 30 ? '...' : '') : ''}</div>
                 </td>
-                <td>
-                    <div class="text-sm">${s.jenisBarang}</div>
-                    <div class="text-xs" style="color:var(--muted)">${s.merek}</div>
-                </td>
+                <td><div class="text-sm">${s.jenisBarang}</div><div class="text-xs" style="color:var(--muted)">${s.merek}</div></td>
                 <td class="text-xs font-mono">${s.typeBarang || '-'}</td>
+                <td class="text-xs font-mono">${s.noSeri || '-'}</td>
                 <td class="text-xs" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.kelengkapan || '-'}">${s.kelengkapan || '-'}</td>
                 <td class="text-xs" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.keluhan}">${s.keluhan}</td>
                 <td>${statusBadge(s.status)}</td>
                 <td>
                     <div class="flex gap-1 flex-wrap">
-                        <button class="btn-secondary btn-sm" onclick="ubahStatus('${s.id}','${s.status}')" title="Ubah Status"><i class="fas fa-arrows-rotate"></i></button>
+                        ${isDiambil
+                            ? '<span class="btn-disabled" title="Status final"><i class="fas fa-lock"></i></span>'
+                            : `<button class="btn-secondary btn-sm" onclick="ubahStatus('${s.id}','${s.status}')" title="Ubah Status"><i class="fas fa-arrows-rotate"></i></button>`
+                        }
                         <button class="btn-secondary btn-sm" onclick="editService('${s.id}')" title="Edit"><i class="fas fa-pen"></i></button>
-                        <button class="btn-warn" onclick="downloadBuktiTitip(allServices.find(x=>x.id==='${s.id}'))" title="Download PDF"><i class="fas fa-file-pdf"></i></button>
-                        <button class="btn-danger btn-sm" onclick="hapusService('${s.id}')" title="Hapus"><i class="fas fa-trash"></i></button>
+                        <button class="btn-warn" onclick="downloadBuktiTitip(allServices.find(x=>x.id==='${s.id}'))" title="Download Bukti PDF"><i class="fas fa-file-pdf"></i></button>
+                        ${isDiambil
+                            ? '<span class="btn-disabled" title="Tidak bisa dihapus"><i class="fas fa-trash"></i></span>'
+                            : `<button class="btn-danger btn-sm" onclick="hapusService('${s.id}')" title="Hapus"><i class="fas fa-trash"></i></button>`
+                        }
                     </div>
                 </td>
-            </tr>
-        `).join('');
+            </tr>`;
+        }).join('');
     }
 
+    // DIUBAH: status diambil tidak bisa diubah
     async function ubahStatus(id, currentStatus) {
+        if (currentStatus === 'diambil') {
+            showToast('Barang yang sudah diambil tidak dapat diubah statusnya', 'error');
+            return;
+        }
         const flow = ['masuk', 'diperiksa', 'proses', 'selesai'];
         const idx = flow.indexOf(currentStatus);
         const nextStatus = idx < flow.length - 1 ? flow[idx + 1] : flow[0];
-
         try {
             await db.collection('services').doc(id).update({ status: nextStatus });
             showToast(`Status diubah ke: ${nextStatus.toUpperCase()}`);
             await loadAllData();
             renderDaftar();
-        } catch (err) {
-            showToast('Gagal mengubah status: ' + err.message, 'error');
-        }
+        } catch (err) { showToast('Gagal mengubah status: ' + err.message, 'error'); }
     }
 
     function editService(id) {
         const s = allServices.find(x => x.id === id);
         if (!s) return;
-
+        const isDiambil = s.status === 'diambil';
         openModal('Edit Service', `
             <form id="formEditService" class="space-y-4" onsubmit="return simpanEditService(event, '${id}')">
                 <div><label class="form-label">Nama Pelanggan</label><input type="text" class="form-input" id="eNama" value="${s.namaPelanggan}" required></div>
@@ -1173,17 +618,17 @@
                     <div><label class="form-label">Jenis Barang</label><input type="text" class="form-input" id="eJenis" value="${s.jenisBarang || ''}"></div>
                     <div><label class="form-label">Merek / Model</label><input type="text" class="form-input" id="eMerek" value="${s.merek || ''}"></div>
                 </div>
-                <div><label class="form-label">Type</label><input type="text" class="form-input" id="eType" value="${s.typeBarang || ''}"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="form-label">Type</label><input type="text" class="form-input" id="eType" value="${s.typeBarang || ''}"></div>
+                    <div><label class="form-label">No. Seri</label><input type="text" class="form-input" id="eSeri" value="${s.noSeri || ''}"></div>
+                </div>
                 <div><label class="form-label">Kelengkapan Barang</label><input type="text" class="form-input" id="eKelengkapan" value="${s.kelengkapan || ''}"></div>
                 <div><label class="form-label">Keluhan</label><textarea class="form-input" id="eKeluhan" rows="2">${s.keluhan || ''}</textarea></div>
                 <div><label class="form-label">Status</label>
-                    <select class="form-input" id="eStatus">
-                        <option value="masuk" ${s.status==='masuk'?'selected':''}>Masuk</option>
-                        <option value="diperiksa" ${s.status==='diperiksa'?'selected':''}>Diperiksa</option>
-                        <option value="proses" ${s.status==='proses'?'selected':''}>Dalam Proses</option>
-                        <option value="selesai" ${s.status==='selesai'?'selected':''}>Selesai</option>
-                        <option value="diambil" ${s.status==='diambil'?'selected':''}>Diambil</option>
-                    </select>
+                    ${isDiambil
+                        ? `<input type="text" class="form-input" value="Diambil (Final)" readonly style="background:var(--card2);cursor:not-allowed">`
+                        : `<select class="form-input" id="eStatus"><option value="masuk" ${s.status==='masuk'?'selected':''}>Masuk</option><option value="diperiksa" ${s.status==='diperiksa'?'selected':''}>Diperiksa</option><option value="proses" ${s.status==='proses'?'selected':''}>Dalam Proses</option><option value="selesai" ${s.status==='selesai'?'selected':''}>Selesai</option></select>`
+                    }
                 </div>
                 <div class="flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" class="btn-secondary" onclick="closeModal()">Batal</button></div>
             </form>
@@ -1192,514 +637,84 @@
 
     async function simpanEditService(e, id) {
         e.preventDefault();
-        try {
-            await db.collection('services').doc(id).update({
-                namaPelanggan: document.getElementById('eNama').value.trim(),
-                noTelp: document.getElementById('eTelp').value.trim(),
-                alamat: document.getElementById('eAlamat').value.trim(),
-                jenisBarang: document.getElementById('eJenis').value.trim(),
-                merek: document.getElementById('eMerek').value.trim(),
-                typeBarang: document.getElementById('eType').value.trim(),
-                kelengkapan: document.getElementById('eKelengkapan').value.trim(),
-                keluhan: document.getElementById('eKeluhan').value.trim(),
-                status: document.getElementById('eStatus').value,
-            });
-            showToast('Data berhasil diperbarui');
-            closeModal();
-            await loadAllData();
-            renderDaftar();
-        } catch (err) {
-            showToast('Gagal: ' + err.message, 'error');
+        const s = allServices.find(x => x.id === id);
+        const isDiambil = s && s.status === 'diambil';
+        const updateData = {
+            namaPelanggan: document.getElementById('eNama').value.trim(),
+            noTelp: document.getElementById('eTelp').value.trim(),
+            alamat: document.getElementById('eAlamat').value.trim(),
+            jenisBarang: document.getElementById('eJenis').value.trim(),
+            merek: document.getElementById('eMerek').value.trim(),
+            typeBarang: document.getElementById('eType').value.trim(),
+            noSeri: document.getElementById('eSeri').value.trim(),
+            kelengkapan: document.getElementById('eKelengkapan').value.trim(),
+            keluhan: document.getElementById('eKeluhan').value.trim(),
+        };
+        // Hanya update status jika bukan diambil
+        if (!isDiambil && document.getElementById('eStatus')) {
+            updateData.status = document.getElementById('eStatus').value;
         }
+        try {
+            await db.collection('services').doc(id).update(updateData);
+            showToast('Data berhasil diperbarui'); closeModal(); await loadAllData(); renderDaftar();
+        } catch (err) { showToast('Gagal: ' + err.message, 'error'); }
         return false;
     }
 
+    // DIUBAH: status diambil tidak bisa dihapus
     async function hapusService(id) {
-        if (!confirm('Yakin ingin menghapus data service ini?')) return;
-        try {
-            await db.collection('services').doc(id).delete();
-            showToast('Data berhasil dihapus');
-            await loadAllData();
-            renderDaftar();
-        } catch (err) {
-            showToast('Gagal menghapus: ' + err.message, 'error');
+        const s = allServices.find(x => x.id === id);
+        if (s && s.status === 'diambil') {
+            showToast('Barang yang sudah diambil tidak dapat dihapus', 'error');
+            return;
         }
+        if (!confirm('Yakin ingin menghapus data service ini?')) return;
+        try { await db.collection('services').doc(id).delete(); showToast('Data berhasil dihapus'); await loadAllData(); renderDaftar(); } catch (err) { showToast('Gagal menghapus: ' + err.message, 'error'); }
     }
 
     // ==================== PENGAMBILAN BARANG ====================
-    function renderPengambilan() {
-        const siapAmbil = allServices.filter(s => s.status === 'selesai');
-        const container = document.getElementById('listSiapAmbil');
-        if (siapAmbil.length === 0) {
-            container.innerHTML = '<p class="text-xs" style="color:var(--muted)">Tidak ada barang siap diambil</p>';
-        } else {
-            container.innerHTML = siapAmbil.map(s => `
-                <button class="w-full text-left p-3 rounded-lg transition-all hover:border-emerald-500" style="background:var(--bg);border:1px solid var(--border)" onclick="pilihPengambilan('${s.id}')">
-                    <p class="font-mono text-xs font-semibold" style="color:var(--accent)">${s.noService}</p>
-                    <p class="text-xs mt-1">${s.namaPelanggan} - ${s.merek}</p>
-                </button>
-            `).join('');
-        }
-        document.getElementById('detailPengambilan').style.display = 'none';
-        document.getElementById('formPengambilanCard').style.display = 'none';
-        document.getElementById('strukContainer').style.display = 'none';
-
-        sparepartRows = [];
-        sparepartRowCounter = 0;
-        renderSparepartPicker();
-    }
-
-    function cariPengambilan() {
-        const no = document.getElementById('cariNoService').value.trim().toUpperCase();
-        const found = allServices.find(s => s.noService.toUpperCase() === no);
-        if (!found) {
-            showToast('Nomor service tidak ditemukan', 'error');
-            return;
-        }
-        if (found.status !== 'selesai') {
-            showToast(`Barang belum siap diambil. Status: ${found.status.toUpperCase()}`, 'info');
-            return;
-        }
-        pilihPengambilan(found.id);
-    }
-
-    function pilihPengambilan(id) {
-        selectedAmbilId = id;
-        const s = allServices.find(x => x.id === id);
-        if (!s) return;
-
-        document.getElementById('detailPengambilan').style.display = 'block';
-        document.getElementById('detailAmbilContent').innerHTML = `
-            <div class="grid grid-cols-2 gap-4 text-sm">
-                <div><span class="form-label">No. Service</span><p class="font-mono font-semibold" style="color:var(--accent)">${s.noService}</p></div>
-                <div><span class="form-label">Status</span><p>${statusBadge(s.status)}</p></div>
-                <div><span class="form-label">Pelanggan</span><p>${s.namaPelanggan}</p></div>
-                <div><span class="form-label">Telepon</span><p>${s.noTelp || '-'}</p></div>
-                <div class="col-span-2"><span class="form-label">Alamat</span><p>${s.alamat || '-'}</p></div>
-                <div><span class="form-label">Jenis Barang</span><p>${s.jenisBarang}</p></div>
-                <div><span class="form-label">Merek</span><p>${s.merek}</p></div>
-                <div><span class="form-label">Type</span><p>${s.typeBarang || '-'}</p></div>
-                <div><span class="form-label">Kelengkapan</span><p>${s.kelengkapan || '-'}</p></div>
-                <div class="col-span-2"><span class="form-label">Keluhan</span><p>${s.keluhan}</p></div>
-                <div><span class="form-label">Tanggal Masuk</span><p>${formatDateTime(s.tanggalMasuk)}</p></div>
-                <div><span class="form-label">Estimasi Biaya</span><p class="font-semibold">${formatRupiah(s.estimasiBiaya)}</p></div>
-            </div>
-        `;
-
-        document.getElementById('formPengambilanCard').style.display = 'block';
-        document.getElementById('aBiaya').value = s.estimasiBiaya || 0;
-        document.getElementById('aCatatan').value = '';
-        document.getElementById('strukContainer').style.display = 'none';
-
-        sparepartRows = [];
-        sparepartRowCounter = 0;
-        renderSparepartPicker();
-        hitungTotalSparepart();
-    }
-
-    function tambahBarisSparepart() {
-        if (allSparepart.length === 0) {
-            showToast('Stok sparepart kosong. Tambahkan terlebih dahulu di menu Stok Sparepart.', 'info');
-            return;
-        }
-        sparepartRowCounter++;
-        const rowId = sparepartRowCounter;
-        sparepartRows.push({ rowId, sparepartId: '', qty: 1 });
-        renderSparepartPicker();
-    }
-
-    function hapusBarisSparepart(rowId) {
-        sparepartRows = sparepartRows.filter(r => r.rowId !== rowId);
-        renderSparepartPicker();
-        hitungTotalSparepart();
-    }
-
-    function onSparepartSelect(rowId, sparepartId) {
-        const row = sparepartRows.find(r => r.rowId === rowId);
-        if (row) {
-            row.sparepartId = sparepartId;
-            row.qty = 1;
-        }
-        renderSparepartPicker();
-        hitungTotalSparepart();
-    }
-
-    function onQtyChange(rowId, qty) {
-        const row = sparepartRows.find(r => r.rowId === rowId);
-        if (row) {
-            row.qty = Math.max(1, Number(qty) || 1);
-        }
-        renderSparepartPicker();
-        hitungTotalSparepart();
-    }
-
-    function renderSparepartPicker() {
-        const tbody = document.getElementById('sparepartPickerBody');
-        if (sparepartRows.length === 0) {
-            tbody.innerHTML = `<tr id="sparepartEmptyRow"><td colspan="6" class="text-center py-3 text-xs" style="color:var(--muted)">Klik "Tambah" untuk memilih sparepart</td></tr>`;
-            return;
-        }
-        const availableSparepart = allSparepart.filter(s => Number(s.jumlah) > 0);
-        tbody.innerHTML = sparepartRows.map(row => {
-            const sp = allSparepart.find(s => s.id === row.sparepartId);
-            const harga = sp ? Number(sp.harga) : 0;
-            const stok = sp ? Number(sp.jumlah) : 0;
-            const subtotal = harga * row.qty;
-            const stokWarning = sp && row.qty > stok;
-            const options = availableSparepart.map(s => {
-                const selected = s.id === row.sparepartId ? 'selected' : '';
-                return `<option value="${s.id}" ${selected}>${s.nama} (Stok: ${s.jumlah})</option>`;
-            }).join('');
-            return `
-                <tr>
-                    <td style="padding:4px 4px"><select class="form-input" style="font-size:12px;padding:6px 8px;min-width:140px" onchange="onSparepartSelect(${row.rowId}, this.value)"><option value="">-- Pilih --</option>${options}</select></td>
-                    <td style="padding:4px 4px"><span class="font-mono text-xs" style="color:${sp ? 'var(--accent)' : 'var(--muted)'}">${sp ? formatRupiah(harga) : '-'}</span></td>
-                    <td style="padding:4px 4px"><span class="font-mono text-xs" style="color:${stokWarning ? 'var(--danger)' : 'var(--text)'}">${sp ? stok : '-'}</span></td>
-                    <td style="padding:4px 4px"><input type="number" class="form-input" style="font-size:12px;padding:5px 8px;width:70px;text-align:center" value="${row.qty}" min="1" max="${stok || 999}" onchange="onQtyChange(${row.rowId}, this.value)" ${!sp ? 'disabled' : ''}></td>
-                    <td style="padding:4px 4px"><span class="font-mono text-xs font-bold" style="color:var(--accent2)">${sp ? formatRupiah(subtotal) : '-'}</span></td>
-                    <td style="padding:4px 4px;text-align:center"><button type="button" class="btn-danger btn-sm" style="padding:4px 8px" onclick="hapusBarisSparepart(${row.rowId})"><i class="fas fa-times"></i></button></td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    function hitungTotalSparepart() {
-        let total = 0;
-        sparepartRows.forEach(row => {
-            const sp = allSparepart.find(s => s.id === row.sparepartId);
-            if (sp) { total += Number(sp.harga) * row.qty; }
-        });
-        document.getElementById('aSparepart').value = total;
-    }
-
-    async function prosesPengambilan(e) {
-        e.preventDefault();
-        if (!selectedAmbilId) return;
-
-        const unselectedRow = sparepartRows.find(r => !r.sparepartId);
-        if (unselectedRow) {
-            showToast('Pilih sparepart terlebih dahulu atau hapus baris yang kosong', 'error');
-            return;
-        }
-        for (const row of sparepartRows) {
-            const sp = allSparepart.find(s => s.id === row.sparepartId);
-            if (sp && row.qty > Number(sp.jumlah)) {
-                showToast(`Stok "${sp.nama}" tidak mencukupi (stok: ${sp.jumlah}, diminta: ${row.qty})`, 'error');
-                return;
-            }
-        }
-
-        const biayaService = Number(document.getElementById('aBiaya').value) || 0;
-        const biayaSparepart = Number(document.getElementById('aSparepart').value) || 0;
-        const catatanTeknisi = document.getElementById('aCatatan').value.trim();
-
-        try {
-            await db.collection('services').doc(selectedAmbilId).update({
-                status: 'diambil',
-                biayaService: biayaService,
-                biayaSparepart: biayaSparepart,
-                catatanTeknisi: catatanTeknisi,
-                tanggalAmbil: firebase.firestore.FieldValue.serverTimestamp(),
-                sparepartDigunakan: sparepartRows.map(r => {
-                    const sp = allSparepart.find(s => s.id === r.sparepartId);
-                    return {
-                        sparepartId: r.sparepartId,
-                        nama: sp ? sp.nama : 'Unknown',
-                        qty: r.qty,
-                        harga: sp ? Number(sp.harga) : 0,
-                        subtotal: sp ? Number(sp.harga) * r.qty : 0,
-                    };
-                }),
-            });
-
-            const batch = db.batch();
-            for (const row of sparepartRows) {
-                const sp = allSparepart.find(s => s.id === row.sparepartId);
-                if (sp) {
-                    const newStok = Math.max(0, Number(sp.jumlah) - row.qty);
-                    const sparepartRef = db.collection('sparepart').doc(row.sparepartId);
-                    batch.update(sparepartRef, { jumlah: newStok });
-                }
-            }
-            await batch.commit();
-
-            showToast('Barang berhasil diambil! Stok sparepart diperbarui.');
-            await loadAllData();
-            renderPengambilan();
-        } catch (err) {
-            showToast('Gagal: ' + err.message, 'error');
-        }
-        return false;
-    }
-
-    function cetakStruk() {
-        if (!selectedAmbilId) return;
-        const s = allServices.find(x => x.id === selectedAmbilId);
-        if (!s) return;
-
-        const biaya = Number(document.getElementById('aBiaya').value) || 0;
-        const spare = Number(document.getElementById('aSparepart').value) || 0;
-        const total = biaya + spare;
-
-        let sparepartDetail = '';
-        if (sparepartRows.length > 0) {
-            sparepartDetail = '<div class="divider"></div><p style="font-weight:bold;margin-bottom:4px">Sparepart:</p>';
-            sparepartRows.forEach(row => {
-                const sp = allSparepart.find(s => s.id === row.sparepartId);
-                if (sp) {
-                    sparepartDetail += `<p>- ${sp.nama} x${row.qty} = ${formatRupiah(Number(sp.harga) * row.qty)}</p>`;
-                }
-            });
-        }
-
-        document.getElementById('strukContainer').style.display = 'block';
-        document.getElementById('strukContainer').innerHTML = `
-            <div class="receipt-box" id="receiptContent">
-                <h3>SERVICE PRO</h3>
-                <p style="text-align:center;font-size:10px;color:#666">Service Elektronik Profesional</p>
-                <div class="divider"></div>
-                <p>No : ${s.noService}</p>
-                <p>Tgl: ${new Date().toLocaleDateString('id-ID')}</p>
-                <div class="divider"></div>
-                <p>Pelanggan: ${s.namaPelanggan}</p>
-                <p>Alamat   : ${s.alamat || '-'}</p>
-                <p>Barang   : ${s.jenisBarang}</p>
-                <p>Merek    : ${s.merek}</p>
-                <p>Type     : ${s.typeBarang || '-'}</p>
-                <p>Kelengkapan: ${s.kelengkapan || '-'}</p>
-                <p>Keluhan  : ${s.keluhan}</p>
-                ${sparepartDetail}
-                <div class="divider"></div>
-                <p>Biaya Service  : ${formatRupiah(biaya)}</p>
-                <p>Biaya Sparepart: ${formatRupiah(spare)}</p>
-                <div class="divider"></div>
-                <p style="font-size:14px;font-weight:bold">TOTAL: ${formatRupiah(total)}</p>
-                <div class="divider"></div>
-                <p style="text-align:center;font-size:10px;color:#666">Terima kasih atas kepercayaan Anda</p>
-            </div>
-            <div class="mt-4 text-center">
-                <button class="btn-primary" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button>
-            </div>
-        `;
-    }
+    function renderPengambilan(){const siapAmbil=allServices.filter(s=>s.status==='selesai');const container=document.getElementById('listSiapAmbil');if(siapAmbil.length===0){container.innerHTML='<p class="text-xs" style="color:var(--muted)">Tidak ada barang siap diambil</p>';}else{container.innerHTML=siapAmbil.map(s=>`<button class="w-full text-left p-3 rounded-lg transition-all hover:border-emerald-500" style="background:var(--bg);border:1px solid var(--border)" onclick="pilihPengambilan('${s.id}')"><p class="font-mono text-xs font-semibold" style="color:var(--accent)">${s.noService}</p><p class="text-xs mt-1">${s.namaPelanggan} - ${s.merek}</p></button>`).join('');}document.getElementById('detailPengambilan').style.display='none';document.getElementById('formPengambilanCard').style.display='none';document.getElementById('strukContainer').style.display='none';sparepartRows=[];sparepartRowCounter=0;renderSparepartPicker();}
+    function cariPengambilan(){const no=document.getElementById('cariNoService').value.trim().toUpperCase();const found=allServices.find(s=>s.noService.toUpperCase()===no);if(!found){showToast('Nomor service tidak ditemukan','error');return;}if(found.status!=='selesai'){showToast(`Barang belum siap diambil. Status: ${found.status.toUpperCase()}`,'info');return;}pilihPengambilan(found.id);}
+    function pilihPengambilan(id){selectedAmbilId=id;const s=allServices.find(x=>x.id===id);if(!s)return;document.getElementById('detailPengambilan').style.display='block';document.getElementById('detailAmbilContent').innerHTML=`<div class="grid grid-cols-2 gap-4 text-sm"><div><span class="form-label">No. Service</span><p class="font-mono font-semibold" style="color:var(--accent)">${s.noService}</p></div><div><span class="form-label">Status</span><p>${statusBadge(s.status)}</p></div><div><span class="form-label">Pelanggan</span><p>${s.namaPelanggan}</p></div><div><span class="form-label">Telepon</span><p>${s.noTelp||'-'}</p></div><div class="col-span-2"><span class="form-label">Alamat</span><p>${s.alamat||'-'}</p></div><div><span class="form-label">Jenis Barang</span><p>${s.jenisBarang}</p></div><div><span class="form-label">Merek</span><p>${s.merek}</p></div><div><span class="form-label">Type</span><p>${s.typeBarang||'-'}</p></div><div><span class="form-label">No. Seri</span><p>${s.noSeri||'-'}</p></div><div class="col-span-2"><span class="form-label">Kelengkapan</span><p>${s.kelengkapan||'-'}</p></div><div class="col-span-2"><span class="form-label">Keluhan</span><p>${s.keluhan}</p></div><div><span class="form-label">Tanggal Masuk</span><p>${formatDateTime(s.tanggalMasuk)}</p></div><div><span class="form-label">Estimasi Biaya</span><p class="font-semibold">${formatRupiah(s.estimasiBiaya)}</p></div></div>`;document.getElementById('formPengambilanCard').style.display='block';document.getElementById('aBiaya').value=s.estimasiBiaya||0;document.getElementById('aCatatan').value='';document.getElementById('strukContainer').style.display='none';sparepartRows=[];sparepartRowCounter=0;renderSparepartPicker();hitungTotalSparepart();}
+    function tambahBarisSparepart(){if(allSparepart.length===0){showToast('Stok sparepart kosong.','info');return;}sparepartRowCounter++;sparepartRows.push({rowId:sparepartRowCounter,sparepartId:'',qty:1});renderSparepartPicker();}
+    function hapusBarisSparepart(rowId){sparepartRows=sparepartRows.filter(r=>r.rowId!==rowId);renderSparepartPicker();hitungTotalSparepart();}
+    function onSparepartSelect(rowId,sparepartId){const row=sparepartRows.find(r=>r.rowId===rowId);if(row){row.sparepartId=sparepartId;row.qty=1;}renderSparepartPicker();hitungTotalSparepart();}
+    function onQtyChange(rowId,qty){const row=sparepartRows.find(r=>r.rowId===rowId);if(row){row.qty=Math.max(1,Number(qty)||1);}renderSparepartPicker();hitungTotalSparepart();}
+    function renderSparepartPicker(){const tbody=document.getElementById('sparepartPickerBody');if(sparepartRows.length===0){tbody.innerHTML=`<tr id="sparepartEmptyRow"><td colspan="6" class="text-center py-3 text-xs" style="color:var(--muted)">Klik "Tambah" untuk memilih sparepart</td></tr>`;return;}const av=allSparepart.filter(s=>Number(s.jumlah)>0);tbody.innerHTML=sparepartRows.map(row=>{const sp=allSparepart.find(s=>s.id===row.sparepartId);const h=sp?Number(sp.harga):0,st=sp?Number(sp.jumlah):0,sub=h*row.qty,w=sp&&row.qty>st;const opts=av.map(s=>`<option value="${s.id}" ${s.id===row.sparepartId?'selected':''}>${s.nama} (Stok: ${s.jumlah})</option>`).join('');return`<tr><td style="padding:4px 4px"><select class="form-input" style="font-size:12px;padding:6px 8px;min-width:140px" onchange="onSparepartSelect(${row.rowId},this.value)"><option value="">-- Pilih --</option>${opts}</select></td><td style="padding:4px 4px"><span class="font-mono text-xs" style="color:${sp?'var(--accent)':'var(--muted)'}">${sp?formatRupiah(h):'-'}</span></td><td style="padding:4px 4px"><span class="font-mono text-xs" style="color:${w?'var(--danger)':'var(--text)'}">${sp?st:'-'}</span></td><td style="padding:4px 4px"><input type="number" class="form-input" style="font-size:12px;padding:5px 8px;width:70px;text-align:center" value="${row.qty}" min="1" max="${st||999}" onchange="onQtyChange(${row.rowId},this.value)" ${!sp?'disabled':''}></td><td style="padding:4px 4px"><span class="font-mono text-xs font-bold" style="color:var(--accent2)">${sp?formatRupiah(sub):'-'}</span></td><td style="padding:4px 4px;text-align:center"><button type="button" class="btn-danger btn-sm" style="padding:4px 8px" onclick="hapusBarisSparepart(${row.rowId})"><i class="fas fa-times"></i></button></td></tr>`;}).join('');}
+    function hitungTotalSparepart(){let t=0;sparepartRows.forEach(r=>{const sp=allSparepart.find(s=>s.id===r.sparepartId);if(sp)t+=Number(sp.harga)*r.qty;});document.getElementById('aSparepart').value=t;}
+    async function prosesPengambilan(e){e.preventDefault();if(!selectedAmbilId)return;const ur=sparepartRows.find(r=>!r.sparepartId);if(ur){showToast('Pilih sparepart terlebih dahulu atau hapus baris yang kosong','error');return;}for(const row of sparepartRows){const sp=allSparepart.find(s=>s.id===row.sparepartId);if(sp&&row.qty>Number(sp.jumlah)){showToast(`Stok "${sp.nama}" tidak mencukupi`,'error');return;}}const bs=Number(document.getElementById('aBiaya').value)||0,bp=Number(document.getElementById('aSparepart').value)||0,ct=document.getElementById('aCatatan').value.trim();try{await db.collection('services').doc(selectedAmbilId).update({status:'diambil',biayaService:bs,biayaSparepart:bp,catatanTeknisi:ct,tanggalAmbil:firebase.firestore.FieldValue.serverTimestamp(),sparepartDigunakan:sparepartRows.map(r=>{const sp=allSparepart.find(s=>s.id===r.sparepartId);return{sparepartId:r.sparepartId,nama:sp?sp.nama:'Unknown',qty:r.qty,harga:sp?Number(sp.harga):0,subtotal:sp?Number(sp.harga)*r.qty:0};})});const batch=db.batch();for(const row of sparepartRows){const sp=allSparepart.find(s=>s.id===row.sparepartId);if(sp){batch.update(db.collection('sparepart').doc(row.sparepartId),{jumlah:Math.max(0,Number(sp.jumlah)-row.qty)});}}await batch.commit();showToast('Barang berhasil diambil! Stok sparepart diperbarui.');await loadAllData();renderPengambilan();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    function cetakStruk(){if(!selectedAmbilId)return;const s=allServices.find(x=>x.id===selectedAmbilId);if(!s)return;const b=Number(document.getElementById('aBiaya').value)||0,sp=Number(document.getElementById('aSparepart').value)||0,t=b+sp;let sd='';if(sparepartRows.length>0){sd='<div class="divider"></div><p style="font-weight:bold;margin-bottom:4px">Sparepart:</p>';sparepartRows.forEach(row=>{const s2=allSparepart.find(x=>x.id===row.sparepartId);if(s2)sd+=`<p>- ${s2.nama} x${row.qty} = ${formatRupiah(Number(s2.harga)*row.qty)}</p>`;});}document.getElementById('strukContainer').style.display='block';document.getElementById('strukContainer').innerHTML=`<div class="receipt-box" id="receiptContent"><h3>SERVICE PRO</h3><p style="text-align:center;font-size:10px;color:#666">Service Elektronik Profesional</p><div class="divider"></div><p>No : ${s.noService}</p><p>Tgl: ${new Date().toLocaleDateString('id-ID')}</p><div class="divider"></div><p>Pelanggan: ${s.namaPelanggan}</p><p>Alamat   : ${s.alamat||'-'}</p><p>Barang   : ${s.jenisBarang}</p><p>Merek    : ${s.merek}</p><p>Type     : ${s.typeBarang||'-'}</p><p>No. Seri : ${s.noSeri||'-'}</p><p>Kelengkapan: ${s.kelengkapan||'-'}</p><p>Keluhan  : ${s.keluhan}</p>${sd}<div class="divider"></div><p>Biaya Service  : ${formatRupiah(b)}</p><p>Biaya Sparepart: ${formatRupiah(sp)}</p><div class="divider"></div><p style="font-size:14px;font-weight:bold">TOTAL: ${formatRupiah(t)}</p><div class="divider"></div><p style="text-align:center;font-size:10px;color:#666">Terima kasih atas kepercayaan Anda</p></div><div class="mt-4 text-center"><button class="btn-primary" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button></div>`;}
 
     // ==================== JENIS BARANG & BIAYA ====================
-    function renderJenis() {
-        const tbody = document.getElementById('jenisTable');
-        if (allJenis.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8" style="color:var(--muted)">Belum ada jenis barang. Tambahkan yang baru.</td></tr>';
-        } else {
-            tbody.innerHTML = allJenis.map(j => `
-                <tr>
-                    <td class="font-semibold">${j.nama}</td>
-                    <td class="font-mono font-semibold" style="color:var(--accent)">${formatRupiah(j.biaya)}</td>
-                    <td class="text-sm" style="color:var(--muted)">${j.deskripsi || '-'}</td>
-                    <td>
-                        <div class="flex gap-1">
-                            <button class="btn-secondary btn-sm" onclick="editJenis('${j.id}')"><i class="fas fa-pen"></i></button>
-                            <button class="btn-danger btn-sm" onclick="hapusJenis('${j.id}')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-    }
-
-    async function simpanJenis(e) {
-        e.preventDefault();
-        const data = {
-            nama: document.getElementById('jNama').value.trim(),
-            biaya: Number(document.getElementById('jBiaya').value) || 0,
-            deskripsi: document.getElementById('jDeskripsi').value.trim(),
-        };
-        try {
-            await db.collection('jenisBarang').add(data);
-            showToast('Jenis barang berhasil ditambahkan');
-            document.getElementById('formJenis').reset();
-            await loadAllData();
-            renderJenis();
-        } catch (err) {
-            showToast('Gagal: ' + err.message, 'error');
-        }
-        return false;
-    }
-
-    function editJenis(id) {
-        const j = allJenis.find(x => x.id === id);
-        if (!j) return;
-        openModal('Edit Jenis Barang', `
-            <form class="space-y-4" onsubmit="return simpanEditJenis(event, '${id}')">
-                <div><label class="form-label">Nama Jenis</label><input type="text" class="form-input" id="ejNama" value="${j.nama}" required></div>
-                <div><label class="form-label">Biaya (Rp)</label><input type="number" class="form-input" id="ejBiaya" value="${j.biaya}" required min="0"></div>
-                <div><label class="form-label">Deskripsi</label><textarea class="form-input" id="ejDeskripsi" rows="2">${j.deskripsi || ''}</textarea></div>
-                <div class="flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" class="btn-secondary" onclick="closeModal()">Batal</button></div>
-            </form>
-        `);
-    }
-
-    async function simpanEditJenis(e, id) {
-        e.preventDefault();
-        try {
-            await db.collection('jenisBarang').doc(id).update({
-                nama: document.getElementById('ejNama').value.trim(),
-                biaya: Number(document.getElementById('ejBiaya').value) || 0,
-                deskripsi: document.getElementById('ejDeskripsi').value.trim(),
-            });
-            showToast('Data diperbarui');
-            closeModal();
-            await loadAllData();
-            renderJenis();
-        } catch (err) { showToast('Gagal: ' + err.message, 'error'); }
-        return false;
-    }
-
-    async function hapusJenis(id) {
-        if (!confirm('Yakin hapus jenis barang ini?')) return;
-        try {
-            await db.collection('jenisBarang').doc(id).delete();
-            showToast('Jenis barang dihapus');
-            await loadAllData();
-            renderJenis();
-        } catch (err) { showToast('Gagal: ' + err.message, 'error'); }
-    }
+    function renderJenis(){const tbody=document.getElementById('jenisTable');if(allJenis.length===0){tbody.innerHTML='<tr><td colspan="4" class="text-center py-8" style="color:var(--muted)">Belum ada jenis barang.</td></tr>';}else{tbody.innerHTML=allJenis.map(j=>`<tr><td class="font-semibold">${j.nama}</td><td class="font-mono font-semibold" style="color:var(--accent)">${formatRupiah(j.biaya)}</td><td class="text-sm" style="color:var(--muted)">${j.deskripsi||'-'}</td><td><div class="flex gap-1"><button class="btn-secondary btn-sm" onclick="editJenis('${j.id}')"><i class="fas fa-pen"></i></button><button class="btn-danger btn-sm" onclick="hapusJenis('${j.id}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');}}
+    async function simpanJenis(e){e.preventDefault();try{await db.collection('jenisBarang').add({nama:document.getElementById('jNama').value.trim(),biaya:Number(document.getElementById('jBiaya').value)||0,deskripsi:document.getElementById('jDeskripsi').value.trim()});showToast('Jenis barang berhasil ditambahkan');document.getElementById('formJenis').reset();await loadAllData();renderJenis();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    function editJenis(id){const j=allJenis.find(x=>x.id===id);if(!j)return;openModal('Edit Jenis Barang',`<form class="space-y-4" onsubmit="return simpanEditJenis(event,'${id}')"><div><label class="form-label">Nama Jenis</label><input type="text" class="form-input" id="ejNama" value="${j.nama}" required></div><div><label class="form-label">Biaya (Rp)</label><input type="number" class="form-input" id="ejBiaya" value="${j.biaya}" required min="0"></div><div><label class="form-label">Deskripsi</label><textarea class="form-input" id="ejDeskripsi" rows="2">${j.deskripsi||''}</textarea></div><div class="flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" class="btn-secondary" onclick="closeModal()">Batal</button></div></form>`);}
+    async function simpanEditJenis(e,id){e.preventDefault();try{await db.collection('jenisBarang').doc(id).update({nama:document.getElementById('ejNama').value.trim(),biaya:Number(document.getElementById('ejBiaya').value)||0,deskripsi:document.getElementById('ejDeskripsi').value.trim()});showToast('Data diperbarui');closeModal();await loadAllData();renderJenis();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    async function hapusJenis(id){if(!confirm('Yakin hapus jenis barang ini?'))return;try{await db.collection('jenisBarang').doc(id).delete();showToast('Jenis barang dihapus');await loadAllData();renderJenis();}catch(err){showToast('Gagal: '+err.message,'error');}}
 
     // ==================== STOK SPAREPART ====================
-    function renderStok() {
-        const search = (document.getElementById('searchStok')?.value || '').toLowerCase();
-        let data = allSparepart;
-        if (search) data = data.filter(s => s.nama.toLowerCase().includes(search) || (s.kategori || '').toLowerCase().includes(search));
+    function renderStok(){const search=(document.getElementById('searchStok')?.value||'').toLowerCase();let data=allSparepart;if(search)data=data.filter(s=>s.nama.toLowerCase().includes(search)||(s.kategori||'').toLowerCase().includes(search));const tbody=document.getElementById('stokTable');if(data.length===0){tbody.innerHTML='<tr><td colspan="5" class="text-center py-8" style="color:var(--muted)">Tidak ada sparepart ditemukan</td></tr>';}else{tbody.innerHTML=data.map(s=>{const sr=Number(s.jumlah)<=5;return`<tr><td class="font-semibold">${s.nama}</td><td class="text-sm" style="color:var(--muted)">${s.kategori||'-'}</td><td><span class="font-mono font-bold" style="${sr?'color:var(--danger)':'color:var(--accent)'}">${s.jumlah}</span>${sr?'<span class="ml-2 text-xs" style="color:var(--danger)"><i class="fas fa-exclamation-triangle"></i></span>':''}</td><td class="font-mono">${formatRupiah(s.harga)}</td><td><div class="flex gap-1"><button class="btn-secondary btn-sm" onclick="editSparepart('${s.id}')"><i class="fas fa-pen"></i></button><button class="btn-secondary btn-sm" onclick="tambahStok('${s.id}')"><i class="fas fa-plus"></i></button><button class="btn-danger btn-sm" onclick="hapusSparepart('${s.id}')"><i class="fas fa-trash"></i></button></div></td></tr>`;}).join('');}}
+    async function simpanSparepart(e){e.preventDefault();try{await db.collection('sparepart').add({nama:document.getElementById('sNama').value.trim(),jumlah:Number(document.getElementById('sJumlah').value)||0,harga:Number(document.getElementById('sHarga').value)||0,kategori:document.getElementById('sKategori').value.trim()});showToast('Sparepart berhasil ditambahkan');document.getElementById('formStok').reset();await loadAllData();renderStok();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    function editSparepart(id){const s=allSparepart.find(x=>x.id===id);if(!s)return;openModal('Edit Sparepart',`<form class="space-y-4" onsubmit="return simpanEditSparepart(event,'${id}')"><div><label class="form-label">Nama</label><input type="text" class="form-input" id="esNama" value="${s.nama}" required></div><div class="grid grid-cols-2 gap-3"><div><label class="form-label">Jumlah</label><input type="number" class="form-input" id="esJumlah" value="${s.jumlah}" required min="0"></div><div><label class="form-label">Harga (Rp)</label><input type="number" class="form-input" id="esHarga" value="${s.harga}" required min="0"></div></div><div><label class="form-label">Kategori</label><input type="text" class="form-input" id="esKategori" value="${s.kategori||''}"></div><div class="flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" class="btn-secondary" onclick="closeModal()">Batal</button></div></form>`);}
+    async function simpanEditSparepart(e,id){e.preventDefault();try{await db.collection('sparepart').doc(id).update({nama:document.getElementById('esNama').value.trim(),jumlah:Number(document.getElementById('esJumlah').value)||0,harga:Number(document.getElementById('esHarga').value)||0,kategori:document.getElementById('esKategori').value.trim()});showToast('Sparepart diperbarui');closeModal();await loadAllData();renderStok();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    async function tambahStok(id){const s=allSparepart.find(x=>x.id===id);if(!s)return;const t=prompt(`Tambah stok untuk "${s.nama}" (stok saat ini: ${s.jumlah}):`,'1');if(!t||isNaN(t))return;try{await db.collection('sparepart').doc(id).update({jumlah:Number(s.jumlah)+Number(t)});showToast(`Stok ${s.nama} ditambah +${t}`);await loadAllData();renderStok();}catch(err){showToast('Gagal: '+err.message,'error');}}
+    async function hapusSparepart(id){if(!confirm('Yakin hapus sparepart ini?'))return;try{await db.collection('sparepart').doc(id).delete();showToast('Sparepart dihapus');await loadAllData();renderStok();}catch(err){showToast('Gagal: '+err.message,'error');}}
 
-        const tbody = document.getElementById('stokTable');
-        if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8" style="color:var(--muted)">Tidak ada sparepart ditemukan</td></tr>';
-        } else {
-            tbody.innerHTML = data.map(s => {
-                const stokRendah = Number(s.jumlah) <= 5;
-                return `
-                <tr>
-                    <td class="font-semibold">${s.nama}</td>
-                    <td class="text-sm" style="color:var(--muted)">${s.kategori || '-'}</td>
-                    <td>
-                        <span class="font-mono font-bold ${stokRendah ? 'text-red-400' : ''}" style="${stokRendah ? 'color:var(--danger)' : 'color:var(--accent)'}">${s.jumlah}</span>
-                        ${stokRendah ? '<span class="ml-2 text-xs" style="color:var(--danger)"><i class="fas fa-exclamation-triangle"></i></span>' : ''}
-                    </td>
-                    <td class="font-mono">${formatRupiah(s.harga)}</td>
-                    <td>
-                        <div class="flex gap-1">
-                            <button class="btn-secondary btn-sm" onclick="editSparepart('${s.id}')"><i class="fas fa-pen"></i></button>
-                            <button class="btn-secondary btn-sm" onclick="tambahStok('${s.id}')"><i class="fas fa-plus"></i></button>
-                            <button class="btn-danger btn-sm" onclick="hapusSparepart('${s.id}')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                `;
-            }).join('');
-        }
-    }
-
-    async function simpanSparepart(e) {
-        e.preventDefault();
-        const data = {
-            nama: document.getElementById('sNama').value.trim(),
-            jumlah: Number(document.getElementById('sJumlah').value) || 0,
-            harga: Number(document.getElementById('sHarga').value) || 0,
-            kategori: document.getElementById('sKategori').value.trim(),
-        };
-        try {
-            await db.collection('sparepart').add(data);
-            showToast('Sparepart berhasil ditambahkan');
-            document.getElementById('formStok').reset();
-            await loadAllData();
-            renderStok();
-        } catch (err) { showToast('Gagal: ' + err.message, 'error'); }
-        return false;
-    }
-
-    function editSparepart(id) {
-        const s = allSparepart.find(x => x.id === id);
-        if (!s) return;
-        openModal('Edit Sparepart', `
-            <form class="space-y-4" onsubmit="return simpanEditSparepart(event, '${id}')">
-                <div><label class="form-label">Nama</label><input type="text" class="form-input" id="esNama" value="${s.nama}" required></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="form-label">Jumlah</label><input type="number" class="form-input" id="esJumlah" value="${s.jumlah}" required min="0"></div>
-                    <div><label class="form-label">Harga (Rp)</label><input type="number" class="form-input" id="esHarga" value="${s.harga}" required min="0"></div>
-                </div>
-                <div><label class="form-label">Kategori</label><input type="text" class="form-input" id="esKategori" value="${s.kategori || ''}"></div>
-                <div class="flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" class="btn-secondary" onclick="closeModal()">Batal</button></div>
-            </form>
-        `);
-    }
-
-    async function simpanEditSparepart(e, id) {
-        e.preventDefault();
-        try {
-            await db.collection('sparepart').doc(id).update({
-                nama: document.getElementById('esNama').value.trim(),
-                jumlah: Number(document.getElementById('esJumlah').value) || 0,
-                harga: Number(document.getElementById('esHarga').value) || 0,
-                kategori: document.getElementById('esKategori').value.trim(),
-            });
-            showToast('Sparepart diperbarui');
-            closeModal();
-            await loadAllData();
-            renderStok();
-        } catch (err) { showToast('Gagal: ' + err.message, 'error'); }
-        return false;
-    }
-
-    async function tambahStok(id) {
-        const s = allSparepart.find(x => x.id === id);
-        if (!s) return;
-        const tambah = prompt(`Tambah stok untuk "${s.nama}" (stok saat ini: ${s.jumlah}):`, '1');
-        if (!tambah || isNaN(tambah)) return;
-        try {
-            await db.collection('sparepart').doc(id).update({
-                jumlah: Number(s.jumlah) + Number(tambah)
-            });
-            showToast(`Stok ${s.nama} ditambah +${tambah}`);
-            await loadAllData();
-            renderStok();
-        } catch (err) { showToast('Gagal: ' + err.message, 'error'); }
-    }
-
-    async function hapusSparepart(id) {
-        if (!confirm('Yakin hapus sparepart ini?')) return;
-        try {
-            await db.collection('sparepart').doc(id).delete();
-            showToast('Sparepart dihapus');
-            await loadAllData();
-            renderStok();
-        } catch (err) { showToast('Gagal: ' + err.message, 'error'); }
-    }
-
-    // ==================== RIWAYAT SERVICE ====================
+    // ==================== RIWAYAT SERVICE (DIUBAH: tombol download PDF) ====================
     function renderRiwayat() {
         const dari = document.getElementById('riwayatDari')?.value;
         const sampai = document.getElementById('riwayatSampai')?.value;
         const search = (document.getElementById('searchRiwayat')?.value || '').toLowerCase();
-
         let data = allServices.filter(s => s.status === 'diambil');
-
-        if (dari) {
-            const d = new Date(dari);
-            data = data.filter(s => { const t = s.tanggalAmbil?.toDate ? s.tanggalAmbil.toDate() : null; return t && t >= d; });
-        }
-        if (sampai) {
-            const d = new Date(sampai); d.setDate(d.getDate() + 1);
-            data = data.filter(s => { const t = s.tanggalAmbil?.toDate ? s.tanggalAmbil.toDate() : null; return t && t < d; });
-        }
-        if (search) {
-            data = data.filter(s =>
-                (s.noService || '').toLowerCase().includes(search) ||
-                (s.namaPelanggan || '').toLowerCase().includes(search)
-            );
-        }
+        if (dari) { const d = new Date(dari); data = data.filter(s => { const t = s.tanggalAmbil?.toDate ? s.tanggalAmbil.toDate() : null; return t && t >= d; }); }
+        if (sampai) { const d = new Date(sampai); d.setDate(d.getDate() + 1); data = data.filter(s => { const t = s.tanggalAmbil?.toDate ? s.tanggalAmbil.toDate() : null; return t && t < d; }); }
+        if (search) { data = data.filter(s => (s.noService || '').toLowerCase().includes(search) || (s.namaPelanggan || '').toLowerCase().includes(search)); }
 
         const tbody = document.getElementById('riwayatTable');
         if (data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8" style="color:var(--muted)">Tidak ada riwayat ditemukan</td></tr>';
         } else {
+            // DIUBAH: tambah kolom aksi dengan tombol lihat struk + download PDF
             tbody.innerHTML = data.map(s => {
                 const total = Number(s.biayaService || 0) + Number(s.biayaSparepart || 0);
                 return `
@@ -1710,266 +725,27 @@
                     <td>${s.namaPelanggan}</td>
                     <td>${s.jenisBarang} - ${s.merek}</td>
                     <td class="font-mono font-semibold">${formatRupiah(total)}</td>
-                    <td><button class="btn-secondary btn-sm" onclick="lihatStrukRiwayat('${s.id}')"><i class="fas fa-receipt"></i></button></td>
+                    <td>
+                        <div class="flex gap-1">
+                            <button class="btn-secondary btn-sm" onclick="lihatStrukRiwayat('${s.id}')" title="Lihat Struk"><i class="fas fa-receipt"></i></button>
+                            <button class="btn-info-sm" onclick="downloadStrukRiwayatPDF('${s.id}')" title="Download Struk PDF"><i class="fas fa-file-pdf"></i></button>
+                        </div>
+                    </td>
                 </tr>`;
             }).join('');
         }
     }
 
-    function lihatStrukRiwayat(id) {
-        const s = allServices.find(x => x.id === id);
-        if (!s) return;
-        const total = Number(s.biayaService || 0) + Number(s.biayaSparepart || 0);
-
-        let sparepartDetail = '';
-        if (s.sparepartDigunakan && s.sparepartDigunakan.length > 0) {
-            sparepartDetail = '<div class="divider"></div><p style="font-weight:bold;margin-bottom:4px">Sparepart:</p>';
-            s.sparepartDigunakan.forEach(sp => {
-                sparepartDetail += `<p>- ${sp.nama} x${sp.qty} = ${formatRupiah(sp.subtotal)}</p>`;
-            });
-        }
-
-        openModal('Struk Service', `
-            <div class="receipt-box">
-                <h3>SERVICE PRO</h3>
-                <p style="text-align:center;font-size:10px;color:#666">Service Elektronik Profesional</p>
-                <div class="divider"></div>
-                <p>No : ${s.noService}</p>
-                <p>Tgl: ${formatDate(s.tanggalAmbil)}</p>
-                <div class="divider"></div>
-                <p>Pelanggan: ${s.namaPelanggan}</p>
-                <p>Alamat   : ${s.alamat || '-'}</p>
-                <p>Barang   : ${s.jenisBarang}</p>
-                <p>Merek    : ${s.merek}</p>
-                <p>Type     : ${s.typeBarang || '-'}</p>
-                <p>Kelengkapan: ${s.kelengkapan || '-'}</p>
-                <p>Keluhan  : ${s.keluhan}</p>
-                ${s.catatanTeknisi ? `<p>Catatan  : ${s.catatanTeknisi}</p>` : ''}
-                ${sparepartDetail}
-                <div class="divider"></div>
-                <p>Biaya Service  : ${formatRupiah(s.biayaService)}</p>
-                <p>Biaya Sparepart: ${formatRupiah(s.biayaSparepart)}</p>
-                <div class="divider"></div>
-                <p style="font-size:14px;font-weight:bold">TOTAL: ${formatRupiah(total)}</p>
-                <div class="divider"></div>
-                <p style="text-align:center;font-size:10px;color:#666">Terima kasih atas kepercayaan Anda</p>
-            </div>
-        `);
-    }
+    function lihatStrukRiwayat(id){const s=allServices.find(x=>x.id===id);if(!s)return;const total=Number(s.biayaService||0)+Number(s.biayaSparepart||0);let sd='';if(s.sparepartDigunakan&&s.sparepartDigunakan.length>0){sd='<div class="divider"></div><p style="font-weight:bold;margin-bottom:4px">Sparepart:</p>';s.sparepartDigunakan.forEach(sp=>{sd+=`<p>- ${sp.nama} x${sp.qty} = ${formatRupiah(sp.subtotal)}</p>`;});}openModal('Struk Service',`<div class="receipt-box"><h3>SERVICE PRO</h3><p style="text-align:center;font-size:10px;color:#666">Service Elektronik Profesional</p><div class="divider"></div><p>No : ${s.noService}</p><p>Tgl: ${formatDate(s.tanggalAmbil)}</p><div class="divider"></div><p>Pelanggan: ${s.namaPelanggan}</p><p>Alamat   : ${s.alamat||'-'}</p><p>Barang   : ${s.jenisBarang}</p><p>Merek    : ${s.merek}</p><p>Type     : ${s.typeBarang||'-'}</p><p>No. Seri : ${s.noSeri||'-'}</p><p>Kelengkapan: ${s.kelengkapan||'-'}</p><p>Keluhan  : ${s.keluhan}</p>${s.catatanTeknisi?`<p>Catatan  : ${s.catatanTeknisi}</p>`:''}${sd}<div class="divider"></div><p>Biaya Service  : ${formatRupiah(s.biayaService)}</p><p>Biaya Sparepart: ${formatRupiah(s.biayaSparepart)}</p><div class="divider"></div><p style="font-size:14px;font-weight:bold">TOTAL: ${formatRupiah(total)}</p><div class="divider"></div><p style="text-align:center;font-size:10px;color:#666">Terima kasih atas kepercayaan Anda</p></div>`);}
 
     // ==================== LAPORAN ====================
-    async function renderLaporan() {
-        await loadAllData();
+    async function renderLaporan(){await loadAllData();const diambil=allServices.filter(s=>s.status==='diambil');const tp=diambil.reduce((a,s)=>a+Number(s.biayaService||0)+Number(s.biayaSparepart||0),0),ts=diambil.length,ra=ts>0?Math.round(tp/ts):0,sr=allSparepart.filter(s=>Number(s.jumlah)<=5).length;document.getElementById('laporanStats').innerHTML=`<div class="stat-card"><p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Total Pendapatan</p><p class="text-xl font-bold mt-2">${formatRupiah(tp)}</p></div><div class="stat-card"><p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Service Selesai</p><p class="text-xl font-bold mt-2">${ts}</p></div><div class="stat-card"><p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Rata-rata Biaya</p><p class="text-xl font-bold mt-2">${formatRupiah(ra)}</p></div><div class="stat-card"><p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Stok Rendah</p><p class="text-xl font-bold mt-2" style="color:${sr>0?'var(--danger)':'var(--accent)'}">${sr}</p></div>`;const bv=document.getElementById('laporanBulan')?.value;let dl=diambil;if(bv){const[y,m]=bv.split('-').map(Number);dl=diambil.filter(s=>{const t=s.tanggalAmbil?.toDate?s.tanggalAmbil.toDate():null;return t&&t.getFullYear()===y&&(t.getMonth()+1)===m;});}const tbody=document.getElementById('laporanTable');let gt=0;if(dl.length===0){tbody.innerHTML='<tr><td colspan="8" class="text-center py-8" style="color:var(--muted)">Tidak ada data</td></tr>';}else{tbody.innerHTML=dl.map((s,i)=>{const bs=Number(s.biayaService||0),bp=Number(s.biayaSparepart||0),t=bs+bp;gt+=t;return`<tr><td>${i+1}</td><td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td><td class="text-xs">${formatDate(s.tanggalAmbil)}</td><td>${s.namaPelanggan}</td><td>${s.jenisBarang}</td><td class="font-mono">${formatRupiah(bs)}</td><td class="font-mono">${formatRupiah(bp)}</td><td class="font-mono font-bold">${formatRupiah(t)}</td></tr>`;}).join('');}document.getElementById('laporanTotal').innerHTML=`<div class="text-right"><span class="text-sm" style="color:var(--muted)">Grand Total: </span><span class="text-lg font-bold" style="color:var(--accent)">${formatRupiah(gt)}</span></div>`;renderMonthlyChart();renderJenisChart();}
+    function renderMonthlyChart(){const ctx=document.getElementById('monthlyChart').getContext('2d');if(monthlyChartInstance)monthlyChartInstance.destroy();const months=[],revenues=[],now=new Date();for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push(d.toLocaleDateString('id-ID',{month:'short',year:'2-digit'}));const y=d.getFullYear(),m=d.getMonth();revenues.push(allServices.filter(s=>{if(s.status!=='diambil'||!s.tanggalAmbil)return false;const t=s.tanggalAmbil.toDate?s.tanggalAmbil.toDate():new Date(s.tanggalAmbil);return t.getFullYear()===y&&t.getMonth()===m;}).reduce((a,s)=>a+Number(s.biayaService||0)+Number(s.biayaSparepart||0),0));}monthlyChartInstance=new Chart(ctx,{type:'line',data:{labels:months,datasets:[{label:'Pendapatan',data:revenues,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,0.1)',fill:true,tension:0.4,pointBackgroundColor:'#10B981',pointRadius:5}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#64748B',callback:v=>'Rp '+(v/1000)+'k'},grid:{color:'rgba(31,45,71,0.5)'}},x:{ticks:{color:'#64748B'},grid:{display:false}}}}});}
+    function renderJenisChart(){const ctx=document.getElementById('jenisChart').getContext('2d');if(jenisChartInstance)jenisChartInstance.destroy();const counts={};allServices.forEach(s=>{counts[s.jenisBarang]=(counts[s.jenisBarang]||0)+1;});const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);const colors=['#10B981','#06B6D4','#F59E0B','#A78BFA','#EF4444','#EC4899'];jenisChartInstance=new Chart(ctx,{type:'bar',data:{labels:sorted.map(s=>s[0]),datasets:[{label:'Jumlah',data:sorted.map(s=>s[1]),backgroundColor:colors.map(c=>c+'44'),borderColor:colors,borderWidth:2,borderRadius:6}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748B'},grid:{color:'rgba(31,45,71,0.5)'}},y:{ticks:{color:'#94A3B8',font:{size:11}},grid:{display:false}}}}});}
+    function exportLaporan(){const diambil=allServices.filter(s=>s.status==='diambil');const bv=document.getElementById('laporanBulan')?.value;let data=diambil;if(bv){const[y,m]=bv.split('-').map(Number);data=diambil.filter(s=>{const t=s.tanggalAmbil?.toDate?s.tanggalAmbil.toDate():null;return t&&t.getFullYear()===y&&(t.getMonth()+1)===m;});}if(data.length===0){showToast('Tidak ada data','info');return;}let csv='No,No Service,Tanggal,Pelanggan,Telepon,Alamat,Barang,Merek,Type,NoSeri,Kelengkapan,BiayaService,BiayaSparepart,Total\n';data.forEach((s,i)=>{const bs=Number(s.biayaService||0),bp=Number(s.biayaSparepart||0);csv+=`${i+1},"${s.noService}","${formatDate(s.tanggalAmbil)}","${s.namaPelanggan}","${s.noTelp||''}","${s.alamat||''}","${s.jenisBarang}","${s.merek}","${s.typeBarang||''}","${s.noSeri||''}","${s.kelengkapan||''}",${bs},${bp},${bs+bp}\n`;});const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`laporan_service_${new Date().toISOString().slice(0,10)}.csv`;link.click();showToast('Laporan berhasil di-export');}
 
-        const diambil = allServices.filter(s => s.status === 'diambil');
-        const totalPendapatan = diambil.reduce((a, s) => a + Number(s.biayaService || 0) + Number(s.biayaSparepart || 0), 0);
-        const totalService = diambil.length;
-        const rataRata = totalService > 0 ? Math.round(totalPendapatan / totalService) : 0;
-        const stokRendah = allSparepart.filter(s => Number(s.jumlah) <= 5).length;
-
-        document.getElementById('laporanStats').innerHTML = `
-            <div class="stat-card">
-                <p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Total Pendapatan</p>
-                <p class="text-xl font-bold mt-2">${formatRupiah(totalPendapatan)}</p>
-            </div>
-            <div class="stat-card">
-                <p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Service Selesai</p>
-                <p class="text-xl font-bold mt-2">${totalService}</p>
-            </div>
-            <div class="stat-card">
-                <p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Rata-rata Biaya</p>
-                <p class="text-xl font-bold mt-2">${formatRupiah(rataRata)}</p>
-            </div>
-            <div class="stat-card">
-                <p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Stok Rendah</p>
-                <p class="text-xl font-bold mt-2" style="color:${stokRendah > 0 ? 'var(--danger)' : 'var(--accent)'}">${stokRendah}</p>
-            </div>
-        `;
-
-        const bulanVal = document.getElementById('laporanBulan')?.value;
-        let dataLaporan = diambil;
-        if (bulanVal) {
-            const [y, m] = bulanVal.split('-').map(Number);
-            dataLaporan = diambil.filter(s => {
-                const t = s.tanggalAmbil?.toDate ? s.tanggalAmbil.toDate() : null;
-                return t && t.getFullYear() === y && (t.getMonth() + 1) === m;
-            });
-        }
-
-        const tbody = document.getElementById('laporanTable');
-        let grandTotal = 0;
-        if (dataLaporan.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8" style="color:var(--muted)">Tidak ada data untuk periode ini</td></tr>';
-        } else {
-            tbody.innerHTML = dataLaporan.map((s, i) => {
-                const bs = Number(s.biayaService || 0);
-                const bp = Number(s.biayaSparepart || 0);
-                const t = bs + bp;
-                grandTotal += t;
-                return `
-                <tr>
-                    <td>${i + 1}</td>
-                    <td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td>
-                    <td class="text-xs">${formatDate(s.tanggalAmbil)}</td>
-                    <td>${s.namaPelanggan}</td>
-                    <td>${s.jenisBarang}</td>
-                    <td class="font-mono">${formatRupiah(bs)}</td>
-                    <td class="font-mono">${formatRupiah(bp)}</td>
-                    <td class="font-mono font-bold">${formatRupiah(t)}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        document.getElementById('laporanTotal').innerHTML = `
-            <div class="text-right">
-                <span class="text-sm" style="color:var(--muted)">Grand Total: </span>
-                <span class="text-lg font-bold" style="color:var(--accent)">${formatRupiah(grandTotal)}</span>
-            </div>
-        `;
-
-        renderMonthlyChart();
-        renderJenisChart();
-    }
-
-    function renderMonthlyChart() {
-        const ctx = document.getElementById('monthlyChart').getContext('2d');
-        if (monthlyChartInstance) monthlyChartInstance.destroy();
-
-        const months = [];
-        const revenues = [];
-        const now = new Date();
-
-        for (let i = 5; i >= 0; i--) {
-            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            const key = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
-            months.push(key);
-
-            const y = d.getFullYear();
-            const m = d.getMonth();
-            const rev = allServices.filter(s => {
-                if (s.status !== 'diambil' || !s.tanggalAmbil) return false;
-                const t = s.tanggalAmbil.toDate ? s.tanggalAmbil.toDate() : new Date(s.tanggalAmbil);
-                return t.getFullYear() === y && t.getMonth() === m;
-            }).reduce((a, s) => a + Number(s.biayaService || 0) + Number(s.biayaSparepart || 0), 0);
-            revenues.push(rev);
-        }
-
-        monthlyChartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: 'Pendapatan',
-                    data: revenues,
-                    borderColor: '#10B981',
-                    backgroundColor: 'rgba(16,185,129,0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#10B981',
-                    pointRadius: 5,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { ticks: { color: '#64748B', callback: v => 'Rp ' + (v/1000) + 'k' }, grid: { color: 'rgba(31,45,71,0.5)' } },
-                    x: { ticks: { color: '#64748B' }, grid: { display: false } }
-                }
-            }
-        });
-    }
-
-    function renderJenisChart() {
-        const ctx = document.getElementById('jenisChart').getContext('2d');
-        if (jenisChartInstance) jenisChartInstance.destroy();
-
-        const counts = {};
-        allServices.forEach(s => {
-            counts[s.jenisBarang] = (counts[s.jenisBarang] || 0) + 1;
-        });
-
-        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 6);
-        const colors = ['#10B981', '#06B6D4', '#F59E0B', '#A78BFA', '#EF4444', '#EC4899'];
-
-        jenisChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: sorted.map(s => s[0]),
-                datasets: [{
-                    label: 'Jumlah',
-                    data: sorted.map(s => s[1]),
-                    backgroundColor: colors.map(c => c + '44'),
-                    borderColor: colors,
-                    borderWidth: 2,
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                responsive: true,
-                indexAxis: 'y',
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { ticks: { color: '#64748B' }, grid: { color: 'rgba(31,45,71,0.5)' } },
-                    y: { ticks: { color: '#94A3B8', font: { size: 11 } }, grid: { display: false } }
-                }
-            }
-        });
-    }
-
-    function exportLaporan() {
-        const diambil = allServices.filter(s => s.status === 'diambil');
-        const bulanVal = document.getElementById('laporanBulan')?.value;
-        let data = diambil;
-        if (bulanVal) {
-            const [y, m] = bulanVal.split('-').map(Number);
-            data = diambil.filter(s => {
-                const t = s.tanggalAmbil?.toDate ? s.tanggalAmbil.toDate() : null;
-                return t && t.getFullYear() === y && (t.getMonth() + 1) === m;
-            });
-        }
-
-        if (data.length === 0) {
-            showToast('Tidak ada data untuk di-export', 'info');
-            return;
-        }
-
-        let csv = 'No,No Service,Tanggal,Pelanggan,Telepon,Alamat,Barang,Merek,Type,Kelengkapan,Biaya Service,Biaya Sparepart,Total\n';
-        data.forEach((s, i) => {
-            const bs = Number(s.biayaService || 0);
-            const bp = Number(s.biayaSparepart || 0);
-            csv += `${i+1},"${s.noService}","${formatDate(s.tanggalAmbil)}","${s.namaPelanggan}","${s.noTelp||''}","${s.alamat||''}","${s.jenisBarang}","${s.merek}","${s.typeBarang||''}","${s.kelengkapan||''}",${bs},${bp},${bs+bp}\n`;
-        });
-
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `laporan_service_${new Date().toISOString().slice(0,10)}.csv`;
-        link.click();
-        showToast('Laporan berhasil di-export sebagai CSV');
-    }
-
-    // ==================== CLOCK ====================
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('clockDisplay').textContent = now.toLocaleTimeString('id-ID');
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // ==================== INIT ====================
-    async function init() {
-        await loadAllData();
-        renderDashboard();
-
-        const now = new Date();
-        const monthStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-        document.getElementById('laporanBulan').value = monthStr;
-
-        const firstDay = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
-        document.getElementById('riwayatDari').value = firstDay;
-    }
-
+    function updateClock(){document.getElementById('clockDisplay').textContent=new Date().toLocaleTimeString('id-ID');}setInterval(updateClock,1000);updateClock();
+    async function init(){await loadAllData();renderDashboard();const now=new Date();document.getElementById('laporanBulan').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;document.getElementById('riwayatDari').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;}
     init();
     </script>
 </body>
