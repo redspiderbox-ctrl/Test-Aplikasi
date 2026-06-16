@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <!-- jsPDF untuk generate PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         tailwind.config = {
@@ -70,6 +69,8 @@
         .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 7px; }
         .btn-warn { background: rgba(245,158,11,0.15); color: var(--warn); padding: 6px 14px; border-radius: 7px; border: 1px solid rgba(245,158,11,0.3); font-weight: 500; font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
         .btn-warn:hover { background: rgba(245,158,11,0.25); }
+        .btn-info { background: rgba(6,182,212,0.15); color: var(--info); padding: 10px 22px; border-radius: 10px; border: 1px solid rgba(6,182,212,0.3); font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-info:hover { background: rgba(6,182,212,0.25); transform: translateY(-1px); }
 
         .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: 14px; font-family: inherit; transition: border-color 0.2s; outline: none; }
         .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
@@ -230,7 +231,7 @@
                 </div>
             </section>
 
-            <!-- ===================== TERIMA BARANG (DIUBAH) ===================== -->
+            <!-- ===================== TERIMA BARANG ===================== -->
             <section class="page-section" id="page-terima">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 data-card">
@@ -243,16 +244,13 @@
                                 <div><label class="form-label">Nama Pelanggan</label><input type="text" class="form-input" id="tNama" placeholder="Nama lengkap" required></div>
                                 <div><label class="form-label">No. Telepon</label><input type="tel" class="form-input" id="tTelp" placeholder="08xxxxxxxxxx" required></div>
                             </div>
-                            <!-- BARU: Alamat -->
                             <div><label class="form-label">Alamat</label><textarea class="form-input" id="tAlamat" rows="2" placeholder="Alamat lengkap pelanggan..." required></textarea></div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div><label class="form-label">Jenis Barang</label><select class="form-input" id="tJenis" required><option value="">Pilih jenis barang</option></select></div>
                                 <div><label class="form-label">Merek / Model</label><input type="text" class="form-input" id="tMerek" placeholder="Contoh: Samsung UA43" required></div>
                             </div>
-                            <!-- BARU: Type -->
                             <div><label class="form-label">Type</label><input type="text" class="form-input" id="tType" placeholder="Contoh: UA43T6500AKXXD" required></div>
                             <div><label class="form-label">Keluhan / Masalah</label><textarea class="form-input" id="tKeluhan" rows="3" placeholder="Deskripsikan keluhan pelanggan..." required></textarea></div>
-                            <!-- BARU: Kelengkapan Barang -->
                             <div><label class="form-label">Kelengkapan Barang</label><input type="text" class="form-input" id="tKelengkapan" placeholder="Contoh: Charger, Remote, Kabel HDMI, Baterai" required></div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div><label class="form-label">No. Seri (opsional)</label><input type="text" class="form-input" id="tSeri" placeholder="SN perangkat"></div>
@@ -286,7 +284,7 @@
                 </div>
             </section>
 
-            <!-- ===================== DAFTAR BARANG SERVICE (DIUBAH) ===================== -->
+            <!-- ===================== DAFTAR BARANG SERVICE ===================== -->
             <section class="page-section" id="page-daftar">
                 <div class="data-card">
                     <div class="p-5 border-b flex flex-wrap items-center justify-between gap-4" style="border-color:var(--border)">
@@ -305,7 +303,6 @@
                     </div>
                     <div class="overflow-x-auto">
                         <table>
-                            <!-- DIUBAH: tambah kolom Type, Kelengkapan, Alamat, PDF -->
                             <thead><tr><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Type</th><th>Kelengkapan</th><th>Keluhan</th><th>Status</th><th>Aksi</th></tr></thead>
                             <tbody id="daftarTable"></tbody>
                         </table>
@@ -313,7 +310,7 @@
                 </div>
             </section>
 
-            <!-- ===================== PENGAMBILAN BARANG ===================== -->
+            <!-- ===================== PENGAMBILAN BARANG (DIUBAH) ===================== -->
             <section class="page-section" id="page-pengambilan">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="data-card">
@@ -371,9 +368,11 @@
                                     </div>
                                 </div>
                                 <div><label class="form-label">Catatan Teknisi</label><textarea class="form-input" id="aCatatan" rows="2" placeholder="Hasil perbaikan..."></textarea></div>
-                                <div class="flex gap-3">
+                                <!-- DIUBAH: Tambah tombol Download PDF di sebelah Cetak Struk -->
+                                <div class="flex gap-3 flex-wrap">
                                     <button type="submit" class="btn-primary"><i class="fas fa-hand-holding"></i> Proses Pengambilan</button>
                                     <button type="button" class="btn-secondary" onclick="cetakStruk()"><i class="fas fa-print"></i> Cetak Struk</button>
+                                    <button type="button" class="btn-info" onclick="downloadStrukPDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
                                 </div>
                             </form>
                         </div>
@@ -518,8 +517,6 @@
     let statusChartInstance = null;
     let monthlyChartInstance = null;
     let jenisChartInstance = null;
-
-    // Variabel untuk melacak baris sparepart di pengambilan
     let sparepartRows = [];
     let sparepartRowCounter = 0;
 
@@ -577,10 +574,10 @@
         document.getElementById('modalOverlay').classList.remove('show');
     }
 
-    // ==================== BARU: Fungsi Generate PDF Bukti Titip Barang ====================
+    // ==================== PDF: Bukti Titip Barang ====================
     function downloadBuktiTitip(serviceData) {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ unit: 'mm', format: [80, 200] }); // Format struk kecil 80mm
+        const doc = new jsPDF({ unit: 'mm', format: [80, 200] });
 
         const d = serviceData.tanggalMasuk?.toDate ? serviceData.tanggalMasuk.toDate() : new Date();
         const tglStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -592,7 +589,6 @@
         const contentW = pageW - marginL - marginR;
         let y = 6;
 
-        // Fungsi bantu tulis teks center
         function centerText(text, yPos, size, style) {
             doc.setFontSize(size);
             if (style === 'bold') doc.setFont('helvetica', 'bold');
@@ -601,31 +597,17 @@
             doc.text(text, marginL + (contentW - tw) / 2, yPos);
         }
 
-        // Fungsi bantu tulis teks kiri
-        function leftText(label, value, yPos, labelSize, valSize) {
-            doc.setFontSize(labelSize);
-            doc.setFont('helvetica', 'bold');
-            doc.text(label, marginL, yPos);
-            doc.setFontSize(valSize);
-            doc.setFont('helvetica', 'normal');
-            doc.text(value || '-', marginL + 1, yPos + 4);
-        }
-
-        // Fungsi garis putus-putus
         function dashedLine(yPos) {
             doc.setLineDashPattern([1.5, 1], 0);
             doc.line(marginL, yPos, pageW - marginR, yPos);
             doc.setLineDashPattern([], 0);
         }
 
-        // Header
         centerText('SERVICE PRO', y, 12, 'bold'); y += 5;
         centerText('Service Elektronik Profesional', y, 6, 'normal'); y += 4;
         centerText('BUKTI TITIP BARANG', y, 9, 'bold'); y += 6;
-
         dashedLine(y); y += 4;
 
-        // No Service & Tanggal
         doc.setFontSize(7); doc.setFont('helvetica', 'bold');
         doc.text('No. Service', marginL, y);
         doc.setFont('helvetica', 'normal');
@@ -642,7 +624,6 @@
 
         dashedLine(y); y += 4;
 
-        // Identitas Pelanggan
         doc.setFontSize(8); doc.setFont('helvetica', 'bold');
         doc.text('IDENTITAS PELANGGAN', marginL, y); y += 5;
 
@@ -655,16 +636,13 @@
             doc.setFontSize(7); doc.setFont('helvetica', 'bold');
             doc.text(label, marginL, y);
             doc.setFont('helvetica', 'normal');
-            // Wrap text jika terlalu panjang
             const lines = doc.splitTextToSize(val || '-', contentW - 22);
             doc.text(lines, marginL + 22, y);
             y += Math.max(4, lines.length * 3.5);
         });
 
-        y += 2;
-        dashedLine(y); y += 4;
+        y += 2; dashedLine(y); y += 4;
 
-        // Data Barang
         doc.setFontSize(8); doc.setFont('helvetica', 'bold');
         doc.text('DATA BARANG', marginL, y); y += 5;
 
@@ -685,14 +663,167 @@
             y += Math.max(4, lines.length * 3.5);
         });
 
-        y += 2;
-        dashedLine(y); y += 4;
+        y += 2; dashedLine(y); y += 4;
 
-        // Estimasi
         doc.setFontSize(7); doc.setFont('helvetica', 'bold');
         doc.text('Estimasi Biaya', marginL, y);
         doc.setFont('helvetica', 'normal');
         doc.text(formatRupiah(serviceData.estimasiBiaya), marginL + 26, y);
+        y += 6;
+
+        dashedLine(y); y += 5;
+
+        doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+        doc.text('Petugas,', marginL + 2, y);
+        doc.text('Pemilik,', marginL + contentW - 25, y);
+        y += 16;
+        doc.text('(.................)', marginL + 2, y);
+        doc.text('(.................)', marginL + contentW - 25, y);
+        y += 6;
+
+        dashedLine(y); y += 4;
+
+        centerText('Simpan bukti ini sebagai tanda penitipan', y, 6, 'normal'); y += 3;
+        centerText('Barang yang tidak diambil lebih dari 30 hari', y, 6, 'normal'); y += 3;
+        centerText('menjadi hak bengkel service.', y, 6, 'normal');
+
+        doc.save(`Bukti_Titip_${serviceData.noService}.pdf`);
+        showToast('Bukti titip barang berhasil diunduh');
+    }
+
+    // ==================== BARU: PDF Struk Pengambilan ====================
+    function downloadStrukPDF() {
+        if (!selectedAmbilId) {
+            showToast('Pilih barang terlebih dahulu', 'error');
+            return;
+        }
+        const s = allServices.find(x => x.id === selectedAmbilId);
+        if (!s) return;
+
+        const biayaService = Number(document.getElementById('aBiaya').value) || 0;
+        const biayaSparepart = Number(document.getElementById('aSparepart').value) || 0;
+        const catatanTeknisi = document.getElementById('aCatatan').value.trim();
+        const total = biayaService + biayaSparepart;
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: [80, 250] });
+
+        const pageW = 80;
+        const marginL = 4;
+        const marginR = 4;
+        const contentW = pageW - marginL - marginR;
+        let y = 6;
+
+        const now = new Date();
+        const tglStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        const jamStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+        function centerText(text, yPos, size, style) {
+            doc.setFontSize(size);
+            if (style === 'bold') doc.setFont('helvetica', 'bold');
+            else doc.setFont('helvetica', 'normal');
+            const tw = doc.getTextWidth(text);
+            doc.text(text, marginL + (contentW - tw) / 2, yPos);
+        }
+
+        function dashedLine(yPos) {
+            doc.setLineDashPattern([1.5, 1], 0);
+            doc.line(marginL, yPos, pageW - marginR, yPos);
+            doc.setLineDashPattern([], 0);
+        }
+
+        function addField(label, value, yPos, labelW) {
+            doc.setFontSize(7); doc.setFont('helvetica', 'bold');
+            doc.text(label, marginL, yPos);
+            doc.setFont('helvetica', 'normal');
+            const w = labelW || 22;
+            const lines = doc.splitTextToSize(value || '-', contentW - w);
+            doc.text(lines, marginL + w, yPos);
+            return Math.max(4, lines.length * 3.5);
+        }
+
+        // Header
+        centerText('SERVICE PRO', y, 12, 'bold'); y += 5;
+        centerText('Service Elektronik Profesional', y, 6, 'normal'); y += 4;
+        centerText('STRUK PENGAMBILAN BARANG', y, 8, 'bold'); y += 6;
+
+        dashedLine(y); y += 4;
+
+        // Info transaksi
+        y += addField('No. Service', s.noService, y);
+        y += addField('Tanggal', `${tglStr}`, y);
+        y += addField('Jam', `${jamStr}`, y);
+
+        y += 2; dashedLine(y); y += 4;
+
+        // Identitas Pelanggan
+        doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+        doc.text('PELANGGAN', marginL, y); y += 5;
+
+        y += addField('Nama', s.namaPelanggan, y);
+        y += addField('Telepon', s.noTelp || '-', y);
+        y += addField('Alamat', s.alamat || '-', y, 22);
+
+        y += 2; dashedLine(y); y += 4;
+
+        // Data Barang
+        doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+        doc.text('BARANG', marginL, y); y += 5;
+
+        y += addField('Jenis', s.jenisBarang, y);
+        y += addField('Merek', s.merek, y);
+        y += addField('Type', s.typeBarang || '-', y);
+        y += addField('Kelengkapan', s.kelengkapan || '-', y, 22);
+        y += addField('Keluhan', s.keluhan || '-', y, 22);
+        if (catatanTeknisi) {
+            y += addField('Catatan', catatanTeknisi, y, 22);
+        }
+
+        y += 2; dashedLine(y); y += 4;
+
+        // Sparepart
+        if (sparepartRows.length > 0 && sparepartRows.some(r => r.sparepartId)) {
+            doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+            doc.text('SPAREPART', marginL, y); y += 5;
+
+            sparepartRows.forEach(row => {
+                const sp = allSparepart.find(x => x.id === row.sparepartId);
+                if (sp) {
+                    const sub = Number(sp.harga) * row.qty;
+                    doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+                    const namaLines = doc.splitTextToSize(`${sp.nama} x${row.qty}`, contentW - 22);
+                    doc.text(namaLines, marginL, y);
+                    const subStr = formatRupiah(sub);
+                    doc.text(subStr, pageW - marginR - doc.getTextWidth(subStr), y);
+                    y += Math.max(4, namaLines.length * 3.5);
+                }
+            });
+
+            y += 2; dashedLine(y); y += 4;
+        }
+
+        // Biaya
+        doc.setFontSize(7); doc.setFont('helvetica', 'bold');
+        doc.text('Biaya Service', marginL, y);
+        doc.setFont('helvetica', 'normal');
+        const bsStr = formatRupiah(biayaService);
+        doc.text(bsStr, pageW - marginR - doc.getTextWidth(bsStr), y);
+        y += 4;
+
+        doc.setFont('helvetica', 'bold');
+        doc.text('Biaya Sparepart', marginL, y);
+        doc.setFont('helvetica', 'normal');
+        const bpStr = formatRupiah(biayaSparepart);
+        doc.text(bpStr, pageW - marginR - doc.getTextWidth(bpStr), y);
+        y += 5;
+
+        dashedLine(y); y += 4;
+
+        // Total
+        doc.setFontSize(10); doc.setFont('helvetica', 'bold');
+        doc.text('TOTAL', marginL, y);
+        const totStr = formatRupiah(total);
+        doc.text(totStr, pageW - marginR - doc.getTextWidth(totStr), y);
         y += 6;
 
         dashedLine(y); y += 5;
@@ -708,13 +839,11 @@
 
         dashedLine(y); y += 4;
 
-        // Footer
-        centerText('Simpan bukti ini sebagai tanda penitipan', y, 6, 'normal'); y += 3;
-        centerText('Barang yang tidak diambil lebih dari 30 hari', y, 6, 'normal'); y += 3;
-        centerText('menjadi hak bengkel service.', y, 6, 'normal');
+        centerText('Terima kasih atas kepercayaan Anda', y, 6, 'normal'); y += 3;
+        centerText('Barang yang telah diterima bukan tanggung jawab bengkel', y, 5.5, 'normal');
 
-        doc.save(`Bukti_Titip_${serviceData.noService}.pdf`);
-        showToast('Bukti titip barang berhasil diunduh');
+        doc.save(`Struk_${s.noService}.pdf`);
+        showToast('Struk PDF berhasil diunduh');
     }
 
     // ==================== NAVIGASI ====================
@@ -896,7 +1025,7 @@
         });
     }
 
-    // ==================== TERIMA BARANG (DIUBAH) ====================
+    // ==================== TERIMA BARANG ====================
     function renderTerima() {
         const sel = document.getElementById('tJenis');
         sel.innerHTML = '<option value="">Pilih jenis barang</option>';
@@ -931,7 +1060,6 @@
         }
     }
 
-    // DIUBAH: simpanTerima sekarang menyimpan alamat, kelengkapan, typeBarang
     async function simpanTerima(e) {
         e.preventDefault();
         const noService = generateNoService();
@@ -958,12 +1086,8 @@
         try {
             await db.collection('services').add(data);
             showToast(`Barang diterima! No: ${noService}`);
-
-            // Download PDF bukti titip
-            // Tambahkan tanggal lokal untuk PDF karena serverTimestamp belum resolved
             data.tanggalMasuk = new Date();
             downloadBuktiTitip(data);
-
             document.getElementById('formTerima').reset();
             await loadAllData();
             renderTerima();
@@ -973,7 +1097,7 @@
         return false;
     }
 
-    // ==================== DAFTAR BARANG SERVICE (DIUBAH) ====================
+    // ==================== DAFTAR BARANG SERVICE ====================
     function renderDaftar() {
         const search = (document.getElementById('searchDaftar')?.value || '').toLowerCase();
         const filter = document.getElementById('filterStatus')?.value || '';
@@ -992,7 +1116,6 @@
             return;
         }
 
-        // DIUBAH: tambah kolom Type, Kelengkapan, tombol PDF
         tbody.innerHTML = data.map(s => `
             <tr>
                 <td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td>
@@ -1037,7 +1160,6 @@
         }
     }
 
-    // DIUBAH: editService sekarang termasuk alamat, kelengkapan, typeBarang
     function editService(id) {
         const s = allServices.find(x => x.id === id);
         if (!s) return;
@@ -1068,7 +1190,6 @@
         `);
     }
 
-    // DIUBAH: simpanEditService sekarang termasuk alamat, kelengkapan, typeBarang
     async function simpanEditService(e, id) {
         e.preventDefault();
         try {
@@ -1142,7 +1263,6 @@
         pilihPengambilan(found.id);
     }
 
-    // DIUBAH: detail pengambilan menampilkan field baru
     function pilihPengambilan(id) {
         selectedAmbilId = id;
         const s = allServices.find(x => x.id === id);
@@ -1342,6 +1462,7 @@
                 <p>Tgl: ${new Date().toLocaleDateString('id-ID')}</p>
                 <div class="divider"></div>
                 <p>Pelanggan: ${s.namaPelanggan}</p>
+                <p>Alamat   : ${s.alamat || '-'}</p>
                 <p>Barang   : ${s.jenisBarang}</p>
                 <p>Merek    : ${s.merek}</p>
                 <p>Type     : ${s.typeBarang || '-'}</p>
