@@ -68,7 +68,6 @@
     .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; color: #fff; font-weight: bold; }
     .bg-blue { background: #1e88e5; }.bg-orange { background: #fb8c00; }.bg-red { background: #e53935; }.bg-green { background: #43a047; }.bg-grey { background: #757575; }.bg-cyan { background: #00acc1; }
 
-    /* CSS UNTUK CETAK (PERSIS LAYOUT MODAL DETAIL) */
     .print-area { display: none; background: #fff; color: #000; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     @media print { body * { visibility: hidden; } .print-area, .print-area * { visibility: visible; } .print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; } }
     .print-area h2 { text-align: center; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #000; padding-bottom: 10px; }
@@ -101,7 +100,7 @@
       <a href="#" onclick="showPage('dashboard')" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
       <div style="padding:10px 20px; background:var(--bg); font-size:12px; font-weight:bold; color:#888;">ALUR KERJA</div>
       <a href="#" onclick="showPage('daftarbarang')"><i class="fas fa-clipboard-list"></i> Daftar Barang</a>
-      <a href="#" onclick="showPage('kerja')"><i class="fas fa-screwdriver"></i> Barang Siap Kerja</a>
+      <!-- MENU BARANG SIAP KERJA DIHAPUS DI SINI -->
       <a href="#" onclick="showPage('pengambilan')"><i class="fas fa-hand-holding-box"></i> Pengambilan</a>
       <div style="padding:10px 20px; background:var(--bg); font-size:12px; font-weight:bold; color:#888; margin-top:10px;">MASTER DATA</div>
       <a href="#" onclick="showPage('jenisbarang')"><i class="fas fa-tags"></i> Jenis Barang</a>
@@ -141,18 +140,7 @@
         </div>
       </div>
 
-      <div id="page-kerja" class="page" style="display:none;">
-        <div class="content-box">
-          <div class="content-header">
-            <h3>Daftar Barang Service</h3>
-            <button class="btn btn-primary" onclick="openModal('modal-terima')"><i class="fas fa-plus"></i> Terima Barang Baru</button>
-          </div>
-          <table id="table-kerja">
-            <thead><tr><th>No Service</th><th>Tgl</th><th>Pelanggan</th><th>No HP</th><th>Barang</th><th>Keluhan</th><th>Status</th><th>Sparepart Terpasang</th><th>Aksi</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
+      <!-- HALAMAN BARANG SIAP KERJA DIHAPUS DI SINI -->
 
       <div id="page-pengambilan" class="page" style="display:none;">
         <div class="content-box no-print">
@@ -171,7 +159,6 @@
     </div>
   </div>
 
-  <!-- PRINT AREA TANDA TERIMA (PERSIS LAYOUT MODAL DETAIL) -->
   <div id="print-tanda-terima" class="print-area">
     <h2>Tanda Terima Barang</h2>
     <div class="grid-print">
@@ -193,7 +180,6 @@
     </div>
   </div>
 
-  <!-- PRINT AREA SST -->
   <div id="print-sst" class="print-area">
     <h2>Surat Serah Terima Barang</h2>
     <div class="grid-print">
@@ -339,8 +325,8 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; } function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     window.openModalOrig = openModal; window.openModal = function(id) { if (id === 'modal-terima') document.getElementById('form-terima').reset(); if (id === 'modal-jenis') { document.getElementById('jns-id').value=''; document.getElementById('jns-nama').value=''; document.getElementById('jns-biaya').value=''; } if (id === 'modal-teknisi') { document.getElementById('tkn-id').value=''; document.getElementById('tkn-nama').value=''; document.getElementById('tkn-hp').value=''; } if (id === 'modal-sparepart') { document.getElementById('spr-kode').value=''; document.getElementById('spr-nama').value=''; document.getElementById('spr-stok').value=''; document.getElementById('spr-hbeli').value=''; document.getElementById('spr-hjual').value=''; } openModalOrig(id); };
 
-    const pageTitles = { dashboard:'Dashboard', daftarbarang:'Daftar Barang', kerja:'Barang Siap Kerja', pengambilan:'Pengambilan', jenisbarang:'Jenis Barang', sparepart:'Data Sparepart', teknisi:'Data Teknisi', laporan:'Laporan' };
-    function showPage(page) { document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); document.getElementById('page-'+page).style.display = 'block'; document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active')); event.currentTarget.classList.add('active'); document.getElementById('sidebar').classList.remove('active'); document.getElementById('page-title').innerText = pageTitles[page] || 'Dashboard'; if (page === 'dashboard') loadDashboard(); if (page === 'daftarbarang') loadDaftarBarang(); if (page === 'kerja') loadKerja(); if (page === 'pengambilan') loadPengambilanForm(); if (page === 'jenisbarang') loadJenisBarang(); if (page === 'sparepart') loadSparepart(); if (page === 'teknisi') loadTeknisi(); if (page === 'laporan') loadLaporan(); }
+    const pageTitles = { dashboard:'Dashboard', daftarbarang:'Daftar Barang', pengambilan:'Pengambilan', jenisbarang:'Jenis Barang', sparepart:'Data Sparepart', teknisi:'Data Teknisi', laporan:'Laporan' };
+    function showPage(page) { document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); document.getElementById('page-'+page).style.display = 'block'; document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active')); event.currentTarget.classList.add('active'); document.getElementById('sidebar').classList.remove('active'); document.getElementById('page-title').innerText = pageTitles[page] || 'Dashboard'; if (page === 'dashboard') loadDashboard(); if (page === 'daftarbarang') loadDaftarBarang(); if (page === 'pengambilan') loadPengambilanForm(); if (page === 'jenisbarang') loadJenisBarang(); if (page === 'sparepart') loadSparepart(); if (page === 'teknisi') loadTeknisi(); if (page === 'laporan') loadLaporan(); }
 
     async function loadDashboard() { showLoader(); try { const snapshot = await db.collection('service').get(); const all = []; snapshot.forEach(doc => all.push({ noserv: doc.id, ...doc.data() })); const now = new Date(); const curYear = now.getFullYear(); let masuk = all.length; let tertunda = all.filter(s => s.status === 'TERTUNDA').length; let selesai = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').length; let pendapatan = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').reduce((sum, s) => sum + (s.totalBayar || 0), 0); let servPerBulan = Array(12).fill(0); let pendPerBulan = Array(12).fill(0); all.forEach(s => { const parts = s.tgl ? s.tgl.split('/') : null; if (parts && parts.length === 3) { const month = parseInt(parts[1]) - 1; const year = parseInt(parts[2]); if (year === curYear) { servPerBulan[month]++; if (s.status === 'Lunas' || s.status === 'Diambil') { pendPerBulan[month] += (s.totalBayar || 0); } } } }); document.getElementById('dash-cards').innerHTML = `<div class="card"><div class="card-icon"><i class="fas fa-box-open"></i></div><div class="card-info"><h3>Total Masuk</h3><h1>${masuk}</h1></div></div><div class="card"><div class="card-icon" style="background:#fb8c00"><i class="fas fa-pause-circle"></i></div><div class="card-info"><h3>Tertunda</h3><h1>${tertunda}</h1></div></div><div class="card"><div class="card-icon" style="background:#43a047"><i class="fas fa-check-double"></i></div><div class="card-info"><h3>Finish/Lunas</h3><h1>${selesai}</h1></div></div><div class="card"><div class="card-icon" style="background:#e53935"><i class="fas fa-money-bill-wave"></i></div><div class="card-info"><h3>Pendapatan</h3><h1>Rp ${Number(pendapatan).toLocaleString('id-ID')}</h1></div></div>`; const m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; if (chartServ) chartServ.destroy(); if (chartPend) chartPend.destroy(); chartServ = new Chart(document.getElementById('chartService'), { type: 'bar', data: { labels: m, datasets: [{ label: 'Service Masuk', data: servPerBulan, backgroundColor: '#1e88e5' }] } }); chartPend = new Chart(document.getElementById('chartPendapatan'), { type: 'line', data: { labels: m, datasets: [{ label: 'Pendapatan', data: pendPerBulan, borderColor: '#e53935', fill: false }] } }); } catch (err) { console.error(err); } hideLoader(); }
 
@@ -383,11 +369,10 @@
 
     function cetakDariModal() { if(currentDetailNoserv) { cetakTandaTerima(currentDetailNoserv); } }
 
-    async function loadKerja() { showLoader(); await loadJenisDropdown(); try { const snapshot = await db.collection('service').orderBy('noserv', 'desc').get(); const data = []; snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() })); serviceDataGlobal = data; const tb = document.querySelector('#table-kerja tbody'); tb.innerHTML = ''; const kerja = data.filter(d => d.status !== 'Lunas' && d.status !== 'Diambil'); if (kerja.length === 0) tb.innerHTML = '<tr><td colspan="9" style="text-align:center;">Belum ada barang.</td></tr>'; kerja.forEach(r => { let b = 'bg-blue'; if (r.status==='READY') b='bg-cyan'; if (r.status==='TERTUNDA') b='bg-orange'; if (r.status==='BATAL') b='bg-red'; if (r.status==='FINISH') b='bg-green'; tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.tgl}</td><td>${r.pelanggan}</td><td>${r.hp || '-'}</td><td>${r.jenis} - ${r.merk}</td><td>${r.keluhan || '-'}</td><td><span class="badge ${b}">${r.status}</span></td><td>${r.komponen || '-'}</td><td><button class="btn btn-warning btn-sm" onclick="editKerja('${r.noserv}')"><i class="fas fa-edit"></i></button></td></tr>`; }); } catch (err) { console.error(err); } hideLoader(); }
+    // FUNGSI LOAD KERJA DIHAPUS KARENA MENU DIHAPUS
 
-    async function saveTerima(e) { e.preventDefault(); showLoader(); try { const noserv = await generateId('SRV-', 'serviceCounter', 6); const obj = { noserv: noserv, tgl: getFormattedDate(), pelanggan: document.getElementById('trm-pelanggan').value, hp: document.getElementById('trm-hp').value, alamat: document.getElementById('trm-alamat').value, jenis: document.getElementById('trm-jenis').value, merk: document.getElementById('trm-merk').value, type: document.getElementById('trm-type').value, noseri: document.getElementById('trm-seri').value, keluhan: document.getElementById('trm-keluhan').value, kelengkapan: document.getElementById('trm-kelengkapan').value, estimasi: Number(document.getElementById('trm-estimasi').value), status: 'Diterima', komponen: '', biayaJasa: 0, biayaSparepart: 0, totalBayar: 0, tglLunas: '', tglAmbil: '', createdAt: firebase.firestore.FieldValue.serverTimestamp() }; await db.collection('service').doc(noserv).set(obj); showToast('Barang berhasil diterima!'); closeModal('modal-terima'); document.getElementById('form-terima').reset(); loadKerja(); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
+    async function saveTerima(e) { e.preventDefault(); showLoader(); try { const noserv = await generateId('SRV-', 'serviceCounter', 6); const obj = { noserv: noserv, tgl: getFormattedDate(), pelanggan: document.getElementById('trm-pelanggan').value, hp: document.getElementById('trm-hp').value, alamat: document.getElementById('trm-alamat').value, jenis: document.getElementById('trm-jenis').value, merk: document.getElementById('trm-merk').value, type: document.getElementById('trm-type').value, noseri: document.getElementById('trm-seri').value, keluhan: document.getElementById('trm-keluhan').value, kelengkapan: document.getElementById('trm-kelengkapan').value, estimasi: Number(document.getElementById('trm-estimasi').value), status: 'Diterima', komponen: '', biayaJasa: 0, biayaSparepart: 0, totalBayar: 0, tglLunas: '', tglAmbil: '', createdAt: firebase.firestore.FieldValue.serverTimestamp() }; await db.collection('service').doc(noserv).set(obj); showToast('Barang berhasil diterima!'); closeModal('modal-terima'); document.getElementById('form-terima').reset(); loadDaftarBarang(); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
 
-    // FUNGSI CETAK TANDA TERIMA DIUBAH SESUAI LAYOUT BARU
     function cetakTandaTerima(noserv) {
       const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return;
       document.getElementById('tt-noserv').innerText = s.noserv; document.getElementById('tt-tgl').innerText = s.tgl;
@@ -410,13 +395,12 @@
 
     async function transaksiSparepart(kode, qty) { const ref = db.collection('sparepart').doc(kode); return db.runTransaction(async (transaction) => { const doc = await transaction.get(ref); if (!doc.exists) throw new Error('Sparepart ' + kode + ' tidak ditemukan'); const newStok = (doc.data().stok || 0) - qty; if (newStok < 0) throw new Error('Stok ' + kode + ' tidak cukup'); transaction.update(ref, { stok: newStok }); }); }
 
-    async function saveUpdateKerja(e) { e.preventDefault(); showLoader(); try { const noserv = document.getElementById('krj-noserv').value; const status = document.getElementById('krj-status').value; const komponenStr = terpasangList.map(t => `${t.nama} (${t.qty})@${t.harga}`).join(', '); const totalBayarCalculated = currentBiayaJasa + terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0); const updateObj = { status: status, komponen: komponenStr }; if (status === 'Lunas') { updateObj.biayaJasa = currentBiayaJasa; updateObj.biayaSparepart = terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0); updateObj.totalBayar = totalBayarCalculated; updateObj.tglLunas = getFormattedDate(); } await db.collection('service').doc(noserv).update(updateObj); for (const t of terpasangList) { if (t.kode !== 'TEMP') { await transaksiSparepart(t.kode, t.qty); } } closeModal('modal-kerja'); loadKerja(); showToast('Update Berhasil!'); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
+    async function saveUpdateKerja(e) { e.preventDefault(); showLoader(); try { const noserv = document.getElementById('krj-noserv').value; const status = document.getElementById('krj-status').value; const komponenStr = terpasangList.map(t => `${t.nama} (${t.qty})@${t.harga}`).join(', '); const totalBayarCalculated = currentBiayaJasa + terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0); const updateObj = { status: status, komponen: komponenStr }; if (status === 'Lunas') { updateObj.biayaJasa = currentBiayaJasa; updateObj.biayaSparepart = terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0); updateObj.totalBayar = totalBayarCalculated; updateObj.tglLunas = getFormattedDate(); } await db.collection('service').doc(noserv).update(updateObj); for (const t of terpasangList) { if (t.kode !== 'TEMP') { await transaksiSparepart(t.kode, t.qty); } } closeModal('modal-kerja'); loadDaftarBarang(); showToast('Update Berhasil!'); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
 
     async function loadPengambilanForm() { showLoader(); try { const snapshot = await db.collection('service').get(); const data = []; snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() })); serviceDataGlobal = data; const sel = document.getElementById('ambil-noserv'); sel.innerHTML = '<option value="">Pilih No Service</option>'; data.filter(d => d.status === 'Lunas').forEach(d => { sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan}</option>`; }); } catch (err) { console.error(err); } hideLoader(); }
 
     async function savePengambilan(e) { e.preventDefault(); showLoader(); try { const noserv = document.getElementById('ambil-noserv').value; await db.collection('service').doc(noserv).update({ status: 'Diambil', tglAmbil: getFormattedDate() }); showToast('Diambil!'); loadPengambilanForm(); printSST(noserv); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
 
-    // FUNGSI CETAK SST JUGA DIUBAH SESUAI LAYOUT GRID BARU
     function printSST(noserv) { const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return; document.getElementById('sst-nama').innerText = s.pelanggan; document.getElementById('sst-noserv').innerText = s.noserv; document.getElementById('sst-hp').innerText = s.hp || '-'; document.getElementById('sst-jenis').innerText = s.jenis; document.getElementById('sst-merk').innerText = (s.merk || '-') + ' / ' + (s.type || '-'); document.getElementById('sst-seri').innerText = s.noseri || '-'; document.getElementById('sst-tbody').innerHTML = `<tr><td style="border: 1px solid #000; padding: 8px;">${s.komponen || '-'}</td><td style="border: 1px solid #000; padding: 8px;">LUNAS (Rp ${Number(s.totalBayar || 0).toLocaleString('id-ID')})</td></tr>`; window.print(); }
 
     async function loadLaporan() { showLoader(); try { const type = document.getElementById('laporan-filter').value; const snapshot = await db.collection('service').get(); const allData = []; snapshot.forEach(doc => allData.push(doc.data())); const now = new Date(); const todayStr = getFormattedDate(); const curMonth = String(now.getMonth() + 1).padStart(2, '0'); const curYear = String(now.getFullYear()); let filtered = allData.filter(s => s.status === 'Lunas' || s.status === 'Diambil'); filtered = filtered.filter(s => { const dateStr = s.tglLunas || s.tgl || ''; const parts = dateStr.split('/'); if (type === 'harian') return dateStr === todayStr; if (type === 'bulanan') return parts[1] === curMonth && parts[2] === curYear; if (type === 'tahunan') return parts[2] === curYear; return true; }); const tb = document.querySelector('#table-laporan tbody'); tb.innerHTML = ''; if (filtered.length === 0) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center">Tidak ada data</td></tr>'; } filtered.forEach(r => { tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.pelanggan}</td><td>Rp ${Number(r.biayaJasa || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.biayaSparepart || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.totalBayar || 0).toLocaleString('id-ID')}</td><td>${r.tglLunas || r.tgl}</td></tr>`; }); } catch (err) { console.error(err); } hideLoader(); }
