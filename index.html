@@ -50,7 +50,7 @@
     th { background: var(--primary); color: #fff; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: flex-start; z-index: 1000; animation: fadeIn 0.3s; padding-top: 50px; }
-    .modal-content { background: var(--card-bg); padding: 25px; border-radius: 8px; width: 700px; max-width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: slideDown 0.3s; }
+    .modal-content { background: var(--card-bg); padding: 25px; border-radius: 8px; width: 750px; max-width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: slideDown 0.3s; }
     .modal-content h2 { margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
     .form-group { margin-bottom: 15px; }.form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text); }
@@ -70,7 +70,7 @@
 
     .print-area { display: none; background: #fff; color: #000; padding: 20px; font-family: Arial, sans-serif; }
     @media print { body * { visibility: hidden; } .print-area, .print-area * { visibility: visible; } .print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; } }
-    .print-area table { border-collapse: collapse; width: 100%; }.print-area table th, .print-area table td { border: 1px solid #000; padding: 8px; text-align: left; }
+    .print-area table { border-collapse: collapse; width: 100%; }.print-area table th, .print-area table td { border: 1px solid #000; padding: 8px; text-align: left; font-size: 12px; }
     .print-area h2 { text-align: center; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
     .print-area .ttd-box { display: flex; justify-content: space-between; margin-top: 50px; }.print-area .ttd-box div { text-align: center; width: 40%; }
   </style>
@@ -79,7 +79,6 @@
 
   <div id="loader" class="loader"></div>
 
-  <!-- ==================== LOGIN SCREEN ==================== -->
   <div id="login-screen" style="display:none;">
     <div class="login-box">
       <i class="fas fa-laptop-medical" style="font-size:50px; color:var(--primary); margin-bottom:10px;"></i>
@@ -91,14 +90,13 @@
     </div>
   </div>
 
-  <!-- ==================== MAIN APP ==================== -->
   <div id="app">
     <div class="sidebar" id="sidebar">
       <h3><i class="fas fa-bolt"></i> ElService</h3>
       <a href="#" onclick="showPage('dashboard')" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
       <div style="padding:10px 20px; background:var(--bg); font-size:12px; font-weight:bold; color:#888;">ALUR KERJA</div>
+      <a href="#" onclick="showPage('daftarbarang')"><i class="fas fa-clipboard-list"></i> Daftar Barang</a>
       <a href="#" onclick="showPage('kerja')"><i class="fas fa-screwdriver"></i> Barang Siap Kerja</a>
-      <!-- MENU PENYELESAIAN DIHAPUS DI SINI -->
       <a href="#" onclick="showPage('pengambilan')"><i class="fas fa-hand-holding-box"></i> Pengambilan</a>
       <div style="padding:10px 20px; background:var(--bg); font-size:12px; font-weight:bold; color:#888; margin-top:10px;">MASTER DATA</div>
       <a href="#" onclick="showPage('jenisbarang')"><i class="fas fa-tags"></i> Jenis Barang</a>
@@ -126,6 +124,20 @@
         </div>
       </div>
 
+      <!-- DAFTAR BARANG (BARU) -->
+      <div id="page-daftarbarang" class="page" style="display:none;">
+        <div class="content-box">
+          <div class="content-header">
+            <h3>Daftar Barang Masuk</h3>
+            <button class="btn btn-primary" onclick="openModal('modal-terima')"><i class="fas fa-plus"></i> Terima Barang Baru</button>
+          </div>
+          <table id="table-daftarbarang">
+            <thead><tr><th>No Service</th><th>Tgl</th><th>Pelanggan</th><th>Alamat</th><th>No HP</th><th>Jenis</th><th>Merk</th><th>Type</th><th>No. Seri</th><th>Keluhan</th><th>Kelengkapan</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Barang Siap Kerja -->
       <div id="page-kerja" class="page" style="display:none;">
         <div class="content-box">
@@ -139,8 +151,6 @@
           </table>
         </div>
       </div>
-
-      <!-- HALAMAN PENYELESAIAN DIHAPUS DI SINI -->
 
       <!-- Pengambilan -->
       <div id="page-pengambilan" class="page" style="display:none;">
@@ -156,82 +166,54 @@
       <!-- Jenis Barang -->
       <div id="page-jenisbarang" class="page" style="display:none;">
         <div class="content-box">
-          <div class="content-header">
-            <h3>Data Jenis Barang / Kategori</h3>
-            <button class="btn btn-primary" onclick="openModal('modal-jenis')"><i class="fas fa-plus"></i> Tambah Jenis</button>
-          </div>
-          <table id="table-jenis">
-            <thead><tr><th>ID</th><th>Nama Jenis Barang</th><th>Biaya Service</th><th>Aksi</th></tr></thead>
-            <tbody></tbody>
-          </table>
+          <div class="content-header"><h3>Data Jenis Barang / Kategori</h3><button class="btn btn-primary" onclick="openModal('modal-jenis')"><i class="fas fa-plus"></i> Tambah Jenis</button></div>
+          <table id="table-jenis"><thead><tr><th>ID</th><th>Nama Jenis Barang</th><th>Biaya Service</th><th>Aksi</th></tr></thead><tbody></tbody></table>
         </div>
       </div>
 
       <!-- Sparepart -->
       <div id="page-sparepart" class="page" style="display:none;">
         <div class="content-box">
-          <div class="content-header">
-            <input type="text" id="search-sparepart" placeholder="Cari Sparepart..." oninput="filterSparepart()">
-            <button class="btn btn-primary" onclick="openModal('modal-sparepart')"><i class="fas fa-plus"></i> Tambah Sparepart</button>
-          </div>
-          <table id="table-sparepart">
-            <thead><tr><th>Kode</th><th>Nama Sparepart</th><th>Stok</th><th>Harga Beli</th><th>Harga Jual</th><th>Aksi</th></tr></thead>
-            <tbody></tbody>
-          </table>
+          <div class="content-header"><input type="text" id="search-sparepart" placeholder="Cari Sparepart..." oninput="filterSparepart()"><button class="btn btn-primary" onclick="openModal('modal-sparepart')"><i class="fas fa-plus"></i> Tambah Sparepart</button></div>
+          <table id="table-sparepart"><thead><tr><th>Kode</th><th>Nama Sparepart</th><th>Stok</th><th>Harga Beli</th><th>Harga Jual</th><th>Aksi</th></tr></thead><tbody></tbody></table>
         </div>
       </div>
 
       <!-- Teknisi -->
       <div id="page-teknisi" class="page" style="display:none;">
         <div class="content-box">
-          <div class="content-header">
-            <button class="btn btn-primary" onclick="openModal('modal-teknisi')"><i class="fas fa-plus"></i> Tambah Teknisi</button>
-          </div>
-          <table id="table-teknisi">
-            <thead><tr><th>ID</th><th>Nama</th><th>No HP</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody></tbody>
-          </table>
+          <div class="content-header"><button class="btn btn-primary" onclick="openModal('modal-teknisi')"><i class="fas fa-plus"></i> Tambah Teknisi</button></div>
+          <table id="table-teknisi"><thead><tr><th>ID</th><th>Nama</th><th>No HP</th><th>Status</th><th>Aksi</th></tr></thead><tbody></tbody></table>
         </div>
       </div>
 
       <!-- Laporan -->
       <div id="page-laporan" class="page" style="display:none;">
         <div class="content-box">
-          <div class="content-header">
-            <select id="laporan-filter" onchange="loadLaporan()">
-              <option value="harian">Harian</option>
-              <option value="bulanan" selected>Bulanan</option>
-              <option value="tahunan">Tahunan</option>
-            </select>
-            <div>
-              <button class="btn btn-danger" onclick="exportData('pdf')"><i class="fas fa-file-pdf"></i> PDF</button>
-              <button class="btn btn-success" onclick="exportData('excel')"><i class="fas fa-file-excel"></i> Excel</button>
-            </div>
-          </div>
-          <table id="table-laporan">
-            <thead><tr><th>No Service</th><th>Pelanggan</th><th>Jasa</th><th>Sparepart</th><th>Total</th><th>Tgl</th></tr></thead>
-            <tbody></tbody>
-          </table>
+          <div class="content-header"><select id="laporan-filter" onchange="loadLaporan()"><option value="harian">Harian</option><option value="bulanan" selected>Bulanan</option><option value="tahunan">Tahunan</option></select><div><button class="btn btn-danger" onclick="exportData('pdf')"><i class="fas fa-file-pdf"></i> PDF</button><button class="btn btn-success" onclick="exportData('excel')"><i class="fas fa-file-excel"></i> Excel</button></div></div>
+          <table id="table-laporan"><thead><tr><th>No Service</th><th>Pelanggan</th><th>Jasa</th><th>Sparepart</th><th>Total</th><th>Tgl</th></tr></thead><tbody></tbody></table>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== PRINT AREAS ==================== -->
+  <!-- PRINT AREAS -->
   <div id="print-tanda-terima" class="print-area">
-    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px;">
-      <h2 style="margin:0; text-align:left; font-size:18px;">TANDA TERIMA BARANG</h2>
-      <p style="margin:0; text-align:right; font-size:12px;">No: <span id="tt-noserv" style="font-weight:bold;"></span><br>Tgl: <span id="tt-tgl"></span></p>
+    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:10px;">
+      <h2 style="margin:0; text-align:left; font-size:16px;">TANDA TERIMA BARANG</h2>
+      <p style="margin:0; text-align:right; font-size:11px;">No: <span id="tt-noserv" style="font-weight:bold;"></span><br>Tgl: <span id="tt-tgl"></span></p>
     </div>
-    <table style="width:100%; border:none; margin-bottom:15px;">
+    <table style="width:100%; border:none; margin-bottom:10px;">
       <tr style="border:none;"><td style="border:none; width:30%;">Nama Pelanggan</td><td style="border:none;" id="tt-pelanggan"></td></tr>
+      <tr style="border:none;"><td style="border:none;">Alamat</td><td style="border:none;" id="tt-alamat"></td></tr>
       <tr style="border:none;"><td style="border:none;">No HP</td><td style="border:none;" id="tt-hp"></td></tr>
       <tr style="border:none;"><td style="border:none;">Jenis Barang</td><td style="border:none;" id="tt-jenis"></td></tr>
-      <tr style="border:none;"><td style="border:none;">Merk / Model</td><td style="border:none;" id="tt-merk"></td></tr>
-      <tr style="border:none;"><td style="border:none;">Keluhan</td><td style="border:none;" id="tt-keluhan"></td></tr>
+      <tr style="border:none;"><td style="border:none;">Merk / Type</td><td style="border:none;" id="tt-merk"></td></tr>
+      <tr style="border:none;"><td style="border:none;">No. Seri Unit</td><td style="border:none;" id="tt-seri"></td></tr>
+      <tr style="border:none;"><td style="border:none;">Kelengkapan</td><td style="border:none;" id="tt-kelengkapan"></td></tr>
     </table>
     <table>
-      <thead><tr><th>Deskripsi Barang</th><th>Estimasi Biaya</th></tr></thead>
+      <thead><tr><th>Keluhan / Kerusakan</th><th>Estimasi Biaya</th></tr></thead>
       <tbody id="tt-tbody"></tbody>
     </table>
     <div class="ttd-box">
@@ -247,8 +229,8 @@
       <tr style="border:none;"><td style="border:none;">No Service</td><td style="border:none;" id="sst-noserv">:</td></tr>
       <tr style="border:none;"><td style="border:none;">No HP</td><td style="border:none;" id="sst-hp">:</td></tr>
       <tr style="border:none;"><td style="border:none;">Jenis Barang</td><td style="border:none;" id="sst-jenis">:</td></tr>
-      <tr style="border:none;"><td style="border:none;">Merk / Model</td><td style="border:none;" id="sst-merk">:</td></tr>
-      <tr style="border:none;"><td style="border:none;">Keluhan</td><td style="border:none;" id="sst-keluhan">:</td></tr>
+      <tr style="border:none;"><td style="border:none;">Merk / Type</td><td style="border:none;" id="sst-merk">:</td></tr>
+      <tr style="border:none;"><td style="border:none;">No. Seri Unit</td><td style="border:none;" id="sst-seri">:</td></tr>
     </table>
     <table><thead><tr><th>Komponen Dipasang</th><th>Total Bayar</th></tr></thead><tbody id="sst-tbody"></tbody></table>
     <div class="ttd-box">
@@ -257,17 +239,25 @@
     </div>
   </div>
 
-  <!-- ==================== MODALS ==================== -->
+  <!-- MODALS -->
   <div class="modal" id="modal-terima">
     <div class="modal-content">
       <h2><i class="fas fa-inbox"></i> Penerimaan Barang Baru</h2>
       <form id="form-terima" onsubmit="saveTerima(event)">
+        <h4 style="margin-bottom:10px; color:var(--primary);">Identitas Pelanggan</h4>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
           <div class="form-group"><label>Nama Pelanggan</label><input type="text" id="trm-pelanggan" required></div>
           <div class="form-group"><label>No HP</label><input type="text" id="trm-hp" required></div>
+          <div class="form-group" style="grid-column: span 2;"><label>Alamat</label><input type="text" id="trm-alamat" required></div>
+        </div>
+        <h4 style="margin-bottom:10px; margin-top:15px; color:var(--primary);">Identitas Barang</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
           <div class="form-group"><label>Jenis Barang</label><select id="trm-jenis" required onchange="autoFillBiaya()"></select></div>
-          <div class="form-group"><label>Merk / Model</label><input type="text" id="trm-merk" required></div>
-          <div class="form-group"><label>Keluhan</label><textarea id="trm-keluhan" required style="height:40px;"></textarea></div>
+          <div class="form-group"><label>Merk</label><input type="text" id="trm-merk" required></div>
+          <div class="form-group"><label>Type</label><input type="text" id="trm-type" required></div>
+          <div class="form-group"><label>No. Seri Unit</label><input type="text" id="trm-seri" required></div>
+          <div class="form-group"><label>Keluhan / Kerusakan</label><textarea id="trm-keluhan" required style="height:40px;"></textarea></div>
+          <div class="form-group"><label>Kelengkapan Barang</label><textarea id="trm-kelengkapan" required style="height:40px;" placeholder="Contoh: Charger, Remote, Kabel"></textarea></div>
           <div class="form-group"><label>Estimasi Biaya (Otomatis)</label><input type="number" id="trm-estimasi" required></div>
         </div>
         <div style="margin-top:15px; text-align:right;">
@@ -289,8 +279,10 @@
           <div class="form-group" style="margin-bottom:0;"><label>No Service</label><input type="text" id="krj-noserv-disp" readonly></div>
           <div class="form-group" style="margin-bottom:0;"><label>Pelanggan</label><input type="text" id="krj-pelanggan" readonly></div>
           <div class="form-group" style="margin-bottom:0;"><label>No HP</label><input type="text" id="krj-hp" readonly></div>
+          <div class="form-group" style="margin-bottom:0;"><label>Alamat</label><input type="text" id="krj-alamat" readonly></div>
           <div class="form-group" style="margin-bottom:0;"><label>Jenis Barang</label><input type="text" id="krj-jenis" readonly></div>
-          <div class="form-group" style="margin-bottom:0;"><label>Merk/Model</label><input type="text" id="krj-merk" readonly></div>
+          <div class="form-group" style="margin-bottom:0;"><label>Merk / Type</label><input type="text" id="krj-merk" readonly></div>
+          <div class="form-group" style="margin-bottom:0;"><label>No. Seri Unit</label><input type="text" id="krj-seri" readonly></div>
           <div class="form-group" style="margin-bottom:0;"><label>Biaya Jasa</label><input type="text" id="krj-biaya-jasa" readonly></div>
           <div class="form-group" style="margin-bottom:0;"><label>Keluhan</label><textarea id="krj-keluhan" readonly style="height:40px;"></textarea></div>
         </div>
@@ -312,22 +304,8 @@
         </div>
         <h4 style="margin-bottom:10px; color:var(--primary);">Update Status & Pembayaran</h4>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-          <div class="form-group">
-            <label>Status Pengerjaan</label>
-            <!-- DITAMBAHKAN: Opsi Lunas -->
-            <select id="krj-status" required>
-              <option value="Diterima">Diterima (Antri)</option>
-              <option value="READY">READY</option>
-              <option value="TERTUNDA">TERTUNDA</option>
-              <option value="BATAL">BATAL</option>
-              <option value="FINISH">FINISH</option>
-              <option value="Lunas">Lunas (Pembayaran Diterima)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Total Bayar (Otomatis dari Estimasi)</label>
-            <input type="number" id="krj-total-bayar" readonly style="background:#e9ecef; opacity:0.8;">
-          </div>
+          <div class="form-group"><label>Status Pengerjaan</label><select id="krj-status" required><option value="Diterima">Diterima (Antri)</option><option value="READY">READY</option><option value="TERTUNDA">TERTUNDA</option><option value="BATAL">BATAL</option><option value="FINISH">FINISH</option><option value="Lunas">Lunas</option></select></div>
+          <div class="form-group"><label>Total Bayar (Otomatis)</label><input type="number" id="krj-total-bayar" readonly style="background:#e9ecef; opacity:0.8;"></div>
         </div>
         <div style="text-align:right; margin-top:15px;">
           <button type="button" class="btn btn-danger" onclick="closeModal('modal-kerja')">Batal</button>
@@ -337,147 +315,38 @@
     </div>
   </div>
 
-  <div class="modal" id="modal-jenis">
-    <div class="modal-content">
-      <h2>Data Jenis Barang</h2>
-      <form onsubmit="saveJenis(event)">
-        <input type="hidden" id="jns-id">
-        <div class="form-group"><label>Nama Jenis Barang</label><input type="text" id="jns-nama" required></div>
-        <div class="form-group"><label>Biaya Service / Jasa (Rp)</label><input type="number" id="jns-biaya" required min="0"></div>
-        <div style="text-align:right; margin-top:15px;">
-          <button type="button" class="btn btn-danger" onclick="closeModal('modal-jenis')">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <div class="modal" id="modal-jenis"><div class="modal-content"><h2>Data Jenis Barang</h2><form onsubmit="saveJenis(event)"><input type="hidden" id="jns-id"><div class="form-group"><label>Nama Jenis Barang</label><input type="text" id="jns-nama" required></div><div class="form-group"><label>Biaya Service / Jasa (Rp)</label><input type="number" id="jns-biaya" required min="0"></div><div style="text-align:right; margin-top:15px;"><button type="button" class="btn btn-danger" onclick="closeModal('modal-jenis')">Batal</button><button type="submit" class="btn btn-primary">Simpan</button></div></form></div></div>
+  <div class="modal" id="modal-sparepart"><div class="modal-content"><h2>Data Sparepart</h2><form onsubmit="saveSparepart(event)"><input type="hidden" id="spr-kode"><div class="form-group"><label>Nama Sparepart</label><input type="text" id="spr-nama" required></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><div class="form-group"><label>Stok</label><input type="number" id="spr-stok" required></div><div class="form-group"><label>Harga Beli (Rp)</label><input type="number" id="spr-hbeli" required></div></div><div class="form-group"><label>Harga Jual (Rp)</label><input type="number" id="spr-hjual" required></div><div style="text-align:right; margin-top:15px;"><button type="button" class="btn btn-danger" onclick="closeModal('modal-sparepart')">Batal</button><button type="submit" class="btn btn-primary">Simpan</button></div></form></div></div>
+  <div class="modal" id="modal-teknisi"><div class="modal-content"><h2>Data Teknisi</h2><form onsubmit="saveTeknisi(event)"><input type="hidden" id="tkn-id"><div class="form-group"><label>Nama Teknisi</label><input type="text" id="tkn-nama" required></div><div class="form-group"><label>No HP</label><input type="text" id="tkn-hp" required></div><div class="form-group"><label>Status</label><select id="tkn-status"><option value="Aktif">Aktif</option><option value="Tidak Aktif">Tidak Aktif</option></select></div><div style="text-align:right; margin-top:15px;"><button type="button" class="btn btn-danger" onclick="closeModal('modal-teknisi')">Batal</button><button type="submit" class="btn btn-primary">Simpan</button></div></form></div></div>
 
-  <div class="modal" id="modal-sparepart">
-    <div class="modal-content">
-      <h2>Data Sparepart</h2>
-      <form onsubmit="saveSparepart(event)">
-        <input type="hidden" id="spr-kode">
-        <div class="form-group"><label>Nama Sparepart</label><input type="text" id="spr-nama" required></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <div class="form-group"><label>Stok</label><input type="number" id="spr-stok" required></div>
-          <div class="form-group"><label>Harga Beli (Rp)</label><input type="number" id="spr-hbeli" required></div>
-        </div>
-        <div class="form-group"><label>Harga Jual (Rp)</label><input type="number" id="spr-hjual" required></div>
-        <div style="text-align:right; margin-top:15px;">
-          <button type="button" class="btn btn-danger" onclick="closeModal('modal-sparepart')">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <div id="toast" style="position:fixed; top:20px; right:20px; background:#43a047; color:#fff; padding:15px 25px; border-radius:5px; box-shadow:0 4px 8px rgba(0,0,0,0.2); display:none; z-index:2000;"><i class="fas fa-check-circle"></i> <span id="toast-msg">Sukses!</span></div>
 
-  <div class="modal" id="modal-teknisi">
-    <div class="modal-content">
-      <h2>Data Teknisi</h2>
-      <form onsubmit="saveTeknisi(event)">
-        <input type="hidden" id="tkn-id">
-        <div class="form-group"><label>Nama Teknisi</label><input type="text" id="tkn-nama" required></div>
-        <div class="form-group"><label>No HP</label><input type="text" id="tkn-hp" required></div>
-        <div class="form-group"><label>Status</label><select id="tkn-status"><option value="Aktif">Aktif</option><option value="Tidak Aktif">Tidak Aktif</option></select></div>
-        <div style="text-align:right; margin-top:15px;">
-          <button type="button" class="btn btn-danger" onclick="closeModal('modal-teknisi')">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" style="position:fixed; top:20px; right:20px; background:#43a047; color:#fff; padding:15px 25px; border-radius:5px; box-shadow:0 4px 8px rgba(0,0,0,0.2); display:none; z-index:2000;">
-    <i class="fas fa-check-circle"></i> <span id="toast-msg">Sukses!</span>
-  </div>
-
-  <!-- ==================== JAVASCRIPT ==================== -->
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyALL4Gow1dY0jW7Kf6R6DfyrW_WbaH5nXE",
-      authDomain: "service-elektronik-41369.firebaseapp.com",
-      projectId: "service-elektronik-41369",
-      storageBucket: "service-elektronik-41369.firebasestorage.app",
-      messagingSenderId: "356056353058",
-      appId: "1:356056353058:web:befadc3180e8f33419bd7b"
-    };
+    const firebaseConfig = { apiKey: "AIzaSyALL4Gow1dY0jW7Kf6R6DfyrW_WbaH5nXE", authDomain: "service-elektronik-41369.firebaseapp.com", projectId: "service-elektronik-41369", storageBucket: "service-elektronik-41369.firebasestorage.app", messagingSenderId: "356056353058", appId: "1:356056353058:web:befadc3180e8f33419bd7b" };
+    firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    let chartServ, chartPend; let serviceDataGlobal = []; let sparepartDataGlobal = []; let jenisBarangGlobal = []; let terpasangList = []; let currentBiayaJasa = 0;
 
-    let chartServ, chartPend;
-    let serviceDataGlobal = [];
-    let sparepartDataGlobal = [];
-    let jenisBarangGlobal = [];
-    let terpasangList = [];
-    let currentBiayaJasa = 0;
-
-    function showLoader() { document.getElementById('loader').style.display = 'block'; }
-    function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+    function showLoader() { document.getElementById('loader').style.display = 'block'; } function hideLoader() { document.getElementById('loader').style.display = 'none'; }
     function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
     function getFormattedDate() { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); }
 
     async function generateId(prefix, counterName, padLength) {
       const counterRef = db.collection('counters').doc(counterName);
-      return db.runTransaction(async (transaction) => {
-        const doc = await transaction.get(counterRef); let nextNo = 1;
-        if (doc.exists) { nextNo = (doc.data().nextNo || 0) + 1; }
-        transaction.set(counterRef, { nextNo: nextNo }); return prefix + String(nextNo).padStart(padLength, '0');
-      });
+      return db.runTransaction(async (transaction) => { const doc = await transaction.get(counterRef); let nextNo = 1; if (doc.exists) { nextNo = (doc.data().nextNo || 0) + 1; } transaction.set(counterRef, { nextNo: nextNo }); return prefix + String(nextNo).padStart(padLength, '0'); });
     }
 
-    async function doLogin() {
-      showLoader(); const username = document.getElementById('username').value.trim(); const password = document.getElementById('password').value;
-      try {
-        const snapshot = await db.collection('users').where('username', '==', username).where('password', '==', password).limit(1).get();
-        if (!snapshot.empty) { document.getElementById('login-screen').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadDashboard(); }
-        else { document.getElementById('login-error').innerText = 'Username atau Password salah!'; document.getElementById('login-error').style.display = 'block'; }
-      } catch (err) { document.getElementById('login-error').innerText = 'Error: ' + err.message; document.getElementById('login-error').style.display = 'block'; }
-      hideLoader();
-    }
-
+    async function doLogin() { showLoader(); const username = document.getElementById('username').value.trim(); const password = document.getElementById('password').value; try { const snapshot = await db.collection('users').where('username', '==', username).where('password', '==', password).limit(1).get(); if (!snapshot.empty) { document.getElementById('login-screen').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadDashboard(); } else { document.getElementById('login-error').innerText = 'Username atau Password salah!'; document.getElementById('login-error').style.display = 'block'; } } catch (err) { document.getElementById('login-error').innerText = 'Error: ' + err.message; document.getElementById('login-error').style.display = 'block'; } hideLoader(); }
     function doLogout() { document.getElementById('app').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('username').value = ''; document.getElementById('password').value = ''; }
     function toggleDark() { document.body.classList.toggle('dark-mode'); document.querySelector('.toggle-dark').classList.toggle('fa-moon'); document.querySelector('.toggle-dark').classList.toggle('fa-sun'); }
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; } function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.openModalOrig = openModal; window.openModal = function(id) { if (id === 'modal-terima') document.getElementById('form-terima').reset(); if (id === 'modal-jenis') { document.getElementById('jns-id').value=''; document.getElementById('jns-nama').value=''; document.getElementById('jns-biaya').value=''; } if (id === 'modal-teknisi') { document.getElementById('tkn-id').value=''; document.getElementById('tkn-nama').value=''; document.getElementById('tkn-hp').value=''; } if (id === 'modal-sparepart') { document.getElementById('spr-kode').value=''; document.getElementById('spr-nama').value=''; document.getElementById('spr-stok').value=''; document.getElementById('spr-hbeli').value=''; document.getElementById('spr-hjual').value=''; } openModalOrig(id); };
 
-    window.openModalOrig = openModal;
-    window.openModal = function(id) {
-      if (id === 'modal-terima') document.getElementById('form-terima').reset();
-      if (id === 'modal-jenis') { document.getElementById('jns-id').value=''; document.getElementById('jns-nama').value=''; document.getElementById('jns-biaya').value=''; }
-      if (id === 'modal-teknisi') { document.getElementById('tkn-id').value=''; document.getElementById('tkn-nama').value=''; document.getElementById('tkn-hp').value=''; }
-      if (id === 'modal-sparepart') { document.getElementById('spr-kode').value=''; document.getElementById('spr-nama').value=''; document.getElementById('spr-stok').value=''; document.getElementById('spr-hbeli').value=''; document.getElementById('spr-hjual').value=''; }
-      openModalOrig(id);
-    };
+    const pageTitles = { dashboard:'Dashboard', daftarbarang:'Daftar Barang', kerja:'Barang Siap Kerja', pengambilan:'Pengambilan', jenisbarang:'Jenis Barang', sparepart:'Data Sparepart', teknisi:'Data Teknisi', laporan:'Laporan' };
+    function showPage(page) { document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); document.getElementById('page-'+page).style.display = 'block'; document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active')); event.currentTarget.classList.add('active'); document.getElementById('sidebar').classList.remove('active'); document.getElementById('page-title').innerText = pageTitles[page] || 'Dashboard'; if (page === 'dashboard') loadDashboard(); if (page === 'daftarbarang') loadDaftarBarang(); if (page === 'kerja') loadKerja(); if (page === 'pengambilan') loadPengambilanForm(); if (page === 'jenisbarang') loadJenisBarang(); if (page === 'sparepart') loadSparepart(); if (page === 'teknisi') loadTeknisi(); if (page === 'laporan') loadLaporan(); }
 
-    const pageTitles = { dashboard:'Dashboard', kerja:'Barang Siap Kerja', pengambilan:'Pengambilan', jenisbarang:'Jenis Barang', sparepart:'Data Sparepart', teknisi:'Data Teknisi', laporan:'Laporan' };
-    function showPage(page) {
-      document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); document.getElementById('page-'+page).style.display = 'block';
-      document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active')); event.currentTarget.classList.add('active');
-      document.getElementById('sidebar').classList.remove('active'); document.getElementById('page-title').innerText = pageTitles[page] || 'Dashboard';
-      if (page === 'dashboard') loadDashboard(); if (page === 'kerja') loadKerja(); if (page === 'pengambilan') loadPengambilanForm();
-      if (page === 'jenisbarang') loadJenisBarang(); if (page === 'sparepart') loadSparepart(); if (page === 'teknisi') loadTeknisi(); if (page === 'laporan') loadLaporan();
-    }
-
-    async function loadDashboard() {
-      showLoader();
-      try {
-        const snapshot = await db.collection('service').get(); const all = [];
-        snapshot.forEach(doc => all.push({ noserv: doc.id, ...doc.data() })); const now = new Date(); const curYear = now.getFullYear();
-        let masuk = all.length; let tertunda = all.filter(s => s.status === 'TERTUNDA').length;
-        let selesai = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').length;
-        let pendapatan = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').reduce((sum, s) => sum + (s.totalBayar || 0), 0);
-        let servPerBulan = Array(12).fill(0); let pendPerBulan = Array(12).fill(0);
-        all.forEach(s => { const parts = s.tgl ? s.tgl.split('/') : null; if (parts && parts.length === 3) { const month = parseInt(parts[1]) - 1; const year = parseInt(parts[2]); if (year === curYear) { servPerBulan[month]++; if (s.status === 'Lunas' || s.status === 'Diambil') { pendPerBulan[month] += (s.totalBayar || 0); } } } });
-        document.getElementById('dash-cards').innerHTML = `<div class="card"><div class="card-icon"><i class="fas fa-box-open"></i></div><div class="card-info"><h3>Total Masuk</h3><h1>${masuk}</h1></div></div><div class="card"><div class="card-icon" style="background:#fb8c00"><i class="fas fa-pause-circle"></i></div><div class="card-info"><h3>Tertunda</h3><h1>${tertunda}</h1></div></div><div class="card"><div class="card-icon" style="background:#43a047"><i class="fas fa-check-double"></i></div><div class="card-info"><h3>Finish/Lunas</h3><h1>${selesai}</h1></div></div><div class="card"><div class="card-icon" style="background:#e53935"><i class="fas fa-money-bill-wave"></i></div><div class="card-info"><h3>Pendapatan</h3><h1>Rp ${Number(pendapatan).toLocaleString('id-ID')}</h1></div></div>`;
-        const m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-        if (chartServ) chartServ.destroy(); if (chartPend) chartPend.destroy();
-        chartServ = new Chart(document.getElementById('chartService'), { type: 'bar', data: { labels: m, datasets: [{ label: 'Service Masuk', data: servPerBulan, backgroundColor: '#1e88e5' }] } });
-        chartPend = new Chart(document.getElementById('chartPendapatan'), { type: 'line', data: { labels: m, datasets: [{ label: 'Pendapatan', data: pendPerBulan, borderColor: '#e53935', fill: false }] } });
-      } catch (err) { console.error(err); } hideLoader();
-    }
+    async function loadDashboard() { showLoader(); try { const snapshot = await db.collection('service').get(); const all = []; snapshot.forEach(doc => all.push({ noserv: doc.id, ...doc.data() })); const now = new Date(); const curYear = now.getFullYear(); let masuk = all.length; let tertunda = all.filter(s => s.status === 'TERTUNDA').length; let selesai = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').length; let pendapatan = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').reduce((sum, s) => sum + (s.totalBayar || 0), 0); let servPerBulan = Array(12).fill(0); let pendPerBulan = Array(12).fill(0); all.forEach(s => { const parts = s.tgl ? s.tgl.split('/') : null; if (parts && parts.length === 3) { const month = parseInt(parts[1]) - 1; const year = parseInt(parts[2]); if (year === curYear) { servPerBulan[month]++; if (s.status === 'Lunas' || s.status === 'Diambil') { pendPerBulan[month] += (s.totalBayar || 0); } } } }); document.getElementById('dash-cards').innerHTML = `<div class="card"><div class="card-icon"><i class="fas fa-box-open"></i></div><div class="card-info"><h3>Total Masuk</h3><h1>${masuk}</h1></div></div><div class="card"><div class="card-icon" style="background:#fb8c00"><i class="fas fa-pause-circle"></i></div><div class="card-info"><h3>Tertunda</h3><h1>${tertunda}</h1></div></div><div class="card"><div class="card-icon" style="background:#43a047"><i class="fas fa-check-double"></i></div><div class="card-info"><h3>Finish/Lunas</h3><h1>${selesai}</h1></div></div><div class="card"><div class="card-icon" style="background:#e53935"><i class="fas fa-money-bill-wave"></i></div><div class="card-info"><h3>Pendapatan</h3><h1>Rp ${Number(pendapatan).toLocaleString('id-ID')}</h1></div></div>`; const m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; if (chartServ) chartServ.destroy(); if (chartPend) chartPend.destroy(); chartServ = new Chart(document.getElementById('chartService'), { type: 'bar', data: { labels: m, datasets: [{ label: 'Service Masuk', data: servPerBulan, backgroundColor: '#1e88e5' }] } }); chartPend = new Chart(document.getElementById('chartPendapatan'), { type: 'line', data: { labels: m, datasets: [{ label: 'Pendapatan', data: pendPerBulan, borderColor: '#e53935', fill: false }] } }); } catch (err) { console.error(err); } hideLoader(); }
 
     async function loadJenisDropdown() { try { const snapshot = await db.collection('jenisBarang').get(); jenisBarangGlobal = []; snapshot.forEach(doc => jenisBarangGlobal.push({ id: doc.id, ...doc.data() })); const sel = document.getElementById('trm-jenis'); if (sel) { sel.innerHTML = '<option value="">Pilih Jenis...</option>'; jenisBarangGlobal.forEach(d => sel.innerHTML += `<option value="${d.nama}">${d.nama}</option>`); } } catch (err) { console.error(err); } }
     function autoFillBiaya() { const selectedNama = document.getElementById('trm-jenis').value; const jenis = jenisBarangGlobal.find(d => d.nama === selectedNama); document.getElementById('trm-estimasi').value = jenis ? (jenis.biaya || 0) : ''; }
@@ -496,6 +365,26 @@
     async function loadTeknisi() { showLoader(); try { const snapshot = await db.collection('teknisi').get(); const data = []; snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() })); const tb = document.querySelector('#table-teknisi tbody'); tb.innerHTML = ''; data.forEach(r => { const b = r.status === 'Aktif' ? 'bg-green' : 'bg-red'; tb.innerHTML += `<tr><td>${r.id}</td><td>${r.nama}</td><td>${r.hp}</td><td><span class="badge ${b}">${r.status}</span></td><td><button class="btn btn-warning btn-sm edit-tkn" data-id="${r.id}" data-nama="${r.nama}" data-hp="${r.hp}" data-status="${r.status}"><i class="fas fa-edit"></i></button></td></tr>`; }); document.querySelectorAll('.edit-tkn').forEach(btn => btn.addEventListener('click', function() { editTeknisi(this.dataset.id, this.dataset.nama, this.dataset.hp, this.dataset.status); })); } catch (err) { console.error(err); } hideLoader(); }
     async function saveTeknisi(e) { e.preventDefault(); showLoader(); try { const id = document.getElementById('tkn-id').value; const obj = { nama: document.getElementById('tkn-nama').value, hp: document.getElementById('tkn-hp').value, status: document.getElementById('tkn-status').value }; if (id === '') { const newId = await generateId('TKN-', 'teknisiCounter', 3); await db.collection('teknisi').doc(newId).set(obj); } else { await db.collection('teknisi').doc(id).update(obj); } closeModal('modal-teknisi'); loadTeknisi(); showToast('Disimpan!'); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
     function editTeknisi(id, nama, hp, status) { document.getElementById('tkn-id').value = id; document.getElementById('tkn-nama').value = nama; document.getElementById('tkn-hp').value = hp; document.getElementById('tkn-status').value = status; openModal('modal-teknisi'); }
+
+    // ============================================
+    // DAFTAR BARANG BARU
+    // ============================================
+    async function loadDaftarBarang() {
+      showLoader(); await loadJenisDropdown();
+      try {
+        const snapshot = await db.collection('service').orderBy('noserv', 'desc').get(); const data = [];
+        snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() })); serviceDataGlobal = data;
+        const tb = document.querySelector('#table-daftarbarang tbody'); tb.innerHTML = '';
+        if (data.length === 0) tb.innerHTML = '<tr><td colspan="12" style="text-align:center;">Belum ada barang.</td></tr>';
+        data.forEach(r => {
+          tb.innerHTML += `<tr>
+            <td>${r.noserv}</td><td>${r.tgl}</td><td>${r.pelanggan}</td><td>${r.alamat || '-'}</td><td>${r.hp || '-'}</td>
+            <td>${r.jenis}</td><td>${r.merk || '-'}</td><td>${r.type || '-'}</td><td>${r.noseri || '-'}</td>
+            <td>${r.keluhan || '-'}</td><td>${r.kelengkapan || '-'}</td>
+            <td><button class="btn btn-primary btn-sm" onclick="cetakTandaTerima('${r.noserv}')"><i class="fas fa-print"></i></button></td></tr>`;
+        });
+      } catch (err) { console.error(err); } hideLoader();
+    }
 
     // ============================================
     // BARANG SIAP KERJA
@@ -519,7 +408,16 @@
       e.preventDefault(); showLoader();
       try {
         const noserv = await generateId('SRV-', 'serviceCounter', 6);
-        const obj = { noserv: noserv, tgl: getFormattedDate(), pelanggan: document.getElementById('trm-pelanggan').value, hp: document.getElementById('trm-hp').value, jenis: document.getElementById('trm-jenis').value, merk: document.getElementById('trm-merk').value, model: '', keluhan: document.getElementById('trm-keluhan').value, estimasi: Number(document.getElementById('trm-estimasi').value), status: 'Diterima', komponen: '', biayaJasa: 0, biayaSparepart: 0, totalBayar: 0, tglLunas: '', tglAmbil: '', createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+        const obj = {
+          noserv: noserv, tgl: getFormattedDate(), 
+          pelanggan: document.getElementById('trm-pelanggan').value, hp: document.getElementById('trm-hp').value,
+          alamat: document.getElementById('trm-alamat').value,
+          jenis: document.getElementById('trm-jenis').value, merk: document.getElementById('trm-merk').value,
+          type: document.getElementById('trm-type').value, noseri: document.getElementById('trm-seri').value,
+          keluhan: document.getElementById('trm-keluhan').value, kelengkapan: document.getElementById('trm-kelengkapan').value,
+          estimasi: Number(document.getElementById('trm-estimasi').value), status: 'Diterima', komponen: '', biayaJasa: 0, biayaSparepart: 0, totalBayar: 0, tglLunas: '', tglAmbil: '',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
         await db.collection('service').doc(noserv).set(obj); showToast('Barang berhasil diterima!'); closeModal('modal-terima'); document.getElementById('form-terima').reset(); loadKerja();
       } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader();
     }
@@ -527,10 +425,11 @@
     function cetakTandaTerima(noserv) {
       const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return;
       document.getElementById('tt-noserv').innerText = s.noserv; document.getElementById('tt-tgl').innerText = s.tgl;
-      document.getElementById('tt-pelanggan').innerText = s.pelanggan; document.getElementById('tt-hp').innerText = s.hp || '-';
-      document.getElementById('tt-jenis').innerText = s.jenis; document.getElementById('tt-merk').innerText = s.merk + ' ' + (s.model || '');
-      document.getElementById('tt-keluhan').innerText = s.keluhan || '-';
-      document.getElementById('tt-tbody').innerHTML = `<tr><td>Service ${s.jenis} - ${s.merk} ${s.model || ''}</td><td>Rp ${Number(s.estimasi).toLocaleString('id-ID')}</td></tr>`;
+      document.getElementById('tt-pelanggan').innerText = s.pelanggan; document.getElementById('tt-alamat').innerText = s.alamat || '-';
+      document.getElementById('tt-hp').innerText = s.hp || '-'; document.getElementById('tt-jenis').innerText = s.jenis;
+      document.getElementById('tt-merk').innerText = (s.merk || '-') + ' / ' + (s.type || '-');
+      document.getElementById('tt-seri').innerText = s.noseri || '-'; document.getElementById('tt-kelengkapan').innerText = s.kelengkapan || '-';
+      document.getElementById('tt-tbody').innerHTML = `<tr><td>${s.keluhan || '-'}</td><td>Rp ${Number(s.estimasi).toLocaleString('id-ID')}</td></tr>`;
       window.print();
     }
 
@@ -538,143 +437,37 @@
       const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return;
       document.getElementById('krj-noserv').value = s.noserv; document.getElementById('krj-noserv-disp').value = s.noserv;
       document.getElementById('krj-tgl').value = s.tgl; document.getElementById('krj-pelanggan').value = s.pelanggan;
-      document.getElementById('krj-hp').value = s.hp; document.getElementById('krj-jenis').value = s.jenis;
-      document.getElementById('krj-merk').value = s.merk + ' ' + (s.model || ''); document.getElementById('krj-keluhan').value = s.keluhan;
-      document.getElementById('krj-status').value = s.status;
-      currentBiayaJasa = Number(s.estimasi || 0);
+      document.getElementById('krj-hp').value = s.hp; document.getElementById('krj-alamat').value = s.alamat || '-';
+      document.getElementById('krj-jenis').value = s.jenis; document.getElementById('krj-merk').value = (s.merk || '-') + ' / ' + (s.type || '-');
+      document.getElementById('krj-seri').value = s.noseri || '-'; document.getElementById('krj-keluhan').value = s.keluhan;
+      document.getElementById('krj-status').value = s.status; currentBiayaJasa = Number(s.estimasi || 0);
       document.getElementById('krj-biaya-jasa').value = 'Rp ' + currentBiayaJasa.toLocaleString('id-ID');
-      
-      terpasangList = s.komponen && s.komponen !== '' ? s.komponen.split(', ').map(x => {
-        const parts = x.split(' ('); const nama = parts[0]; const rest = parts[1] ? parts[1].replace(')','') : '1@0'; const qtyParts = rest.split('@');
-        return { kode: 'TEMP', nama: nama, harga: Number(qtyParts[1] || 0), qty: Number(qtyParts[0] || 1) };
-      }) : [];
+      terpasangList = s.komponen && s.komponen !== '' ? s.komponen.split(', ').map(x => { const parts = x.split(' ('); const nama = parts[0]; const rest = parts[1] ? parts[1].replace(')','') : '1@0'; const qtyParts = rest.split('@'); return { kode: 'TEMP', nama: nama, harga: Number(qtyParts[1] || 0), qty: Number(qtyParts[0] || 1) }; }) : [];
       renderTerpasang(); loadSparepartDropdown(); openModal('modal-kerja');
     }
 
     async function loadSparepartDropdown() { try { const snapshot = await db.collection('sparepart').get(); sparepartDataGlobal = []; snapshot.forEach(doc => sparepartDataGlobal.push({ kode: doc.id, ...doc.data() })); const sel = document.getElementById('krj-spr-kode'); sel.innerHTML = '<option value="">Pilih Sparepart...</option>'; sparepartDataGlobal.filter(d => d.stok > 0).forEach(d => { sel.innerHTML += `<option value="${d.kode}">${d.nama} - Stok: ${d.stok}</option>`; }); } catch (err) { console.error(err); } }
 
-    function pasangSparepart() {
-      const kode = document.getElementById('krj-spr-kode').value; const qty = Number(document.getElementById('krj-spr-qty').value);
-      if (!kode || !qty || qty <= 0) return alert("Pilih sparepart & qty!"); const spr = sparepartDataGlobal.find(d => d.kode === kode);
-      if (spr.stok < qty) return alert("Stok tidak cukup!"); const exist = terpasangList.find(x => x.kode === spr.kode);
-      if (exist) { if (Number(exist.qty) + qty > spr.stok) return alert("Stok tidak cukup!"); exist.qty = Number(exist.qty) + qty; }
-      else { terpasangList.push({ kode: spr.kode, nama: spr.nama, harga: Number(spr.hargajual), qty: qty }); }
-      renderTerpasang(); document.getElementById('krj-spr-kode').value = ''; document.getElementById('krj-spr-qty').value = 1;
-    }
-
+    function pasangSparepart() { const kode = document.getElementById('krj-spr-kode').value; const qty = Number(document.getElementById('krj-spr-qty').value); if (!kode || !qty || qty <= 0) return alert("Pilih sparepart & qty!"); const spr = sparepartDataGlobal.find(d => d.kode === kode); if (spr.stok < qty) return alert("Stok tidak cukup!"); const exist = terpasangList.find(x => x.kode === spr.kode); if (exist) { if (Number(exist.qty) + qty > spr.stok) return alert("Stok tidak cukup!"); exist.qty = Number(exist.qty) + qty; } else { terpasangList.push({ kode: spr.kode, nama: spr.nama, harga: Number(spr.hargajual), qty: qty }); } renderTerpasang(); document.getElementById('krj-spr-kode').value = ''; document.getElementById('krj-spr-qty').value = 1; }
     function hapusTerpasang(index) { terpasangList.splice(index, 1); renderTerpasang(); }
 
-    function renderTerpasang() {
-      const tb = document.getElementById('tbl-terpasang'); tb.innerHTML = ''; let totalSparepart = 0;
-      if (terpasangList.length === 0) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center">Belum ada sparepart</td></tr>'; }
-      else { terpasangList.forEach((t, i) => { const sub = t.harga * t.qty; totalSparepart += sub; tb.innerHTML += `<tr><td>${t.nama}</td><td>Rp ${Number(t.harga).toLocaleString('id-ID')}</td><td>${t.qty}</td><td>Rp ${Number(sub).toLocaleString('id-ID')}</td><td><button type="button" class="btn btn-danger btn-sm" onclick="hapusTerpasang(${i})"><i class="fas fa-times"></i></button></td></tr>`; }); }
-      document.getElementById('total-sparepart').innerText = 'Rp ' + Number(totalSparepart).toLocaleString('id-ID');
-      const totalEstimasi = currentBiayaJasa + totalSparepart;
-      document.getElementById('total-estimasi').innerText = 'Rp ' + Number(totalEstimasi).toLocaleString('id-ID');
-      // Update juga Total Bayar otomatis di form
-      document.getElementById('krj-total-bayar').value = totalEstimasi;
-    }
+    function renderTerpasang() { const tb = document.getElementById('tbl-terpasang'); tb.innerHTML = ''; let totalSparepart = 0; if (terpasangList.length === 0) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center">Belum ada sparepart</td></tr>'; } else { terpasangList.forEach((t, i) => { const sub = t.harga * t.qty; totalSparepart += sub; tb.innerHTML += `<tr><td>${t.nama}</td><td>Rp ${Number(t.harga).toLocaleString('id-ID')}</td><td>${t.qty}</td><td>Rp ${Number(sub).toLocaleString('id-ID')}</td><td><button type="button" class="btn btn-danger btn-sm" onclick="hapusTerpasang(${i})"><i class="fas fa-times"></i></button></td></tr>`; }); } document.getElementById('total-sparepart').innerText = 'Rp ' + Number(totalSparepart).toLocaleString('id-ID'); const totalEstimasi = currentBiayaJasa + totalSparepart; document.getElementById('total-estimasi').innerText = 'Rp ' + Number(totalEstimasi).toLocaleString('id-ID'); document.getElementById('krj-total-bayar').value = totalEstimasi; }
 
-    async function transaksiSparepart(kode, qty) {
-      const ref = db.collection('sparepart').doc(kode);
-      return db.runTransaction(async (transaction) => {
-        const doc = await transaction.get(ref); if (!doc.exists) throw new Error('Sparepart ' + kode + ' tidak ditemukan');
-        const newStok = (doc.data().stok || 0) - qty; if (newStok < 0) throw new Error('Stok ' + kode + ' tidak cukup');
-        transaction.update(ref, { stok: newStok });
-      });
-    }
+    async function transaksiSparepart(kode, qty) { const ref = db.collection('sparepart').doc(kode); return db.runTransaction(async (transaction) => { const doc = await transaction.get(ref); if (!doc.exists) throw new Error('Sparepart ' + kode + ' tidak ditemukan'); const newStok = (doc.data().stok || 0) - qty; if (newStok < 0) throw new Error('Stok ' + kode + ' tidak cukup'); transaction.update(ref, { stok: newStok }); }); }
 
-    async function saveUpdateKerja(e) {
-      e.preventDefault(); showLoader();
-      try {
-        const noserv = document.getElementById('krj-noserv').value; const status = document.getElementById('krj-status').value;
-        const komponenStr = terpasangList.map(t => `${t.nama} (${t.qty})@${t.harga}`).join(', ');
-        const totalBayarCalculated = currentBiayaJasa + terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0);
-        
-        const updateObj = { status: status, komponen: komponenStr };
+    async function saveUpdateKerja(e) { e.preventDefault(); showLoader(); try { const noserv = document.getElementById('krj-noserv').value; const status = document.getElementById('krj-status').value; const komponenStr = terpasangList.map(t => `${t.nama} (${t.qty})@${t.harga}`).join(', '); const totalBayarCalculated = currentBiayaJasa + terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0); const updateObj = { status: status, komponen: komponenStr }; if (status === 'Lunas') { updateObj.biayaJasa = currentBiayaJasa; updateObj.biayaSparepart = terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0); updateObj.totalBayar = totalBayarCalculated; updateObj.tglLunas = getFormattedDate(); } await db.collection('service').doc(noserv).update(updateObj); for (const t of terpasangList) { if (t.kode !== 'TEMP') { await transaksiSparepart(t.kode, t.qty); } } closeModal('modal-kerja'); loadKerja(); showToast('Update Berhasil!'); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
 
-        // Jika status diubah menjadi Lunas, simpan juga total bayar & tgl lunas
-        if (status === 'Lunas') {
-          updateObj.biayaJasa = currentBiayaJasa;
-          updateObj.biayaSparepart = terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0);
-          updateObj.totalBayar = totalBayarCalculated;
-          updateObj.tglLunas = getFormattedDate();
-        }
+    async function loadPengambilanForm() { showLoader(); try { const snapshot = await db.collection('service').get(); const data = []; snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() })); serviceDataGlobal = data; const sel = document.getElementById('ambil-noserv'); sel.innerHTML = '<option value="">Pilih No Service</option>'; data.filter(d => d.status === 'Lunas').forEach(d => { sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan}</option>`; }); } catch (err) { console.error(err); } hideLoader(); }
 
-        await db.collection('service').doc(noserv).update(updateObj);
-        for (const t of terpasangList) { if (t.kode !== 'TEMP') { await transaksiSparepart(t.kode, t.qty); } }
-        closeModal('modal-kerja'); loadKerja(); showToast('Update Berhasil!');
-      } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader();
-    }
+    async function savePengambilan(e) { e.preventDefault(); showLoader(); try { const noserv = document.getElementById('ambil-noserv').value; await db.collection('service').doc(noserv).update({ status: 'Diambil', tglAmbil: getFormattedDate() }); showToast('Diambil!'); loadPengambilanForm(); printSST(noserv); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
 
-    // ============================================
-    // PENYELESAIAN DIHAPUS, LANGSUNG PENGAMBILAN
-    // ============================================
-    async function loadPengambilanForm() {
-      showLoader();
-      try {
-        const snapshot = await db.collection('service').get(); const data = [];
-        snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() })); serviceDataGlobal = data;
-        const sel = document.getElementById('ambil-noserv'); sel.innerHTML = '<option value="">Pilih No Service</option>';
-        data.filter(d => d.status === 'Lunas').forEach(d => { sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan}</option>`; });
-      } catch (err) { console.error(err); } hideLoader();
-    }
+    function printSST(noserv) { const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return; document.getElementById('sst-nama').innerText = ': ' + s.pelanggan; document.getElementById('sst-noserv').innerText = ': ' + s.noserv; document.getElementById('sst-hp').innerText = ': ' + (s.hp || '-'); document.getElementById('sst-jenis').innerText = ': ' + s.jenis; document.getElementById('sst-merk').innerText = ': ' + (s.merk || '-') + ' / ' + (s.type || '-'); document.getElementById('sst-seri').innerText = ': ' + (s.noseri || '-'); document.getElementById('sst-tbody').innerHTML = `<tr><td>${s.komponen || '-'}</td><td>LUNAS (Rp ${Number(s.totalBayar || 0).toLocaleString('id-ID')})</td></tr>`; window.print(); }
 
-    async function savePengambilan(e) {
-      e.preventDefault(); showLoader();
-      try {
-        const noserv = document.getElementById('ambil-noserv').value;
-        await db.collection('service').doc(noserv).update({ status: 'Diambil', tglAmbil: getFormattedDate() });
-        showToast('Diambil!'); loadPengambilanForm(); printSST(noserv);
-      } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader();
-    }
+    async function loadLaporan() { showLoader(); try { const type = document.getElementById('laporan-filter').value; const snapshot = await db.collection('service').get(); const allData = []; snapshot.forEach(doc => allData.push(doc.data())); const now = new Date(); const todayStr = getFormattedDate(); const curMonth = String(now.getMonth() + 1).padStart(2, '0'); const curYear = String(now.getFullYear()); let filtered = allData.filter(s => s.status === 'Lunas' || s.status === 'Diambil'); filtered = filtered.filter(s => { const dateStr = s.tglLunas || s.tgl || ''; const parts = dateStr.split('/'); if (type === 'harian') return dateStr === todayStr; if (type === 'bulanan') return parts[1] === curMonth && parts[2] === curYear; if (type === 'tahunan') return parts[2] === curYear; return true; }); const tb = document.querySelector('#table-laporan tbody'); tb.innerHTML = ''; if (filtered.length === 0) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center">Tidak ada data</td></tr>'; } filtered.forEach(r => { tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.pelanggan}</td><td>Rp ${Number(r.biayaJasa || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.biayaSparepart || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.totalBayar || 0).toLocaleString('id-ID')}</td><td>${r.tglLunas || r.tgl}</td></tr>`; }); } catch (err) { console.error(err); } hideLoader(); }
 
-    function printSST(noserv) {
-      const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return;
-      document.getElementById('sst-nama').innerText = ': ' + s.pelanggan; document.getElementById('sst-noserv').innerText = ': ' + s.noserv;
-      document.getElementById('sst-hp').innerText = ': ' + (s.hp || '-'); document.getElementById('sst-jenis').innerText = ': ' + s.jenis;
-      document.getElementById('sst-merk').innerText = ': ' + s.merk + ' ' + (s.model || ''); document.getElementById('sst-keluhan').innerText = ': ' + (s.keluhan || '-');
-      document.getElementById('sst-tbody').innerHTML = `<tr><td>${s.komponen || '-'}</td><td>LUNAS (Rp ${Number(s.totalBayar || 0).toLocaleString('id-ID')})</td></tr>`;
-      window.print();
-    }
+    function exportData(type) { const data = document.getElementById('table-laporan').outerHTML; if (type === 'excel') { const blob = new Blob(['\ufeff', data], { type: 'application/vnd.ms-excel' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Laporan.xls'; a.click(); } else { const win = window.open('', '_blank'); win.document.write('<html><title>Laporan</title><style>table{width:100%;border-collapse:collapse}th,td{border:1px solid #000;padding:8px;}</style><body>'); win.document.write(data); win.document.write('</body></html>'); win.print(); } }
 
-    async function loadLaporan() {
-      showLoader();
-      try {
-        const type = document.getElementById('laporan-filter').value; const snapshot = await db.collection('service').get(); const allData = [];
-        snapshot.forEach(doc => allData.push(doc.data())); const now = new Date(); const todayStr = getFormattedDate();
-        const curMonth = String(now.getMonth() + 1).padStart(2, '0'); const curYear = String(now.getFullYear());
-        let filtered = allData.filter(s => s.status === 'Lunas' || s.status === 'Diambil');
-        filtered = filtered.filter(s => { const dateStr = s.tglLunas || s.tgl || ''; const parts = dateStr.split('/'); if (type === 'harian') return dateStr === todayStr; if (type === 'bulanan') return parts[1] === curMonth && parts[2] === curYear; if (type === 'tahunan') return parts[2] === curYear; return true; });
-        const tb = document.querySelector('#table-laporan tbody'); tb.innerHTML = '';
-        if (filtered.length === 0) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center">Tidak ada data</td></tr>'; }
-        filtered.forEach(r => { tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.pelanggan}</td><td>Rp ${Number(r.biayaJasa || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.biayaSparepart || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.totalBayar || 0).toLocaleString('id-ID')}</td><td>${r.tglLunas || r.tgl}</td></tr>`; });
-      } catch (err) { console.error(err); } hideLoader();
-    }
-
-    function exportData(type) {
-      const data = document.getElementById('table-laporan').outerHTML;
-      if (type === 'excel') { const blob = new Blob(['\ufeff', data], { type: 'application/vnd.ms-excel' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Laporan.xls'; a.click(); }
-      else { const win = window.open('', '_blank'); win.document.write('<html><title>Laporan</title><style>table{width:100%;border-collapse:collapse}th,td{border:1px solid #000;padding:8px;}</style><body>'); win.document.write(data); win.document.write('</body></html>'); win.print(); }
-    }
-
-    async function seedInitialData() {
-      try {
-        const usersSnap = await db.collection('users').limit(1).get();
-        if (usersSnap.empty) {
-          await db.collection('users').doc('admin').set({ username: 'admin', password: 'admin123', nama: 'Administrator' });
-          await db.collection('jenisBarang').doc('JNS-001').set({ nama: 'TV LED', biaya: 75000 }); await db.collection('jenisBarang').doc('JNS-002').set({ nama: 'Kipas Angin', biaya: 50000 });
-          await db.collection('jenisBarang').doc('JNS-003').set({ nama: 'Rice Cooker', biaya: 40000 }); await db.collection('jenisBarang').doc('JNS-004').set({ nama: 'DVD Player', biaya: 35000 });
-          await db.collection('sparepart').doc('SPR-001').set({ nama: 'Kapasitor CBB61', jenis: '-', stok: 50, hargabeli: 5000, hargajual: 10000 }); await db.collection('sparepart').doc('SPR-002').set({ nama: 'IC Regulator', jenis: '-', stok: 30, hargabeli: 15000, hargajual: 25000 });
-          await db.collection('sparepart').doc('SPR-003').set({ nama: 'Elco 400V 100uF', jenis: '-', stok: 40, hargabeli: 8000, hargajual: 15000 }); await db.collection('sparepart').doc('SPR-004').set({ nama: 'Fuse 2A', jenis: '-', stok: 100, hargabeli: 2000, hargajual: 5000 });
-          await db.collection('sparepart').doc('SPR-005').set({ nama: 'Remote Universal', jenis: '-', stok: 20, hargabeli: 25000, hargajual: 40000 });
-          await db.collection('teknisi').doc('TKN-001').set({ nama: 'Ahmad Rizki', hp: '081234567890', status: 'Aktif' });
-          await db.collection('counters').doc('jenisBarangCounter').set({ nextNo: 4 }); await db.collection('counters').doc('sparepartCounter').set({ nextNo: 6 });
-          await db.collection('counters').doc('teknisiCounter').set({ nextNo: 2 }); await db.collection('counters').doc('serviceCounter').set({ nextNo: 1 });
-          console.log('Data awal berhasil dibuat.');
-        }
-      } catch (err) { console.error('Seed error:', err); }
-    }
+    async function seedInitialData() { try { const usersSnap = await db.collection('users').limit(1).get(); if (usersSnap.empty) { await db.collection('users').doc('admin').set({ username: 'admin', password: 'admin123', nama: 'Administrator' }); await db.collection('jenisBarang').doc('JNS-001').set({ nama: 'TV LED', biaya: 75000 }); await db.collection('jenisBarang').doc('JNS-002').set({ nama: 'Kipas Angin', biaya: 50000 }); await db.collection('jenisBarang').doc('JNS-003').set({ nama: 'Rice Cooker', biaya: 40000 }); await db.collection('jenisBarang').doc('JNS-004').set({ nama: 'DVD Player', biaya: 35000 }); await db.collection('sparepart').doc('SPR-001').set({ nama: 'Kapasitor CBB61', jenis: '-', stok: 50, hargabeli: 5000, hargajual: 10000 }); await db.collection('sparepart').doc('SPR-002').set({ nama: 'IC Regulator', jenis: '-', stok: 30, hargabeli: 15000, hargajual: 25000 }); await db.collection('sparepart').doc('SPR-003').set({ nama: 'Elco 400V 100uF', jenis: '-', stok: 40, hargabeli: 8000, hargajual: 15000 }); await db.collection('sparepart').doc('SPR-004').set({ nama: 'Fuse 2A', jenis: '-', stok: 100, hargabeli: 2000, hargajual: 5000 }); await db.collection('sparepart').doc('SPR-005').set({ nama: 'Remote Universal', jenis: '-', stok: 20, hargabeli: 25000, hargajual: 40000 }); await db.collection('teknisi').doc('TKN-001').set({ nama: 'Ahmad Rizki', hp: '081234567890', status: 'Aktif' }); await db.collection('counters').doc('jenisBarangCounter').set({ nextNo: 4 }); await db.collection('counters').doc('sparepartCounter').set({ nextNo: 6 }); await db.collection('counters').doc('teknisiCounter').set({ nextNo: 2 }); await db.collection('counters').doc('serviceCounter').set({ nextNo: 1 }); console.log('Data awal berhasil dibuat.'); } } catch (err) { console.error('Seed error:', err); } }
 
     window.onload = async function() { hideLoader(); await seedInitialData(); document.getElementById('login-screen').style.display = 'flex'; };
   </script>
