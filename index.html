@@ -42,7 +42,7 @@
         #appLayout { display:none; }
         #appLayout.show { display:block; }
         .sidebar { width:270px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);position:fixed;left:0;top:0;z-index:50;transition:transform 0.3s ease,background 0.3s; }
-        .main-content { margin-left:270px;min-height:100vh;transition:background 0.3s; }
+        .main-content { margin-left:270px;min-height:100vh;transition:margin-left 0.3s ease,background 0.3s; }
         .nav-item { display:flex;align-items:center;gap:12px;padding:11px 20px;margin:3px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s ease;color:var(--muted);font-weight:500;font-size:14px; }
         .nav-item:hover { background:rgba(16,185,129,0.08);color:var(--text); }
         .nav-item.active { background:rgba(16,185,129,0.15);color:var(--accent);box-shadow:inset 3px 0 0 var(--accent); }
@@ -89,8 +89,7 @@
         @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5} }
         .page-section { display:none;animation:pageIn 0.3s ease; } .page-section.active { display:block; }
         @keyframes pageIn { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
-        @media (max-width:768px) { .sidebar{transform:translateX(-100%);} .sidebar.open{transform:translateX(0);} .main-content{margin-left:0;} .mobile-toggle{display:flex!important;} }
-        .mobile-toggle { display:none!important; }
+        
         .receipt-box { background:var(--receipt-bg);color:var(--receipt-text);padding:30px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;max-width:350px;margin:0 auto; }
         .receipt-box h3 { text-align:center;font-size:16px;margin-bottom:4px; }
         .receipt-box .divider { border-top:1px dashed #555;margin:10px 0; }
@@ -104,6 +103,35 @@
         .theme-toggle .fa-sun { right:8px;color:#F59E0B;opacity:0.3;transition:opacity 0.3s; }
         [data-theme="light"] .theme-toggle .fa-moon { opacity:0.3; }
         [data-theme="light"] .theme-toggle .fa-sun { opacity:1; }
+
+        /* ===== TAMBAHAN RESPONSIF MOBILE ===== */
+        @media (max-width: 768px) {
+            .sidebar { transform:translateX(-100%); z-index: 60; }
+            .sidebar.open { transform:translateX(0); }
+            .main-content { margin-left:0; }
+            .mobile-toggle { display:flex!important; }
+            
+            .main-content header.sticky { padding: 12px 16px; }
+            .main-content .p-8 { padding: 16px; }
+            
+            .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4,
+            .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3,
+            .grid-cols-1.lg\:grid-cols-3,
+            .grid-cols-1.lg\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .data-card .p-5 { padding: 16px; }
+            
+            table { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+            .overflow-x-auto { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
+            
+            .form-input { font-size: 16px; /* Prevent zoom on iOS */ }
+            
+            .modal-box { width: 95%; max-height: 90vh; }
+            .toast-container { top: 10px; right: 10px; left: 10px; }
+            .toast { min-width: auto; font-size: 12px; padding: 10px 14px; }
+        }
     </style>
 </head>
 <body>
@@ -153,9 +181,15 @@
             </div>
         </aside>
 
+        <!-- OVERLAY SIDEBAR MOBILE -->
+        <div id="sidebarOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:55;" onclick="document.getElementById('sidebar').classList.remove('open');this.style.display='none'"></div>
+
         <main class="main-content">
             <header class="sticky top-0 z-40 px-8 py-4 flex items-center justify-between" style="background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)">
-                <div class="flex items-center gap-4"><button class="mobile-toggle items-center justify-center w-10 h-10 rounded-lg" style="background:var(--card);border:1px solid var(--border)" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars" style="color:var(--muted)"></i></button><h2 class="text-lg font-bold" id="pageTitle">Dashboard</h2></div>
+                <div class="flex items-center gap-4">
+                    <button class="mobile-toggle items-center justify-center w-10 h-10 rounded-lg" style="background:var(--card);border:1px solid var(--border)" onclick="let sb=document.getElementById('sidebar');sb.classList.toggle('open');document.getElementById('sidebarOverlay').style.display=sb.classList.contains('open')?'block':'none'"><i class="fas fa-bars" style="color:var(--muted)"></i></button>
+                    <h2 class="text-lg font-bold" id="pageTitle">Dashboard</h2>
+                </div>
                 <div class="flex items-center gap-4">
                     <button class="theme-toggle" onclick="toggleTheme()" title="Ganti Tema" aria-label="Ganti tema terang/gelap">
                         <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
@@ -295,7 +329,6 @@
         const next=current==='dark'?'light':'dark';
         html.setAttribute('data-theme',next);
         localStorage.setItem('theme',next);
-        // Re-render charts on theme change for better visibility
         if(currentPage==='dashboard')renderDashboard();
         if(currentPage==='laporan')renderLaporan();
     }
@@ -323,7 +356,7 @@
     function downloadStrukRiwayatPDF(id){const s=allServices.find(x=>x.id===id);if(!s)return;const bs=Number(s.biayaService||0),bp=Number(s.biayaSparepart||0),ct2=s.catatanTeknisi||'',tl=bs+bp;const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:[80,280]});const pW=80,mL=4,mR=4,cW=pW-mL-mR;let y=6;const dA=s.tanggalAmbil?.toDate?s.tanggalAmbil.toDate():new Date(),tg=dA.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}),jm=dA.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});function cte(t,yp,s,st){doc.setFontSize(s);doc.setFont('helvetica',st==='bold'?'bold':'normal');const tw=doc.getTextWidth(t);doc.text(t,mL+(cW-tw)/2,yp);}function dle(yp){doc.setLineDashPattern([1.5,1],0);doc.line(mL,yp,pW-mR,yp);doc.setLineDashPattern([],0);}function afe(l,v,yp,lw){doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(l,mL,yp);doc.setFont('helvetica','normal');const w=lw||22,ln=doc.splitTextToSize(v||'-',cW-w);doc.text(ln,mL+w,yp);return Math.max(4,ln.length*3.5);}cte('SERVICE PRO',y,12,'bold');y+=5;cte('Service Elektronik Profesional',y,6,'normal');y+=4;cte('STRUK PENGAMBILAN BARANG',y,8,'bold');y+=6;dle(y);y+=4;y+=afe('No. Service',s.noService,y);y+=afe('Tanggal',tg,y);y+=afe('Jam',jm,y);y+=2;dle(y);y+=4;doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('PELANGGAN',mL,y);y+=5;y+=afe('Nama',s.namaPelanggan,y);y+=afe('Telepon',s.noTelp||'-',y);y+=afe('Alamat',s.alamat||'-',y,22);y+=2;dle(y);y+=4;doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('BARANG',mL,y);y+=5;y+=afe('Jenis',s.jenisBarang,y);y+=afe('Merek',s.merek,y);y+=afe('Type',s.typeBarang||'-',y);y+=afe('No. Seri',s.noSeri||'-',y,22);y+=afe('Kelengkapan',s.kelengkapan||'-',y,22);y+=afe('Keluhan',s.keluhan||'-',y,22);if(ct2)y+=afe('Catatan',ct2,y,22);y+=2;dle(y);y+=4;if(s.sparepartDigunakan&&s.sparepartDigunakan.length>0){doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('SPAREPART',mL,y);y+=5;s.sparepartDigunakan.forEach(sp=>{doc.setFontSize(7);doc.setFont('helvetica','normal');const nl=doc.splitTextToSize(`${sp.nama} x${sp.qty}`,cW-22);doc.text(nl,mL,y);const ss=formatRupiah(sp.subtotal);doc.text(ss,pW-mR-doc.getTextWidth(ss),y);y+=Math.max(4,nl.length*3.5);});y+=2;dle(y);y+=4;}doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text('Biaya Service',mL,y);doc.setFont('helvetica','normal');const bs1=formatRupiah(bs);doc.text(bs1,pW-mR-doc.getTextWidth(bs1),y);y+=4;doc.setFont('helvetica','bold');doc.text('Biaya Sparepart',mL,y);doc.setFont('helvetica','normal');const bp1=formatRupiah(bp);doc.text(bp1,pW-mR-doc.getTextWidth(bp1),y);y+=5;dle(y);y+=4;doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('TOTAL',mL,y);const ts1=formatRupiah(tl);doc.text(ts1,pW-mR-doc.getTextWidth(ts1),y);y+=6;dle(y);y+=5;doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Petugas,',mL+2,y);doc.text('Pemilik,',mL+cW-25,y);y+=16;doc.text('(.................)',mL+2,y);doc.text('(.................)',mL+cW-25,y);y+=6;dle(y);y+=4;cte('Terima kasih atas kepercayaan Anda',y,6,'normal');y+=3;cte('Barang diterima bukan tanggung jawab bengkel',y,5.5,'normal');doc.save(`Struk_${s.noService}.pdf`);showToast('Struk PDF berhasil diunduh');}
 
     // ===== NAVIGASI =====
-    function navigate(page){currentPage=page;document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const section=document.getElementById(`page-${page}`);if(section)section.classList.add('active');const navItem=document.querySelector(`.nav-item[data-page="${page}"]`);if(navItem)navItem.classList.add('active');const titles={dashboard:'Dashboard',terima:'Terima Barang',daftar:'Daftar Barang Service',pengambilan:'Pengambilan Barang',jenis:'Jenis Barang & Biaya Service',stok:'Stok Sparepart',riwayat:'Riwayat Service',laporan:'Laporan'};document.getElementById('pageTitle').textContent=titles[page]||'Dashboard';document.getElementById('sidebar').classList.remove('open');if(page==='dashboard')renderDashboard();else if(page==='daftar')renderDaftar();else if(page==='pengambilan')renderPengambilan();else if(page==='jenis')renderJenis();else if(page==='stok')renderStok();else if(page==='riwayat')renderRiwayat();else if(page==='laporan')renderLaporan();else if(page==='terima')renderTerima();}
+    function navigate(page){currentPage=page;document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const section=document.getElementById(`page-${page}`);if(section)section.classList.add('active');const navItem=document.querySelector(`.nav-item[data-page="${page}"]`);if(navItem)navItem.classList.add('active');const titles={dashboard:'Dashboard',terima:'Terima Barang',daftar:'Daftar Barang Service',pengambilan:'Pengambilan Barang',jenis:'Jenis Barang & Biaya Service',stok:'Stok Sparepart',riwayat:'Riwayat Service',laporan:'Laporan'};document.getElementById('pageTitle').textContent=titles[page]||'Dashboard';document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').style.display='none';if(page==='dashboard')renderDashboard();else if(page==='daftar')renderDaftar();else if(page==='pengambilan')renderPengambilan();else if(page==='jenis')renderJenis();else if(page==='stok')renderStok();else if(page==='riwayat')renderRiwayat();else if(page==='laporan')renderLaporan();else if(page==='terima')renderTerima();}
     
     async function loadAllData(){try{const[svcSnap,jenisSnap,spareSnap]=await Promise.all([db.collection('services').orderBy('tanggalMasuk','desc').get(),db.collection('jenisBarang').orderBy('nama').get(),db.collection('sparepart').orderBy('nama').get()]);allServices=svcSnap.docs.map(d=>({id:d.id,...d.data()}));allJenis=jenisSnap.docs.map(d=>({id:d.id,...d.data()}));allSparepart=spareSnap.docs.map(d=>({id:d.id,...d.data()}));}catch(err){console.error('Load error:',err);showToast('Gagal memuat data: '+err.message,'error');}}
 
@@ -400,7 +433,6 @@
     
     async function init(){loadTheme();setInterval(updateClock,1000);updateClock();await loadAllData();renderDashboard();}
 
-    // Start theme load on page load
     loadTheme();
     </script>
 </body>
