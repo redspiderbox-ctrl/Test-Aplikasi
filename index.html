@@ -1,1 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Elektronika</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root { --primary: #1e88e5; --primary-dark: #1565c0; --bg: #f4f6f9; --text: #333; --card-bg: #fff; --sidebar-bg: #fff; --border: #e0e0e0; }
+    .dark-mode { --primary: #42a5f5; --primary-dark: #90caf9; --bg: #121212; --text: #e0e0e0; --card-bg: #1e1e1e; --sidebar-bg: #1e1e1e; --border: #333; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--bg); color: var(--text); transition: 0.3s; }
+
+    #login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+    .login-box { background: var(--card-bg); padding: 40px; border-radius: 10px; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
+    .login-box h2 { margin-bottom: 20px; color: var(--primary); }
+    .login-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text); }
+    .login-box button { width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+
+    #app { display: none; }
+    .sidebar { width: 260px; height: 100vh; position: fixed; left: 0; background: var(--sidebar-bg); border-right: 1px solid var(--border); transition: 0.3s; z-index: 100; overflow-y: auto; display: flex; flex-direction: column; }
+    .sidebar h3 { padding: 20px; background: var(--primary); color: #fff; text-align: center; }
+    .sidebar a { display: flex; align-items: center; padding: 15px 20px; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); transition: 0.2s; font-size: 15px; }
+    .sidebar a i { margin-right: 10px; width: 20px; text-align: center; color: var(--primary); }
+    .sidebar a:hover, .sidebar a.active { background: var(--primary); color: #fff; }
+    .sidebar a:hover i, .sidebar a.active i { color: #fff; }
+
+    .main-content { margin-left: 260px; padding: 20px; transition: 0.3s; }
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card-bg); border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .toggle-dark { cursor: pointer; font-size: 20px; color: var(--text); }
+
+    .card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 20px; }
+    .card { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; }
+    .card-icon { width: 50px; height: 50px; background: var(--primary); color: #fff; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-right: 15px; }
+    .card-info h3 { font-size: 13px; color: #888; }.card-info h1 { font-size: 22px; color: var(--primary); }
+
+    .content-box { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px; }
+    .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; color: #fff; transition: 0.2s; font-weight: bold; }
+    .btn-primary { background: var(--primary); }.btn-danger { background: #e53935; }.btn-success { background: #43a047; }.btn-warning { background: #fb8c00; }.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; display: block; overflow-x: auto; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; white-space: nowrap; }
+    th { background: var(--primary); color: #fff; }
+
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: flex-start; z-index: 1000; animation: fadeIn 0.3s; padding-top: 50px; }
+    .modal-content { background: var(--card-bg); padding: 25px; border-radius: 8px; width: 750px; max-width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: slideDown 0.3s; }
+    .modal-content h2 { margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+    .form-group { margin-bottom: 15px; }.form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--text); }
+    .form-group input:read-only, .form-group textarea:read-only { background: #e9ecef; opacity: 0.8; cursor: not-allowed; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .loader { display: none; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; position: fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9999; background: rgba(255,255,255,0.8); border-radius: 50%; padding: 20px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    @media (max-width: 768px) { .sidebar { left: -260px; } .sidebar.active { left: 0; } .main-content { margin-left: 0; } #menu-toggle { display: block; } }
+    #menu-toggle { display: none; font-size: 24px; cursor: pointer; margin-right: 15px; }
+
+    .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; color: #fff; font-weight: bold; }
+    .bg-blue { background: #1e88e5; }.bg-orange { background: #fb8c00; }.bg-red { background: #e53935; }.bg-green { background: #43a047; }.bg-grey { background: #757575; }.bg-cyan { background: #00acc1; }
+
+    /* CSS UNTUK CETAK (PERSIS LAYOUT MODAL DETAIL) */
+    .print-area { display: none; background: #fff; color: #000; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    @media print { body * { visibility: hidden; } .print-area, .print-area * { visibility: visible; } .print-area { display: block; position: absolute; left: 0; top:0; width: 100%; } }
+    .print-area h2 { text-align: center; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+    .print-area .grid-print { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 20px; }
+    .print-area .grid-print.full-width { grid-template-columns: 1fr; }
+    .print-area .box-print { border: 1px solid #000; padding: 8px; font-size: 13px; }
+    .print-area .box-print label { display: block; font-weight: bold; font-size: 11px; margin-bottom: 3px; color: #555; }
+    .print-area .box-print .val { font-size: 14px; color: #000; min-height: 18px; }
+    .print-area .ttd-box { display: flex; justify-content: space-between; margin-top: 50px; }.print-area .ttd-box div { text-align: center; width: 40%; }
+  </style>
+</head>
+<body>
+
+  <div id="loader" class="loader"></div>
+
+  <div id="login-screen" style="display:none;">
+    <div class="login-box">
+      <i class="fas fa-laptop-medical" style="font-size:50px; color:var(--primary); margin-bottom:10px;"></i>
+      <h2>Service Elektronika</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <p id="login-error" style="color:red; margin-top:10px; display:none;"></p>
+    </div>
+  </div>
+
+  <div id="app">
+    <div class="sidebar" id="sidebar">
+      <h3><i class="fas fa-bolt"></i> ElService</h3>
+      <a href="#" onclick="showPage('dashboard')" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <div style="padding:10px 20px; background:var(--bg); font-size:12px; font-weight:bold; color:#888;">ALUR KERJA BARU</div>
+      <a href="#" onclick="showPage('penerimaan')"><i class="fas fa-inbox"></i> Penerimaan Barang</a>
+      <a href="#" onclick="showPage('antrian')"><i class="fas fa-screwdriver"></i> Antrian Servis</a>
+      <a href="#" onclick="showPage('pembayaran')"><i class="fas fa-cash-register"></i> Validasi & Bayar</a>
+      <a href="#" onclick="showPage('pengambilan')"><i class="fas fa-hand-holding-box"></i> Pengambilan</a>
+      <div style="padding:10px 20px; background:var(--bg); font-size:12px; font-weight:bold; color:#888; margin-top:10px;">MASTER DATA</div>
+      <a href="#" onclick="showPage('jenisbarang')"><i class="fas fa-tags"></i> Jenis Barang</a>
+      <a href="#" onclick="showPage('sparepart')"><i class="fas fa-puzzle-piece"></i> Data Sparepart</a>
+      <a href="#" onclick="showPage('teknisi')"><i class="fas fa-user-cog"></i> Data Teknisi</a>
+      <a href="#" onclick="showPage('laporan')"><i class="fas fa-file-alt"></i> Laporan</a>
+      <a href="#" onclick="doLogout()" style="margin-top:auto; background:#e53935; color:#fff;"><i class="fas fa-sign-out-alt" style="color:#fff;"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+      <div class="navbar">
+        <div style="display:flex; align-items:center;">
+          <i class="fas fa-bars" id="menu-toggle" onclick="toggleSidebar()"></i>
+          <h2 id="page-title">Dashboard</h2>
+        </div>
+        <i class="fas fa-moon toggle-dark" onclick="toggleDark()"></i>
+      </div>
+
+      <div id="page-dashboard" class="page">
+        <div class="card-container" id="dash-cards"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div class="content-box"><canvas id="chartService"></canvas></div>
+          <div class="content-box"><canvas id="chartPendapatan"></canvas></div>
+        </div>
+      </div>
+
+      <div id="page-penerimaan" class="page" style="display:none;">
+        <div class="content-box">
+          <div class="content-header">
+            <h3>Penerimaan Barang Baru</h3>
+            <button class="btn btn-primary" onclick="openModal('modal-terima')"><i class="fas fa-plus"></i> Terima Barang</button>
+          </div>
+          <table id="table-penerimaan">
+            <thead><tr><th>No Service</th><th>Tgl</th><th>Pelanggan</th><th>No HP</th><th>Alamat</th><th>Barang</th><th>Type</th><th>No. Seri</th><th>Keluhan</th><th>Kelengkapan</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="page-antrian" class="page" style="display:none;">
+        <div class="content-box">
+          <div class="content-header"><h3>Antrian Servis (Proses Pengerjaan)</h3></div>
+          <table id="table-antrian">
+            <thead><tr><th>No Service</th><th>Tgl</th><th>Pelanggan</th><th>Barang</th><th>Keluhan</th><th>Status</th><th>Sparepart</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="page-pembayaran" class="page" style="display:none;">
+        <div class="content-box">
+          <div class="content-header"><h3>Validasi Selesai & Pembayaran</h3></div>
+          <form id="form-pembayaran" onsubmit="savePembayaran(event)">
+            <div class="form-group"><label>Pilih No Service (Status FINISH)</label><select id="bayar-noserv" required onchange="loadDetailPembayaran()"></select></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+              <div class="form-group"><label>Biaya Jasa</label><input type="number" id="bayar-jasa" required></div>
+              <div class="form-group"><label>Biaya Sparepart</label><input type="number" id="bayar-sparepart" required></div>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Proses Lunas</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="page-pengambilan" class="page" style="display:none;">
+        <div class="content-box no-print">
+          <div class="content-header"><h3>Pengambilan Barang (Lunas)</h3></div>
+          <form id="form-pengambilan" onsubmit="savePengambilan(event)">
+            <div class="form-group"><label>Pilih No Service</label><select id="ambil-noserv" required></select></div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-hand-holding"></i> Serahkan & Cetak SST</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="page-jenisbarang" class="page" style="display:none;"><div class="content-box"><div class="content-header"><h3>Data Jenis Barang / Kategori</h3><button class="btn btn-primary" onclick="openModal('modal-jenis')"><i class="fas fa-plus"></i> Tambah Jenis</button></div><table id="table-jenis"><thead><tr><th>ID</th><th>Nama Jenis Barang</th><th>Biaya Service</th><th>Aksi</th></tr></thead><tbody></tbody></table></div></div>
+      <div id="page-sparepart" class="page" style="display:none;"><div class="content-box"><div class="content-header"><input type="text" id="search-sparepart" placeholder="Cari Sparepart..." oninput="filterSparepart()"><button class="btn btn-primary" onclick="openModal('modal-sparepart')"><i class="fas fa-plus"></i> Tambah Sparepart</button></div><table id="table-sparepart"><thead><tr><th>Kode</th><th>Nama Sparepart</th><th>Stok</th><th>Harga Beli</th><th>Harga Jual</th><th>Aksi</th></tr></thead><tbody></tbody></table></div></div>
+      <div id="page-teknisi" class="page" style="display:none;"><div class="content-box"><div class="content-header"><button class="btn btn-primary" onclick="openModal('modal-teknisi')"><i class="fas fa-plus"></i> Tambah Teknisi</button></div><table id="table-teknisi"><thead><tr><th>ID</th><th>Nama</th><th>No HP</th><th>Status</th><th>Aksi</th></tr></thead><tbody></tbody></table></div></div>
+      <div id="page-laporan" class="page" style="display:none;"><div class="content-box"><div class="content-header"><select id="laporan-filter" onchange="loadLaporan()"><option value="harian">Harian</option><option value="bulanan" selected>Bulanan</option><option value="tahunan">Tahunan</option></select><div><button class="btn btn-danger" onclick="exportData('pdf')"><i class="fas fa-file-pdf"></i> PDF</button><button class="btn btn-success" onclick="exportData('excel')"><i class="fas fa-file-excel"></i> Excel</button></div></div><table id="table-laporan"><thead><tr><th>No Service</th><th>Pelanggan</th><th>Jasa</th><th>Sparepart</th><th>Total</th><th>Tgl</th></tr></thead><tbody></tbody></table></div></div>
+    </div>
+  </div>
+
+  <!-- VERSI 1: TANDA TERIMA (Hanya Detail Pelanggan & Barang, TANPA Harga & Komponen) -->
+  <div id="print-tanda-terima" class="print-area">
+    <h2>Tanda Terima Barang</h2>
+    <div class="grid-print">
+      <div class="box-print"><label>No Service</label><div class="val" id="tt-noserv"></div></div>
+      <div class="box-print"><
