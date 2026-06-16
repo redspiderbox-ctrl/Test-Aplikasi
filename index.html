@@ -98,7 +98,7 @@
       <a href="#" onclick="showPage('dashboard')" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
       <div style="padding:10px 20px; background:var(--bg); font-size:12px; font-weight:bold; color:#888;">ALUR KERJA</div>
       <a href="#" onclick="showPage('kerja')"><i class="fas fa-screwdriver"></i> Barang Siap Kerja</a>
-      <a href="#" onclick="showPage('penyelesaian')"><i class="fas fa-check-circle"></i> Penyelesaian</a>
+      <!-- MENU PENYELESAIAN DIHAPUS DI SINI -->
       <a href="#" onclick="showPage('pengambilan')"><i class="fas fa-hand-holding-box"></i> Pengambilan</a>
       <div style="padding:10px 20px; background:var(--bg); font-size:12px; font-weight:bold; color:#888; margin-top:10px;">MASTER DATA</div>
       <a href="#" onclick="showPage('jenisbarang')"><i class="fas fa-tags"></i> Jenis Barang</a>
@@ -126,7 +126,7 @@
         </div>
       </div>
 
-      <!-- Barang Siap Kerja (DITAMBAHKAN KOLOM NO HP & KELUHAN) -->
+      <!-- Barang Siap Kerja -->
       <div id="page-kerja" class="page" style="display:none;">
         <div class="content-box">
           <div class="content-header">
@@ -140,20 +140,7 @@
         </div>
       </div>
 
-      <!-- Penyelesaian -->
-      <div id="page-penyelesaian" class="page" style="display:none;">
-        <div class="content-box">
-          <div class="content-header"><h3>Penyelesaian Service (FINISH)</h3></div>
-          <form id="form-penyelesaian" onsubmit="savePenyelesaian(event)">
-            <div class="form-group"><label>Pilih No Service</label><select id="pen-noserv" required></select></div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-              <div class="form-group"><label>Biaya Jasa</label><input type="number" id="pen-jasa" required></div>
-              <div class="form-group"><label>Biaya Sparepart</label><input type="number" id="pen-sparepart" required></div>
-            </div>
-            <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Proses Pembayaran</button>
-          </form>
-        </div>
-      </div>
+      <!-- HALAMAN PENYELESAIAN DIHAPUS DI SINI -->
 
       <!-- Pengambilan -->
       <div id="page-pengambilan" class="page" style="display:none;">
@@ -231,7 +218,6 @@
   </div>
 
   <!-- ==================== PRINT AREAS ==================== -->
-  <!-- TANDA TERIMA BARANG (Diperbarui: Identitas Pelanggan Lengkap) -->
   <div id="print-tanda-terima" class="print-area">
     <div style="display:flex; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px;">
       <h2 style="margin:0; text-align:left; font-size:18px;">TANDA TERIMA BARANG</h2>
@@ -245,12 +231,7 @@
       <tr style="border:none;"><td style="border:none;">Keluhan</td><td style="border:none;" id="tt-keluhan"></td></tr>
     </table>
     <table>
-      <thead>
-        <tr>
-          <th>Deskripsi Barang</th>
-          <th>Estimasi Biaya</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Deskripsi Barang</th><th>Estimasi Biaya</th></tr></thead>
       <tbody id="tt-tbody"></tbody>
     </table>
     <div class="ttd-box">
@@ -259,7 +240,6 @@
     </div>
   </div>
 
-  <!-- SST (Surat Serah Terima) -->
   <div id="print-sst" class="print-area">
     <h2>SURAT SERAH TERIMA BARANG</h2>
     <table style="width:100%; margin-bottom:15px; border:none;">
@@ -330,16 +310,24 @@
             </tfoot>
           </table>
         </div>
-        <h4 style="margin-bottom:10px; color:var(--primary);">Update Status</h4>
-        <div class="form-group">
-          <label>Status Pengerjaan</label>
-          <select id="krj-status" required>
-            <option value="Diterima">Diterima (Antri)</option>
-            <option value="READY">READY</option>
-            <option value="TERTUNDA">TERTUNDA</option>
-            <option value="BATAL">BATAL</option>
-            <option value="FINISH">FINISH</option>
-          </select>
+        <h4 style="margin-bottom:10px; color:var(--primary);">Update Status & Pembayaran</h4>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label>Status Pengerjaan</label>
+            <!-- DITAMBAHKAN: Opsi Lunas -->
+            <select id="krj-status" required>
+              <option value="Diterima">Diterima (Antri)</option>
+              <option value="READY">READY</option>
+              <option value="TERTUNDA">TERTUNDA</option>
+              <option value="BATAL">BATAL</option>
+              <option value="FINISH">FINISH</option>
+              <option value="Lunas">Lunas (Pembayaran Diterima)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Total Bayar (Otomatis dari Estimasi)</label>
+            <input type="number" id="krj-total-bayar" readonly style="background:#e9ecef; opacity:0.8;">
+          </div>
         </div>
         <div style="text-align:right; margin-top:15px;">
           <button type="button" class="btn btn-danger" onclick="closeModal('modal-kerja')">Batal</button>
@@ -427,61 +415,30 @@
 
     function showLoader() { document.getElementById('loader').style.display = 'block'; }
     function hideLoader() { document.getElementById('loader').style.display = 'none'; }
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      document.getElementById('toast-msg').innerText = msg;
-      t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 3000);
-    }
-    function getFormattedDate() {
-      const d = new Date();
-      return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
-    }
+    function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
+    function getFormattedDate() { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); }
 
     async function generateId(prefix, counterName, padLength) {
       const counterRef = db.collection('counters').doc(counterName);
       return db.runTransaction(async (transaction) => {
-        const doc = await transaction.get(counterRef);
-        let nextNo = 1;
+        const doc = await transaction.get(counterRef); let nextNo = 1;
         if (doc.exists) { nextNo = (doc.data().nextNo || 0) + 1; }
-        transaction.set(counterRef, { nextNo: nextNo });
-        return prefix + String(nextNo).padStart(padLength, '0');
+        transaction.set(counterRef, { nextNo: nextNo }); return prefix + String(nextNo).padStart(padLength, '0');
       });
     }
 
     async function doLogin() {
-      showLoader();
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
+      showLoader(); const username = document.getElementById('username').value.trim(); const password = document.getElementById('password').value;
       try {
         const snapshot = await db.collection('users').where('username', '==', username).where('password', '==', password).limit(1).get();
-        if (!snapshot.empty) {
-          document.getElementById('login-screen').style.display = 'none';
-          document.getElementById('app').style.display = 'block';
-          loadDashboard();
-        } else {
-          document.getElementById('login-error').innerText = 'Username atau Password salah!';
-          document.getElementById('login-error').style.display = 'block';
-        }
-      } catch (err) {
-        document.getElementById('login-error').innerText = 'Error: ' + err.message;
-        document.getElementById('login-error').style.display = 'block';
-      }
+        if (!snapshot.empty) { document.getElementById('login-screen').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadDashboard(); }
+        else { document.getElementById('login-error').innerText = 'Username atau Password salah!'; document.getElementById('login-error').style.display = 'block'; }
+      } catch (err) { document.getElementById('login-error').innerText = 'Error: ' + err.message; document.getElementById('login-error').style.display = 'block'; }
       hideLoader();
     }
 
-    function doLogout() {
-      document.getElementById('app').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('username').value = '';
-      document.getElementById('password').value = '';
-    }
-
-    function toggleDark() {
-      document.body.classList.toggle('dark-mode');
-      document.querySelector('.toggle-dark').classList.toggle('fa-moon');
-      document.querySelector('.toggle-dark').classList.toggle('fa-sun');
-    }
+    function doLogout() { document.getElementById('app').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('username').value = ''; document.getElementById('password').value = ''; }
+    function toggleDark() { document.body.classList.toggle('dark-mode'); document.querySelector('.toggle-dark').classList.toggle('fa-moon'); document.querySelector('.toggle-dark').classList.toggle('fa-sun'); }
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -495,253 +452,98 @@
       openModalOrig(id);
     };
 
-    const pageTitles = { dashboard:'Dashboard', kerja:'Barang Siap Kerja', penyelesaian:'Penyelesaian', pengambilan:'Pengambilan', jenisbarang:'Jenis Barang', sparepart:'Data Sparepart', teknisi:'Data Teknisi', laporan:'Laporan' };
+    const pageTitles = { dashboard:'Dashboard', kerja:'Barang Siap Kerja', pengambilan:'Pengambilan', jenisbarang:'Jenis Barang', sparepart:'Data Sparepart', teknisi:'Data Teknisi', laporan:'Laporan' };
     function showPage(page) {
-      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-      document.getElementById('page-'+page).style.display = 'block';
-      document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-      document.getElementById('sidebar').classList.remove('active');
-      document.getElementById('page-title').innerText = pageTitles[page] || 'Dashboard';
-
-      if (page === 'dashboard') loadDashboard();
-      if (page === 'kerja') loadKerja();
-      if (page === 'penyelesaian') loadPenyelesaianForm();
-      if (page === 'pengambilan') loadPengambilanForm();
-      if (page === 'jenisbarang') loadJenisBarang();
-      if (page === 'sparepart') loadSparepart();
-      if (page === 'teknisi') loadTeknisi();
-      if (page === 'laporan') loadLaporan();
+      document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); document.getElementById('page-'+page).style.display = 'block';
+      document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active')); event.currentTarget.classList.add('active');
+      document.getElementById('sidebar').classList.remove('active'); document.getElementById('page-title').innerText = pageTitles[page] || 'Dashboard';
+      if (page === 'dashboard') loadDashboard(); if (page === 'kerja') loadKerja(); if (page === 'pengambilan') loadPengambilanForm();
+      if (page === 'jenisbarang') loadJenisBarang(); if (page === 'sparepart') loadSparepart(); if (page === 'teknisi') loadTeknisi(); if (page === 'laporan') loadLaporan();
     }
 
     async function loadDashboard() {
       showLoader();
       try {
-        const snapshot = await db.collection('service').get();
-        const all = [];
-        snapshot.forEach(doc => all.push({ noserv: doc.id, ...doc.data() }));
-        const now = new Date(); const curYear = now.getFullYear();
-        let masuk = all.length;
-        let tertunda = all.filter(s => s.status === 'TERTUNDA').length;
+        const snapshot = await db.collection('service').get(); const all = [];
+        snapshot.forEach(doc => all.push({ noserv: doc.id, ...doc.data() })); const now = new Date(); const curYear = now.getFullYear();
+        let masuk = all.length; let tertunda = all.filter(s => s.status === 'TERTUNDA').length;
         let selesai = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').length;
         let pendapatan = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').reduce((sum, s) => sum + (s.totalBayar || 0), 0);
         let servPerBulan = Array(12).fill(0); let pendPerBulan = Array(12).fill(0);
-        all.forEach(s => {
-          const parts = s.tgl ? s.tgl.split('/') : null;
-          if (parts && parts.length === 3) {
-            const month = parseInt(parts[1]) - 1; const year = parseInt(parts[2]);
-            if (year === curYear) { servPerBulan[month]++; if (s.status === 'Lunas' || s.status === 'Diambil') { pendPerBulan[month] += (s.totalBayar || 0); } }
-          }
-        });
-        document.getElementById('dash-cards').innerHTML = `
-          <div class="card"><div class="card-icon"><i class="fas fa-box-open"></i></div><div class="card-info"><h3>Total Masuk</h3><h1>${masuk}</h1></div></div>
-          <div class="card"><div class="card-icon" style="background:#fb8c00"><i class="fas fa-pause-circle"></i></div><div class="card-info"><h3>Tertunda</h3><h1>${tertunda}</h1></div></div>
-          <div class="card"><div class="card-icon" style="background:#43a047"><i class="fas fa-check-double"></i></div><div class="card-info"><h3>Finish/Lunas</h3><h1>${selesai}</h1></div></div>
-          <div class="card"><div class="card-icon" style="background:#e53935"><i class="fas fa-money-bill-wave"></i></div><div class="card-info"><h3>Pendapatan</h3><h1>Rp ${Number(pendapatan).toLocaleString('id-ID')}</h1></div></div>`;
+        all.forEach(s => { const parts = s.tgl ? s.tgl.split('/') : null; if (parts && parts.length === 3) { const month = parseInt(parts[1]) - 1; const year = parseInt(parts[2]); if (year === curYear) { servPerBulan[month]++; if (s.status === 'Lunas' || s.status === 'Diambil') { pendPerBulan[month] += (s.totalBayar || 0); } } } });
+        document.getElementById('dash-cards').innerHTML = `<div class="card"><div class="card-icon"><i class="fas fa-box-open"></i></div><div class="card-info"><h3>Total Masuk</h3><h1>${masuk}</h1></div></div><div class="card"><div class="card-icon" style="background:#fb8c00"><i class="fas fa-pause-circle"></i></div><div class="card-info"><h3>Tertunda</h3><h1>${tertunda}</h1></div></div><div class="card"><div class="card-icon" style="background:#43a047"><i class="fas fa-check-double"></i></div><div class="card-info"><h3>Finish/Lunas</h3><h1>${selesai}</h1></div></div><div class="card"><div class="card-icon" style="background:#e53935"><i class="fas fa-money-bill-wave"></i></div><div class="card-info"><h3>Pendapatan</h3><h1>Rp ${Number(pendapatan).toLocaleString('id-ID')}</h1></div></div>`;
         const m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         if (chartServ) chartServ.destroy(); if (chartPend) chartPend.destroy();
         chartServ = new Chart(document.getElementById('chartService'), { type: 'bar', data: { labels: m, datasets: [{ label: 'Service Masuk', data: servPerBulan, backgroundColor: '#1e88e5' }] } });
         chartPend = new Chart(document.getElementById('chartPendapatan'), { type: 'line', data: { labels: m, datasets: [{ label: 'Pendapatan', data: pendPerBulan, borderColor: '#e53935', fill: false }] } });
-      } catch (err) { console.error(err); }
-      hideLoader();
+      } catch (err) { console.error(err); } hideLoader();
     }
 
-    async function loadJenisDropdown() {
-      try {
-        const snapshot = await db.collection('jenisBarang').get();
-        jenisBarangGlobal = [];
-        snapshot.forEach(doc => jenisBarangGlobal.push({ id: doc.id, ...doc.data() }));
-        const sel = document.getElementById('trm-jenis');
-        if (sel) { sel.innerHTML = '<option value="">Pilih Jenis...</option>'; jenisBarangGlobal.forEach(d => sel.innerHTML += `<option value="${d.nama}">${d.nama}</option>`); }
-      } catch (err) { console.error(err); }
-    }
-    function autoFillBiaya() {
-      const selectedNama = document.getElementById('trm-jenis').value;
-      const jenis = jenisBarangGlobal.find(d => d.nama === selectedNama);
-      document.getElementById('trm-estimasi').value = jenis ? (jenis.biaya || 0) : '';
-    }
+    async function loadJenisDropdown() { try { const snapshot = await db.collection('jenisBarang').get(); jenisBarangGlobal = []; snapshot.forEach(doc => jenisBarangGlobal.push({ id: doc.id, ...doc.data() })); const sel = document.getElementById('trm-jenis'); if (sel) { sel.innerHTML = '<option value="">Pilih Jenis...</option>'; jenisBarangGlobal.forEach(d => sel.innerHTML += `<option value="${d.nama}">${d.nama}</option>`); } } catch (err) { console.error(err); } }
+    function autoFillBiaya() { const selectedNama = document.getElementById('trm-jenis').value; const jenis = jenisBarangGlobal.find(d => d.nama === selectedNama); document.getElementById('trm-estimasi').value = jenis ? (jenis.biaya || 0) : ''; }
 
-    async function loadJenisBarang() {
-      showLoader();
-      try {
-        const snapshot = await db.collection('jenisBarang').get(); const data = [];
-        snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
-        const tb = document.querySelector('#table-jenis tbody'); tb.innerHTML = '';
-        if (data.length === 0) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center">Belum ada data</td></tr>'; }
-        data.forEach(r => {
-          tb.innerHTML += `<tr><td>${r.id}</td><td>${r.nama}</td><td>Rp ${Number(r.biaya).toLocaleString('id-ID')}</td><td><button class="btn btn-warning btn-sm edit-jns" data-id="${r.id}" data-nama="${r.nama}" data-biaya="${r.biaya}"><i class="fas fa-edit"></i></button> <button class="btn btn-danger btn-sm del-jns" data-id="${r.id}"><i class="fas fa-trash"></i></button></td></tr>`;
-        });
-        document.querySelectorAll('.edit-jns').forEach(btn => btn.addEventListener('click', function() { editJenis(this.dataset.id, this.dataset.nama, this.dataset.biaya); }));
-        document.querySelectorAll('.del-jns').forEach(btn => btn.addEventListener('click', function() { hapusJenis(this.dataset.id); }));
-      } catch (err) { console.error(err); }
-      hideLoader();
-    }
-
-    async function saveJenis(e) {
-      e.preventDefault(); showLoader();
-      try {
-        const id = document.getElementById('jns-id').value; const obj = { nama: document.getElementById('jns-nama').value, biaya: Number(document.getElementById('jns-biaya').value) };
-        if (id === '') { const newId = await generateId('JNS-', 'jenisBarangCounter', 3); await db.collection('jenisBarang').doc(newId).set(obj); }
-        else { await db.collection('jenisBarang').doc(id).update(obj); }
-        closeModal('modal-jenis'); loadJenisBarang(); loadJenisDropdown(); showToast('Disimpan!');
-      } catch (err) { console.error(err); alert('Error: ' + err.message); }
-      hideLoader();
-    }
-
+    async function loadJenisBarang() { showLoader(); try { const snapshot = await db.collection('jenisBarang').get(); const data = []; snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() })); const tb = document.querySelector('#table-jenis tbody'); tb.innerHTML = ''; if (data.length === 0) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center">Belum ada data</td></tr>'; } data.forEach(r => { tb.innerHTML += `<tr><td>${r.id}</td><td>${r.nama}</td><td>Rp ${Number(r.biaya).toLocaleString('id-ID')}</td><td><button class="btn btn-warning btn-sm edit-jns" data-id="${r.id}" data-nama="${r.nama}" data-biaya="${r.biaya}"><i class="fas fa-edit"></i></button> <button class="btn btn-danger btn-sm del-jns" data-id="${r.id}"><i class="fas fa-trash"></i></button></td></tr>`; }); document.querySelectorAll('.edit-jns').forEach(btn => btn.addEventListener('click', function() { editJenis(this.dataset.id, this.dataset.nama, this.dataset.biaya); })); document.querySelectorAll('.del-jns').forEach(btn => btn.addEventListener('click', function() { hapusJenis(this.dataset.id); })); } catch (err) { console.error(err); } hideLoader(); }
+    async function saveJenis(e) { e.preventDefault(); showLoader(); try { const id = document.getElementById('jns-id').value; const obj = { nama: document.getElementById('jns-nama').value, biaya: Number(document.getElementById('jns-biaya').value) }; if (id === '') { const newId = await generateId('JNS-', 'jenisBarangCounter', 3); await db.collection('jenisBarang').doc(newId).set(obj); } else { await db.collection('jenisBarang').doc(id).update(obj); } closeModal('modal-jenis'); loadJenisBarang(); loadJenisDropdown(); showToast('Disimpan!'); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
     function editJenis(id, nama, biaya) { document.getElementById('jns-id').value = id; document.getElementById('jns-nama').value = nama; document.getElementById('jns-biaya').value = biaya; openModal('modal-jenis'); }
     async function hapusJenis(id) { if (confirm('Yakin hapus?')) { showLoader(); try { await db.collection('jenisBarang').doc(id).delete(); loadJenisBarang(); loadJenisDropdown(); showToast('Dihapus!'); } catch (err) { console.error(err); } hideLoader(); } }
 
-    async function loadSparepart() {
-      showLoader();
-      try {
-        const snapshot = await db.collection('sparepart').get(); const data = [];
-        snapshot.forEach(doc => data.push({ kode: doc.id, ...doc.data() }));
-        sparepartDataGlobal = data;
-        const tb = document.querySelector('#table-sparepart tbody'); tb.innerHTML = '';
-        if (data.length === 0) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center">Belum ada data</td></tr>'; }
-        data.forEach(r => {
-          tb.innerHTML += `<tr><td>${r.kode}</td><td>${r.nama}</td><td>${r.stok}</td><td>Rp ${Number(r.hargabeli).toLocaleString('id-ID')}</td><td>Rp ${Number(r.hargajual).toLocaleString('id-ID')}</td><td><button class="btn btn-warning btn-sm edit-spr" data-kode="${r.kode}" data-nama="${r.nama}" data-stok="${r.stok}" data-hbeli="${r.hargabeli}" data-hjual="${r.hargajual}"><i class="fas fa-edit"></i></button> <button class="btn btn-danger btn-sm del-spr" data-kode="${r.kode}"><i class="fas fa-trash"></i></button></td></tr>`;
-        });
-        document.querySelectorAll('.edit-spr').forEach(btn => btn.addEventListener('click', function() { editSparepart(this.dataset.kode, this.dataset.nama, this.dataset.stok, this.dataset.hbeli, this.dataset.hjual); }));
-        document.querySelectorAll('.del-spr').forEach(btn => btn.addEventListener('click', function() { hapusSparepart(this.dataset.kode); }));
-      } catch (err) { console.error(err); }
-      hideLoader();
-    }
-
+    async function loadSparepart() { showLoader(); try { const snapshot = await db.collection('sparepart').get(); const data = []; snapshot.forEach(doc => data.push({ kode: doc.id, ...doc.data() })); sparepartDataGlobal = data; const tb = document.querySelector('#table-sparepart tbody'); tb.innerHTML = ''; if (data.length === 0) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center">Belum ada data</td></tr>'; } data.forEach(r => { tb.innerHTML += `<tr><td>${r.kode}</td><td>${r.nama}</td><td>${r.stok}</td><td>Rp ${Number(r.hargabeli).toLocaleString('id-ID')}</td><td>Rp ${Number(r.hargajual).toLocaleString('id-ID')}</td><td><button class="btn btn-warning btn-sm edit-spr" data-kode="${r.kode}" data-nama="${r.nama}" data-stok="${r.stok}" data-hbeli="${r.hargabeli}" data-hjual="${r.hargajual}"><i class="fas fa-edit"></i></button> <button class="btn btn-danger btn-sm del-spr" data-kode="${r.kode}"><i class="fas fa-trash"></i></button></td></tr>`; }); document.querySelectorAll('.edit-spr').forEach(btn => btn.addEventListener('click', function() { editSparepart(this.dataset.kode, this.dataset.nama, this.dataset.stok, this.dataset.hbeli, this.dataset.hjual); })); document.querySelectorAll('.del-spr').forEach(btn => btn.addEventListener('click', function() { hapusSparepart(this.dataset.kode); })); } catch (err) { console.error(err); } hideLoader(); }
     function filterSparepart() { const keyword = document.getElementById('search-sparepart').value.toLowerCase(); const rows = document.querySelectorAll('#table-sparepart tbody tr'); rows.forEach(row => { row.style.display = row.textContent.toLowerCase().includes(keyword) ? '' : 'none'; }); }
-
-    async function saveSparepart(e) {
-      e.preventDefault(); showLoader();
-      try {
-        const kode = document.getElementById('spr-kode').value; const obj = { nama: document.getElementById('spr-nama').value, jenis: '-', stok: Number(document.getElementById('spr-stok').value), hargabeli: Number(document.getElementById('spr-hbeli').value), hargajual: Number(document.getElementById('spr-hjual').value) };
-        if (kode === '') { const newKode = await generateId('SPR-', 'sparepartCounter', 3); await db.collection('sparepart').doc(newKode).set(obj); }
-        else { await db.collection('sparepart').doc(kode).update(obj); }
-        closeModal('modal-sparepart'); loadSparepart(); showToast('Disimpan!');
-      } catch (err) { console.error(err); alert('Error: ' + err.message); }
-      hideLoader();
-    }
-
+    async function saveSparepart(e) { e.preventDefault(); showLoader(); try { const kode = document.getElementById('spr-kode').value; const obj = { nama: document.getElementById('spr-nama').value, jenis: '-', stok: Number(document.getElementById('spr-stok').value), hargabeli: Number(document.getElementById('spr-hbeli').value), hargajual: Number(document.getElementById('spr-hjual').value) }; if (kode === '') { const newKode = await generateId('SPR-', 'sparepartCounter', 3); await db.collection('sparepart').doc(newKode).set(obj); } else { await db.collection('sparepart').doc(kode).update(obj); } closeModal('modal-sparepart'); loadSparepart(); showToast('Disimpan!'); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
     function editSparepart(kode, nama, stok, hbeli, hjual) { document.getElementById('spr-kode').value = kode; document.getElementById('spr-nama').value = nama; document.getElementById('spr-stok').value = stok; document.getElementById('spr-hbeli').value = hbeli; document.getElementById('spr-hjual').value = hjual; openModal('modal-sparepart'); }
     async function hapusSparepart(kode) { if (confirm('Yakin hapus?')) { showLoader(); try { await db.collection('sparepart').doc(kode).delete(); loadSparepart(); showToast('Dihapus!'); } catch (err) { console.error(err); } hideLoader(); } }
 
-    async function loadTeknisi() {
-      showLoader();
-      try {
-        const snapshot = await db.collection('teknisi').get(); const data = [];
-        snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
-        const tb = document.querySelector('#table-teknisi tbody'); tb.innerHTML = '';
-        data.forEach(r => {
-          const b = r.status === 'Aktif' ? 'bg-green' : 'bg-red';
-          tb.innerHTML += `<tr><td>${r.id}</td><td>${r.nama}</td><td>${r.hp}</td><td><span class="badge ${b}">${r.status}</span></td><td><button class="btn btn-warning btn-sm edit-tkn" data-id="${r.id}" data-nama="${r.nama}" data-hp="${r.hp}" data-status="${r.status}"><i class="fas fa-edit"></i></button></td></tr>`;
-        });
-        document.querySelectorAll('.edit-tkn').forEach(btn => btn.addEventListener('click', function() { editTeknisi(this.dataset.id, this.dataset.nama, this.dataset.hp, this.dataset.status); }));
-      } catch (err) { console.error(err); }
-      hideLoader();
-    }
-
-    async function saveTeknisi(e) {
-      e.preventDefault(); showLoader();
-      try {
-        const id = document.getElementById('tkn-id').value; const obj = { nama: document.getElementById('tkn-nama').value, hp: document.getElementById('tkn-hp').value, status: document.getElementById('tkn-status').value };
-        if (id === '') { const newId = await generateId('TKN-', 'teknisiCounter', 3); await db.collection('teknisi').doc(newId).set(obj); }
-        else { await db.collection('teknisi').doc(id).update(obj); }
-        closeModal('modal-teknisi'); loadTeknisi(); showToast('Disimpan!');
-      } catch (err) { console.error(err); alert('Error: ' + err.message); }
-      hideLoader();
-    }
-
+    async function loadTeknisi() { showLoader(); try { const snapshot = await db.collection('teknisi').get(); const data = []; snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() })); const tb = document.querySelector('#table-teknisi tbody'); tb.innerHTML = ''; data.forEach(r => { const b = r.status === 'Aktif' ? 'bg-green' : 'bg-red'; tb.innerHTML += `<tr><td>${r.id}</td><td>${r.nama}</td><td>${r.hp}</td><td><span class="badge ${b}">${r.status}</span></td><td><button class="btn btn-warning btn-sm edit-tkn" data-id="${r.id}" data-nama="${r.nama}" data-hp="${r.hp}" data-status="${r.status}"><i class="fas fa-edit"></i></button></td></tr>`; }); document.querySelectorAll('.edit-tkn').forEach(btn => btn.addEventListener('click', function() { editTeknisi(this.dataset.id, this.dataset.nama, this.dataset.hp, this.dataset.status); })); } catch (err) { console.error(err); } hideLoader(); }
+    async function saveTeknisi(e) { e.preventDefault(); showLoader(); try { const id = document.getElementById('tkn-id').value; const obj = { nama: document.getElementById('tkn-nama').value, hp: document.getElementById('tkn-hp').value, status: document.getElementById('tkn-status').value }; if (id === '') { const newId = await generateId('TKN-', 'teknisiCounter', 3); await db.collection('teknisi').doc(newId).set(obj); } else { await db.collection('teknisi').doc(id).update(obj); } closeModal('modal-teknisi'); loadTeknisi(); showToast('Disimpan!'); } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader(); }
     function editTeknisi(id, nama, hp, status) { document.getElementById('tkn-id').value = id; document.getElementById('tkn-nama').value = nama; document.getElementById('tkn-hp').value = hp; document.getElementById('tkn-status').value = status; openModal('modal-teknisi'); }
 
     // ============================================
-    // BARANG SIAP KERJA (Diperbarui)
+    // BARANG SIAP KERJA
     // ============================================
     async function loadKerja() {
-      showLoader();
-      await loadJenisDropdown();
+      showLoader(); await loadJenisDropdown();
       try {
-        const snapshot = await db.collection('service').orderBy('noserv', 'desc').get();
-        const data = [];
-        snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() }));
-        serviceDataGlobal = data;
-
-        const tb = document.querySelector('#table-kerja tbody');
-        tb.innerHTML = '';
+        const snapshot = await db.collection('service').orderBy('noserv', 'desc').get(); const data = [];
+        snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() })); serviceDataGlobal = data;
+        const tb = document.querySelector('#table-kerja tbody'); tb.innerHTML = '';
         const kerja = data.filter(d => d.status !== 'Lunas' && d.status !== 'Diambil');
         if (kerja.length === 0) tb.innerHTML = '<tr><td colspan="9" style="text-align:center;">Belum ada barang.</td></tr>';
         kerja.forEach(r => {
-          let b = 'bg-blue';
-          if (r.status==='READY') b='bg-cyan'; if (r.status==='TERTUNDA') b='bg-orange';
-          if (r.status==='BATAL') b='bg-red'; if (r.status==='FINISH') b='bg-green';
-          
-          // Menambahkan kolom No HP dan Keluhan
-          tb.innerHTML += `<tr>
-            <td>${r.noserv}</td><td>${r.tgl}</td><td>${r.pelanggan}</td><td>${r.hp || '-'}</td>
-            <td>${r.jenis} - ${r.merk}</td><td>${r.keluhan || '-'}</td>
-            <td><span class="badge ${b}">${r.status}</span></td><td>${r.komponen || '-'}</td>
-            <td>
-              <button class="btn btn-warning btn-sm" onclick="editKerja('${r.noserv}')"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-primary btn-sm" onclick="cetakTandaTerima('${r.noserv}')"><i class="fas fa-print"></i></button>
-            </td></tr>`;
+          let b = 'bg-blue'; if (r.status==='READY') b='bg-cyan'; if (r.status==='TERTUNDA') b='bg-orange'; if (r.status==='BATAL') b='bg-red'; if (r.status==='FINISH') b='bg-green';
+          tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.tgl}</td><td>${r.pelanggan}</td><td>${r.hp || '-'}</td><td>${r.jenis} - ${r.merk}</td><td>${r.keluhan || '-'}</td><td><span class="badge ${b}">${r.status}</span></td><td>${r.komponen || '-'}</td><td><button class="btn btn-warning btn-sm" onclick="editKerja('${r.noserv}')"><i class="fas fa-edit"></i></button> <button class="btn btn-primary btn-sm" onclick="cetakTandaTerima('${r.noserv}')"><i class="fas fa-print"></i></button></td></tr>`;
         });
-      } catch (err) { console.error(err); }
-      hideLoader();
+      } catch (err) { console.error(err); } hideLoader();
     }
 
     async function saveTerima(e) {
       e.preventDefault(); showLoader();
       try {
         const noserv = await generateId('SRV-', 'serviceCounter', 6);
-        const obj = {
-          noserv: noserv, tgl: getFormattedDate(),
-          pelanggan: document.getElementById('trm-pelanggan').value,
-          hp: document.getElementById('trm-hp').value,
-          jenis: document.getElementById('trm-jenis').value,
-          merk: document.getElementById('trm-merk').value, model: '',
-          keluhan: document.getElementById('trm-keluhan').value,
-          estimasi: Number(document.getElementById('trm-estimasi').value),
-          status: 'Diterima', komponen: '', biayaJasa: 0, biayaSparepart: 0, totalBayar: 0, tglLunas: '', tglAmbil: '',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        await db.collection('service').doc(noserv).set(obj);
-        showToast('Barang berhasil diterima!'); closeModal('modal-terima'); document.getElementById('form-terima').reset(); loadKerja();
-      } catch (err) { console.error(err); alert('Error: ' + err.message); }
-      hideLoader();
+        const obj = { noserv: noserv, tgl: getFormattedDate(), pelanggan: document.getElementById('trm-pelanggan').value, hp: document.getElementById('trm-hp').value, jenis: document.getElementById('trm-jenis').value, merk: document.getElementById('trm-merk').value, model: '', keluhan: document.getElementById('trm-keluhan').value, estimasi: Number(document.getElementById('trm-estimasi').value), status: 'Diterima', komponen: '', biayaJasa: 0, biayaSparepart: 0, totalBayar: 0, tglLunas: '', tglAmbil: '', createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+        await db.collection('service').doc(noserv).set(obj); showToast('Barang berhasil diterima!'); closeModal('modal-terima'); document.getElementById('form-terima').reset(); loadKerja();
+      } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader();
     }
 
-    // ============================================
-    // CETAK TANDA TERIMA (Diperbarui: Lengkap)
-    // ============================================
     function cetakTandaTerima(noserv) {
-      const s = serviceDataGlobal.find(d => d.noserv === noserv);
-      if (!s) return;
-      
-      // Isi identitas pelanggan di struk
-      document.getElementById('tt-noserv').innerText = s.noserv;
-      document.getElementById('tt-tgl').innerText = s.tgl;
-      document.getElementById('tt-pelanggan').innerText = s.pelanggan;
-      document.getElementById('tt-hp').innerText = s.hp || '-';
-      document.getElementById('tt-jenis').innerText = s.jenis;
-      document.getElementById('tt-merk').innerText = s.merk + ' ' + (s.model || '');
+      const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return;
+      document.getElementById('tt-noserv').innerText = s.noserv; document.getElementById('tt-tgl').innerText = s.tgl;
+      document.getElementById('tt-pelanggan').innerText = s.pelanggan; document.getElementById('tt-hp').innerText = s.hp || '-';
+      document.getElementById('tt-jenis').innerText = s.jenis; document.getElementById('tt-merk').innerText = s.merk + ' ' + (s.model || '');
       document.getElementById('tt-keluhan').innerText = s.keluhan || '-';
-      
       document.getElementById('tt-tbody').innerHTML = `<tr><td>Service ${s.jenis} - ${s.merk} ${s.model || ''}</td><td>Rp ${Number(s.estimasi).toLocaleString('id-ID')}</td></tr>`;
       window.print();
     }
 
     function editKerja(noserv) {
-      const s = serviceDataGlobal.find(d => d.noserv === noserv);
-      if (!s) return;
-      document.getElementById('krj-noserv').value = s.noserv;
-      document.getElementById('krj-noserv-disp').value = s.noserv;
-      document.getElementById('krj-tgl').value = s.tgl;
-      document.getElementById('krj-pelanggan').value = s.pelanggan;
-      document.getElementById('krj-hp').value = s.hp;
-      document.getElementById('krj-jenis').value = s.jenis;
-      document.getElementById('krj-merk').value = s.merk + ' ' + (s.model || '');
-      document.getElementById('krj-keluhan').value = s.keluhan;
+      const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return;
+      document.getElementById('krj-noserv').value = s.noserv; document.getElementById('krj-noserv-disp').value = s.noserv;
+      document.getElementById('krj-tgl').value = s.tgl; document.getElementById('krj-pelanggan').value = s.pelanggan;
+      document.getElementById('krj-hp').value = s.hp; document.getElementById('krj-jenis').value = s.jenis;
+      document.getElementById('krj-merk').value = s.merk + ' ' + (s.model || ''); document.getElementById('krj-keluhan').value = s.keluhan;
       document.getElementById('krj-status').value = s.status;
       currentBiayaJasa = Number(s.estimasi || 0);
       document.getElementById('krj-biaya-jasa').value = 'Rp ' + currentBiayaJasa.toLocaleString('id-ID');
+      
       terpasangList = s.komponen && s.komponen !== '' ? s.komponen.split(', ').map(x => {
         const parts = x.split(' ('); const nama = parts[0]; const rest = parts[1] ? parts[1].replace(')','') : '1@0'; const qtyParts = rest.split('@');
         return { kode: 'TEMP', nama: nama, harga: Number(qtyParts[1] || 0), qty: Number(qtyParts[0] || 1) };
@@ -749,21 +551,12 @@
       renderTerpasang(); loadSparepartDropdown(); openModal('modal-kerja');
     }
 
-    async function loadSparepartDropdown() {
-      try {
-        const snapshot = await db.collection('sparepart').get(); sparepartDataGlobal = [];
-        snapshot.forEach(doc => sparepartDataGlobal.push({ kode: doc.id, ...doc.data() }));
-        const sel = document.getElementById('krj-spr-kode'); sel.innerHTML = '<option value="">Pilih Sparepart...</option>';
-        sparepartDataGlobal.filter(d => d.stok > 0).forEach(d => { sel.innerHTML += `<option value="${d.kode}">${d.nama} - Stok: ${d.stok}</option>`; });
-      } catch (err) { console.error(err); }
-    }
+    async function loadSparepartDropdown() { try { const snapshot = await db.collection('sparepart').get(); sparepartDataGlobal = []; snapshot.forEach(doc => sparepartDataGlobal.push({ kode: doc.id, ...doc.data() })); const sel = document.getElementById('krj-spr-kode'); sel.innerHTML = '<option value="">Pilih Sparepart...</option>'; sparepartDataGlobal.filter(d => d.stok > 0).forEach(d => { sel.innerHTML += `<option value="${d.kode}">${d.nama} - Stok: ${d.stok}</option>`; }); } catch (err) { console.error(err); } }
 
     function pasangSparepart() {
       const kode = document.getElementById('krj-spr-kode').value; const qty = Number(document.getElementById('krj-spr-qty').value);
-      if (!kode || !qty || qty <= 0) return alert("Pilih sparepart & qty!");
-      const spr = sparepartDataGlobal.find(d => d.kode === kode);
-      if (spr.stok < qty) return alert("Stok tidak cukup!");
-      const exist = terpasangList.find(x => x.kode === spr.kode);
+      if (!kode || !qty || qty <= 0) return alert("Pilih sparepart & qty!"); const spr = sparepartDataGlobal.find(d => d.kode === kode);
+      if (spr.stok < qty) return alert("Stok tidak cukup!"); const exist = terpasangList.find(x => x.kode === spr.kode);
       if (exist) { if (Number(exist.qty) + qty > spr.stok) return alert("Stok tidak cukup!"); exist.qty = Number(exist.qty) + qty; }
       else { terpasangList.push({ kode: spr.kode, nama: spr.nama, harga: Number(spr.hargajual), qty: qty }); }
       renderTerpasang(); document.getElementById('krj-spr-kode').value = ''; document.getElementById('krj-spr-qty').value = 1;
@@ -778,6 +571,8 @@
       document.getElementById('total-sparepart').innerText = 'Rp ' + Number(totalSparepart).toLocaleString('id-ID');
       const totalEstimasi = currentBiayaJasa + totalSparepart;
       document.getElementById('total-estimasi').innerText = 'Rp ' + Number(totalEstimasi).toLocaleString('id-ID');
+      // Update juga Total Bayar otomatis di form
+      document.getElementById('krj-total-bayar').value = totalEstimasi;
     }
 
     async function transaksiSparepart(kode, qty) {
@@ -794,45 +589,35 @@
       try {
         const noserv = document.getElementById('krj-noserv').value; const status = document.getElementById('krj-status').value;
         const komponenStr = terpasangList.map(t => `${t.nama} (${t.qty})@${t.harga}`).join(', ');
-        await db.collection('service').doc(noserv).update({ status: status, komponen: komponenStr });
+        const totalBayarCalculated = currentBiayaJasa + terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0);
+        
+        const updateObj = { status: status, komponen: komponenStr };
+
+        // Jika status diubah menjadi Lunas, simpan juga total bayar & tgl lunas
+        if (status === 'Lunas') {
+          updateObj.biayaJasa = currentBiayaJasa;
+          updateObj.biayaSparepart = terpasangList.reduce((sum, t) => sum + (t.harga * t.qty), 0);
+          updateObj.totalBayar = totalBayarCalculated;
+          updateObj.tglLunas = getFormattedDate();
+        }
+
+        await db.collection('service').doc(noserv).update(updateObj);
         for (const t of terpasangList) { if (t.kode !== 'TEMP') { await transaksiSparepart(t.kode, t.qty); } }
         closeModal('modal-kerja'); loadKerja(); showToast('Update Berhasil!');
-      } catch (err) { console.error(err); alert('Error: ' + err.message); }
-      hideLoader();
+      } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader();
     }
 
-    async function loadPenyelesaianForm() {
-      showLoader();
-      try {
-        const snapshot = await db.collection('service').get(); const data = [];
-        snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() }));
-        const sel = document.getElementById('pen-noserv'); sel.innerHTML = '<option value="">Pilih No Service</option>';
-        data.filter(d => d.status === 'FINISH').forEach(d => { sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan} (${d.jenis})</option>`; });
-      } catch (err) { console.error(err); }
-      hideLoader();
-    }
-
-    async function savePenyelesaian(e) {
-      e.preventDefault(); showLoader();
-      try {
-        const noserv = document.getElementById('pen-noserv').value; const jasa = Number(document.getElementById('pen-jasa').value);
-        const sparepart = Number(document.getElementById('pen-sparepart').value); const total = jasa + sparepart;
-        await db.collection('service').doc(noserv).update({ biayaJasa: jasa, biayaSparepart: sparepart, totalBayar: total, status: 'Lunas', tglLunas: getFormattedDate() });
-        showToast('Lunas!'); loadPenyelesaianForm(); document.getElementById('form-penyelesaian').reset();
-      } catch (err) { console.error(err); alert('Error: ' + err.message); }
-      hideLoader();
-    }
-
+    // ============================================
+    // PENYELESAIAN DIHAPUS, LANGSUNG PENGAMBILAN
+    // ============================================
     async function loadPengambilanForm() {
       showLoader();
       try {
         const snapshot = await db.collection('service').get(); const data = [];
-        snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() }));
-        serviceDataGlobal = data;
+        snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() })); serviceDataGlobal = data;
         const sel = document.getElementById('ambil-noserv'); sel.innerHTML = '<option value="">Pilih No Service</option>';
         data.filter(d => d.status === 'Lunas').forEach(d => { sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan}</option>`; });
-      } catch (err) { console.error(err); }
-      hideLoader();
+      } catch (err) { console.error(err); } hideLoader();
     }
 
     async function savePengambilan(e) {
@@ -841,25 +626,14 @@
         const noserv = document.getElementById('ambil-noserv').value;
         await db.collection('service').doc(noserv).update({ status: 'Diambil', tglAmbil: getFormattedDate() });
         showToast('Diambil!'); loadPengambilanForm(); printSST(noserv);
-      } catch (err) { console.error(err); alert('Error: ' + err.message); }
-      hideLoader();
+      } catch (err) { console.error(err); alert('Error: ' + err.message); } hideLoader();
     }
 
-    // ============================================
-    // CETAK SST (Diperbarui: Lengkap)
-    // ============================================
     function printSST(noserv) {
-      const s = serviceDataGlobal.find(d => d.noserv === noserv);
-      if (!s) return;
-      
-      // Isi identitas pelanggan di struk SST
-      document.getElementById('sst-nama').innerText = ': ' + s.pelanggan;
-      document.getElementById('sst-noserv').innerText = ': ' + s.noserv;
-      document.getElementById('sst-hp').innerText = ': ' + (s.hp || '-');
-      document.getElementById('sst-jenis').innerText = ': ' + s.jenis;
-      document.getElementById('sst-merk').innerText = ': ' + s.merk + ' ' + (s.model || '');
-      document.getElementById('sst-keluhan').innerText = ': ' + (s.keluhan || '-');
-      
+      const s = serviceDataGlobal.find(d => d.noserv === noserv); if (!s) return;
+      document.getElementById('sst-nama').innerText = ': ' + s.pelanggan; document.getElementById('sst-noserv').innerText = ': ' + s.noserv;
+      document.getElementById('sst-hp').innerText = ': ' + (s.hp || '-'); document.getElementById('sst-jenis').innerText = ': ' + s.jenis;
+      document.getElementById('sst-merk').innerText = ': ' + s.merk + ' ' + (s.model || ''); document.getElementById('sst-keluhan').innerText = ': ' + (s.keluhan || '-');
       document.getElementById('sst-tbody').innerHTML = `<tr><td>${s.komponen || '-'}</td><td>LUNAS (Rp ${Number(s.totalBayar || 0).toLocaleString('id-ID')})</td></tr>`;
       window.print();
     }
@@ -868,35 +642,20 @@
       showLoader();
       try {
         const type = document.getElementById('laporan-filter').value; const snapshot = await db.collection('service').get(); const allData = [];
-        snapshot.forEach(doc => allData.push(doc.data()));
-        const now = new Date(); const todayStr = getFormattedDate();
+        snapshot.forEach(doc => allData.push(doc.data())); const now = new Date(); const todayStr = getFormattedDate();
         const curMonth = String(now.getMonth() + 1).padStart(2, '0'); const curYear = String(now.getFullYear());
         let filtered = allData.filter(s => s.status === 'Lunas' || s.status === 'Diambil');
-        filtered = filtered.filter(s => {
-          const dateStr = s.tglLunas || s.tgl || ''; const parts = dateStr.split('/');
-          if (type === 'harian') return dateStr === todayStr;
-          if (type === 'bulanan') return parts[1] === curMonth && parts[2] === curYear;
-          if (type === 'tahunan') return parts[2] === curYear; return true;
-        });
+        filtered = filtered.filter(s => { const dateStr = s.tglLunas || s.tgl || ''; const parts = dateStr.split('/'); if (type === 'harian') return dateStr === todayStr; if (type === 'bulanan') return parts[1] === curMonth && parts[2] === curYear; if (type === 'tahunan') return parts[2] === curYear; return true; });
         const tb = document.querySelector('#table-laporan tbody'); tb.innerHTML = '';
         if (filtered.length === 0) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center">Tidak ada data</td></tr>'; }
-        filtered.forEach(r => {
-          tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.pelanggan}</td><td>Rp ${Number(r.biayaJasa || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.biayaSparepart || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.totalBayar || 0).toLocaleString('id-ID')}</td><td>${r.tglLunas || r.tgl}</td></tr>`;
-        });
-      } catch (err) { console.error(err); }
-      hideLoader();
+        filtered.forEach(r => { tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.pelanggan}</td><td>Rp ${Number(r.biayaJasa || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.biayaSparepart || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.totalBayar || 0).toLocaleString('id-ID')}</td><td>${r.tglLunas || r.tgl}</td></tr>`; });
+      } catch (err) { console.error(err); } hideLoader();
     }
 
     function exportData(type) {
       const data = document.getElementById('table-laporan').outerHTML;
-      if (type === 'excel') {
-        const blob = new Blob(['\ufeff', data], { type: 'application/vnd.ms-excel' }); const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'Laporan.xls'; a.click();
-      } else {
-        const win = window.open('', '_blank');
-        win.document.write('<html><title>Laporan</title><style>table{width:100%;border-collapse:collapse}th,td{border:1px solid #000;padding:8px;}</style><body>');
-        win.document.write(data); win.document.write('</body></html>'); win.print();
-      }
+      if (type === 'excel') { const blob = new Blob(['\ufeff', data], { type: 'application/vnd.ms-excel' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Laporan.xls'; a.click(); }
+      else { const win = window.open('', '_blank'); win.document.write('<html><title>Laporan</title><style>table{width:100%;border-collapse:collapse}th,td{border:1px solid #000;padding:8px;}</style><body>'); win.document.write(data); win.document.write('</body></html>'); win.print(); }
     }
 
     async function seedInitialData() {
@@ -904,30 +663,20 @@
         const usersSnap = await db.collection('users').limit(1).get();
         if (usersSnap.empty) {
           await db.collection('users').doc('admin').set({ username: 'admin', password: 'admin123', nama: 'Administrator' });
-          await db.collection('jenisBarang').doc('JNS-001').set({ nama: 'TV LED', biaya: 75000 });
-          await db.collection('jenisBarang').doc('JNS-002').set({ nama: 'Kipas Angin', biaya: 50000 });
-          await db.collection('jenisBarang').doc('JNS-003').set({ nama: 'Rice Cooker', biaya: 40000 });
-          await db.collection('jenisBarang').doc('JNS-004').set({ nama: 'DVD Player', biaya: 35000 });
-          await db.collection('sparepart').doc('SPR-001').set({ nama: 'Kapasitor CBB61', jenis: '-', stok: 50, hargabeli: 5000, hargajual: 10000 });
-          await db.collection('sparepart').doc('SPR-002').set({ nama: 'IC Regulator', jenis: '-', stok: 30, hargabeli: 15000, hargajual: 25000 });
-          await db.collection('sparepart').doc('SPR-003').set({ nama: 'Elco 400V 100uF', jenis: '-', stok: 40, hargabeli: 8000, hargajual: 15000 });
-          await db.collection('sparepart').doc('SPR-004').set({ nama: 'Fuse 2A', jenis: '-', stok: 100, hargabeli: 2000, hargajual: 5000 });
+          await db.collection('jenisBarang').doc('JNS-001').set({ nama: 'TV LED', biaya: 75000 }); await db.collection('jenisBarang').doc('JNS-002').set({ nama: 'Kipas Angin', biaya: 50000 });
+          await db.collection('jenisBarang').doc('JNS-003').set({ nama: 'Rice Cooker', biaya: 40000 }); await db.collection('jenisBarang').doc('JNS-004').set({ nama: 'DVD Player', biaya: 35000 });
+          await db.collection('sparepart').doc('SPR-001').set({ nama: 'Kapasitor CBB61', jenis: '-', stok: 50, hargabeli: 5000, hargajual: 10000 }); await db.collection('sparepart').doc('SPR-002').set({ nama: 'IC Regulator', jenis: '-', stok: 30, hargabeli: 15000, hargajual: 25000 });
+          await db.collection('sparepart').doc('SPR-003').set({ nama: 'Elco 400V 100uF', jenis: '-', stok: 40, hargabeli: 8000, hargajual: 15000 }); await db.collection('sparepart').doc('SPR-004').set({ nama: 'Fuse 2A', jenis: '-', stok: 100, hargabeli: 2000, hargajual: 5000 });
           await db.collection('sparepart').doc('SPR-005').set({ nama: 'Remote Universal', jenis: '-', stok: 20, hargabeli: 25000, hargajual: 40000 });
           await db.collection('teknisi').doc('TKN-001').set({ nama: 'Ahmad Rizki', hp: '081234567890', status: 'Aktif' });
-          await db.collection('counters').doc('jenisBarangCounter').set({ nextNo: 4 });
-          await db.collection('counters').doc('sparepartCounter').set({ nextNo: 6 });
-          await db.collection('counters').doc('teknisiCounter').set({ nextNo: 2 });
-          await db.collection('counters').doc('serviceCounter').set({ nextNo: 1 });
+          await db.collection('counters').doc('jenisBarangCounter').set({ nextNo: 4 }); await db.collection('counters').doc('sparepartCounter').set({ nextNo: 6 });
+          await db.collection('counters').doc('teknisiCounter').set({ nextNo: 2 }); await db.collection('counters').doc('serviceCounter').set({ nextNo: 1 });
           console.log('Data awal berhasil dibuat.');
         }
       } catch (err) { console.error('Seed error:', err); }
     }
 
-    window.onload = async function() {
-      hideLoader();
-      await seedInitialData();
-      document.getElementById('login-screen').style.display = 'flex';
-    };
+    window.onload = async function() { hideLoader(); await seedInitialData(); document.getElementById('login-screen').style.display = 'flex'; };
   </script>
 </body>
 </html>
