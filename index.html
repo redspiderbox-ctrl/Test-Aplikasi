@@ -68,11 +68,18 @@
     .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; color: #fff; font-weight: bold; }
     .bg-blue { background: #1e88e5; }.bg-orange { background: #fb8c00; }.bg-red { background: #e53935; }.bg-green { background: #43a047; }.bg-grey { background: #757575; }.bg-cyan { background: #00acc1; }
 
-    .print-area { display: none; background: #fff; color: #000; padding: 20px; font-family: Arial, sans-serif; }
-    @media print { body * { visibility: hidden; } .print-area, .print-area * { visibility: visible; } .print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; } }
+    /* Print Area Styles */
+    .print-area { display: none; background: #fff; color: #000; padding: 20px; font-family: Arial, sans-serif; font-size: 12px; }
+    @media print { 
+      body * { visibility: hidden; } 
+      .print-area, .print-area * { visibility: visible; } 
+      .print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; } 
+    }
     .print-area table { border-collapse: collapse; width: 100%; }.print-area table th, .print-area table td { border: 1px solid #000; padding: 8px; text-align: left; }
     .print-area h2 { text-align: center; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
     .print-area .ttd-box { display: flex; justify-content: space-between; margin-top: 50px; }.print-area .ttd-box div { text-align: center; width: 40%; }
+    .print-area .identitas-table { border: none; width: 100%; margin-bottom: 15px; }
+    .print-area .identitas-table td { border: none; padding: 4px 8px; }
   </style>
 </head>
 <body>
@@ -117,7 +124,6 @@
         <i class="fas fa-moon toggle-dark" onclick="toggleDark()"></i>
       </div>
 
-      <!-- Dashboard -->
       <div id="page-dashboard" class="page">
         <div class="card-container" id="dash-cards"></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
@@ -126,7 +132,6 @@
         </div>
       </div>
 
-      <!-- Barang Siap Kerja -->
       <div id="page-kerja" class="page" style="display:none;">
         <div class="content-box">
           <div class="content-header">
@@ -140,7 +145,6 @@
         </div>
       </div>
 
-      <!-- Penyelesaian -->
       <div id="page-penyelesaian" class="page" style="display:none;">
         <div class="content-box">
           <div class="content-header"><h3>Penyelesaian Service (FINISH)</h3></div>
@@ -155,7 +159,6 @@
         </div>
       </div>
 
-      <!-- Pengambilan -->
       <div id="page-pengambilan" class="page" style="display:none;">
         <div class="content-box no-print">
           <div class="content-header"><h3>Pengambilan Barang (Lunas)</h3></div>
@@ -166,7 +169,6 @@
         </div>
       </div>
 
-      <!-- Jenis Barang -->
       <div id="page-jenisbarang" class="page" style="display:none;">
         <div class="content-box">
           <div class="content-header">
@@ -180,7 +182,6 @@
         </div>
       </div>
 
-      <!-- Sparepart -->
       <div id="page-sparepart" class="page" style="display:none;">
         <div class="content-box">
           <div class="content-header">
@@ -194,7 +195,6 @@
         </div>
       </div>
 
-      <!-- Teknisi -->
       <div id="page-teknisi" class="page" style="display:none;">
         <div class="content-box">
           <div class="content-header">
@@ -207,7 +207,6 @@
         </div>
       </div>
 
-      <!-- Laporan -->
       <div id="page-laporan" class="page" style="display:none;">
         <div class="content-box">
           <div class="content-header">
@@ -231,30 +230,49 @@
   </div>
 
   <!-- ==================== PRINT AREAS ==================== -->
+  
+  <!-- Tanda Terima Barang (Diperbarui: Detail Identitas Lengkap) -->
   <div id="print-tanda-terima" class="print-area">
-    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px;">
-      <h2 style="margin:0; text-align:left; font-size:18px;">TANDA TERIMA BARANG</h2>
-      <p style="margin:0; text-align:right; font-size:12px;">No: <span id="tt-noserv" style="font-weight:bold;"></span><br>Tgl: <span id="tt-tgl"></span></p>
+    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:15px;">
+      <h2 style="margin:0; text-align:left; font-size:16px;">TANDA TERIMA BARANG</h2>
+      <p style="margin:0; text-align:right; font-size:11px;">No: <span id="tt-noserv" style="font-weight:bold;"></span><br>Tgl Masuk: <span id="tt-tgl"></span></p>
     </div>
-    <table style="width:50%; border:none; margin-bottom:15px;">
-      <tr style="border:none;"><td style="border:none; width:30%;">Pelanggan</td><td style="border:none;" id="tt-pelanggan"></td></tr>
-      <tr style="border:none;"><td style="border:none;">No HP</td><td style="border:none;" id="tt-hp"></td></tr>
+    
+    <table class="identitas-table">
+      <tr><td style="width:25%; font-weight:bold;">Nama Pelanggan</td><td id="tt-pelanggan"></td></tr>
+      <tr><td style="font-weight:bold;">No HP</td><td id="tt-hp"></td></tr>
+      <tr><td style="font-weight:bold;">Jenis Barang</td><td id="tt-jenis"></td></tr>
+      <tr><td style="font-weight:bold;">Merk / Model</td><td id="tt-merk"></td></tr>
+      <tr><td style="font-weight:bold;">Keluhan</td><td id="tt-keluhan"></td></tr>
     </table>
-    <table><thead><tr><th>Jenis Barang</th><th>Merk/Model</th><th>Keluhan</th><th>Estimasi Biaya</th></tr></thead><tbody id="tt-tbody"></tbody></table>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Estimasi Biaya</th>
+        </tr>
+      </thead>
+      <tbody id="tt-tbody"></tbody>
+    </table>
+    
     <div class="ttd-box">
       <div><p>Penerima,</p><br><br><br><p><b>(____________________)</b></p></div>
       <div><p>Admin,</p><br><br><br><p><b>Customer Service</b></p></div>
     </div>
   </div>
 
+  <!-- Surat Serah Terima (Pengambilan) -->
   <div id="print-sst" class="print-area">
     <h2>SURAT SERAH TERIMA BARANG</h2>
-    <table style="width:50%; margin-bottom:15px; border:none;">
-      <tr style="border:none;"><td style="border:none; width:30%;">Nama</td><td style="border:none;" id="sst-nama">:</td></tr>
-      <tr style="border:none;"><td style="border:none;">No Service</td><td style="border:none;" id="sst-noserv">:</td></tr>
-      <tr style="border:none;"><td style="border:none;">No HP</td><td style="border:none;" id="sst-hp">:</td></tr>
+    <table class="identitas-table">
+      <tr><td style="width:25%; font-weight:bold;">Nama</td><td id="sst-nama">:</td></tr>
+      <tr><td style="font-weight:bold;">No Service</td><td id="sst-noserv">:</td></tr>
+      <tr><td style="font-weight:bold;">No HP</td><td id="sst-hp">:</td></tr>
     </table>
-    <table><thead><tr><th>Jenis Barang</th><th>Merk / Model</th><th>Komponen Dipasang</th><th>Total Bayar</th></tr></thead><tbody id="sst-tbody"></tbody></table>
+    <table>
+      <thead><tr><th>Jenis Barang</th><th>Merk / Model</th><th>Komponen Dipasang</th><th>Total Bayar</th></tr></thead>
+      <tbody id="sst-tbody"></tbody>
+    </table>
     <div class="ttd-box">
       <div><p>Penerima,</p><br><br><br><p><b>(____________________)</b></p></div>
       <div><p>Hormat kami,</p><br><br><br><p><b>Admin Service</b></p></div>
@@ -383,16 +401,11 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" style="position:fixed; top:20px; right:20px; background:#43a047; color:#fff; padding:15px 25px; border-radius:5px; box-shadow:0 4px 8px rgba(0,0,0,0.2); display:none; z-index:2000;">
     <i class="fas fa-check-circle"></i> <span id="toast-msg">Sukses!</span>
   </div>
 
-  <!-- ==================== JAVASCRIPT ==================== -->
   <script>
-    /* ============================================================
-       KONFIGURASI FIREBASE (SUDAH DITERAPKAN)
-       ============================================================ */
     const firebaseConfig = {
       apiKey: "AIzaSyALL4Gow1dY0jW7Kf6R6DfyrW_WbaH5nXE",
       authDomain: "service-elektronik-41369.firebaseapp.com",
@@ -402,13 +415,9 @@
       appId: "1:356056353058:web:befadc3180e8f33419bd7b"
     };
 
-    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    /* ============================================================
-       VARIABEL GLOBAL
-       ============================================================ */
     let chartServ, chartPend;
     let serviceDataGlobal = [];
     let sparepartDataGlobal = [];
@@ -416,9 +425,6 @@
     let terpasangList = [];
     let currentBiayaJasa = 0;
 
-    /* ============================================================
-       FUNGSI UTILITAS
-       ============================================================ */
     function showLoader() { document.getElementById('loader').style.display = 'block'; }
     function hideLoader() { document.getElementById('loader').style.display = 'none'; }
     function showToast(msg) {
@@ -432,7 +438,6 @@
       return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
     }
 
-    // Generator ID berurutan menggunakan Firestore Transaction (aman dari duplikasi)
     async function generateId(prefix, counterName, padLength) {
       const counterRef = db.collection('counters').doc(counterName);
       return db.runTransaction(async (transaction) => {
@@ -444,19 +449,12 @@
       });
     }
 
-    /* ============================================================
-       AUTH (LOGIN / LOGOUT)
-       ============================================================ */
     async function doLogin() {
       showLoader();
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
       try {
-        const snapshot = await db.collection('users')
-          .where('username', '==', username)
-          .where('password', '==', password)
-          .limit(1).get();
-
+        const snapshot = await db.collection('users').where('username', '==', username).where('password', '==', password).limit(1).get();
         if (!snapshot.empty) {
           document.getElementById('login-screen').style.display = 'none';
           document.getElementById('app').style.display = 'block';
@@ -479,9 +477,6 @@
       document.getElementById('password').value = '';
     }
 
-    /* ============================================================
-       NAVIGASI & UI
-       ============================================================ */
     function toggleDark() {
       document.body.classList.toggle('dark-mode');
       document.querySelector('.toggle-dark').classList.toggle('fa-moon');
@@ -501,11 +496,7 @@
       openModalOrig(id);
     };
 
-    const pageTitles = {
-      dashboard:'Dashboard', kerja:'Barang Siap Kerja', penyelesaian:'Penyelesaian',
-      pengambilan:'Pengambilan', jenisbarang:'Jenis Barang', sparepart:'Data Sparepart',
-      teknisi:'Data Teknisi', laporan:'Laporan'
-    };
+    const pageTitles = { dashboard:'Dashboard', kerja:'Barang Siap Kerja', penyelesaian:'Penyelesaian', pengambilan:'Pengambilan', jenisbarang:'Jenis Barang', sparepart:'Data Sparepart', teknisi:'Data Teknisi', laporan:'Laporan' };
     function showPage(page) {
       document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
       document.getElementById('page-'+page).style.display = 'block';
@@ -513,7 +504,6 @@
       event.currentTarget.classList.add('active');
       document.getElementById('sidebar').classList.remove('active');
       document.getElementById('page-title').innerText = pageTitles[page] || 'Dashboard';
-
       if (page === 'dashboard') loadDashboard();
       if (page === 'kerja') loadKerja();
       if (page === 'penyelesaian') loadPenyelesaianForm();
@@ -524,23 +514,18 @@
       if (page === 'laporan') loadLaporan();
     }
 
-    /* ============================================================
-       DASHBOARD
-       ============================================================ */
     async function loadDashboard() {
       showLoader();
       try {
         const snapshot = await db.collection('service').get();
         const all = [];
         snapshot.forEach(doc => all.push({ noserv: doc.id, ...doc.data() }));
-
         const now = new Date();
         const curYear = now.getFullYear();
         let masuk = all.length;
         let tertunda = all.filter(s => s.status === 'TERTUNDA').length;
         let selesai = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').length;
         let pendapatan = all.filter(s => s.status === 'Lunas' || s.status === 'Diambil').reduce((sum, s) => sum + (s.totalBayar || 0), 0);
-
         let servPerBulan = Array(12).fill(0);
         let pendPerBulan = Array(12).fill(0);
         all.forEach(s => {
@@ -550,35 +535,24 @@
             const year = parseInt(parts[2]);
             if (year === curYear) {
               servPerBulan[month]++;
-              if (s.status === 'Lunas' || s.status === 'Diambil') {
-                pendPerBulan[month] += (s.totalBayar || 0);
-              }
+              if (s.status === 'Lunas' || s.status === 'Diambil') pendPerBulan[month] += (s.totalBayar || 0);
             }
           }
         });
-
         document.getElementById('dash-cards').innerHTML = `
           <div class="card"><div class="card-icon"><i class="fas fa-box-open"></i></div><div class="card-info"><h3>Total Masuk</h3><h1>${masuk}</h1></div></div>
           <div class="card"><div class="card-icon" style="background:#fb8c00"><i class="fas fa-pause-circle"></i></div><div class="card-info"><h3>Tertunda</h3><h1>${tertunda}</h1></div></div>
           <div class="card"><div class="card-icon" style="background:#43a047"><i class="fas fa-check-double"></i></div><div class="card-info"><h3>Finish/Lunas</h3><h1>${selesai}</h1></div></div>
           <div class="card"><div class="card-icon" style="background:#e53935"><i class="fas fa-money-bill-wave"></i></div><div class="card-info"><h3>Pendapatan</h3><h1>Rp ${Number(pendapatan).toLocaleString('id-ID')}</h1></div></div>`;
-
         const m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         if (chartServ) chartServ.destroy();
         if (chartPend) chartPend.destroy();
-        chartServ = new Chart(document.getElementById('chartService'), {
-          type: 'bar', data: { labels: m, datasets: [{ label: 'Service Masuk', data: servPerBulan, backgroundColor: '#1e88e5' }] }
-        });
-        chartPend = new Chart(document.getElementById('chartPendapatan'), {
-          type: 'line', data: { labels: m, datasets: [{ label: 'Pendapatan', data: pendPerBulan, borderColor: '#e53935', fill: false }] }
-        });
+        chartServ = new Chart(document.getElementById('chartService'), { type: 'bar', data: { labels: m, datasets: [{ label: 'Service Masuk', data: servPerBulan, backgroundColor: '#1e88e5' }] } });
+        chartPend = new Chart(document.getElementById('chartPendapatan'), { type: 'line', data: { labels: m, datasets: [{ label: 'Pendapatan', data: pendPerBulan, borderColor: '#e53935', fill: false }] } });
       } catch (err) { console.error(err); }
       hideLoader();
     }
 
-    /* ============================================================
-       JENIS BARANG
-       ============================================================ */
     async function loadJenisDropdown() {
       try {
         const snapshot = await db.collection('jenisBarang').get();
@@ -603,24 +577,14 @@
         const snapshot = await db.collection('jenisBarang').get();
         const data = [];
         snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
-
         const tb = document.querySelector('#table-jenis tbody');
         tb.innerHTML = '';
         if (data.length === 0) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center">Belum ada data</td></tr>'; }
         data.forEach(r => {
-          tb.innerHTML += `<tr>
-            <td>${r.id}</td><td>${r.nama}</td><td>Rp ${Number(r.biaya).toLocaleString('id-ID')}</td>
-            <td>
-              <button class="btn btn-warning btn-sm edit-jns" data-id="${r.id}" data-nama="${r.nama}" data-biaya="${r.biaya}"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-danger btn-sm del-jns" data-id="${r.id}"><i class="fas fa-trash"></i></button>
-            </td></tr>`;
+          tb.innerHTML += `<tr><td>${r.id}</td><td>${r.nama}</td><td>Rp ${Number(r.biaya).toLocaleString('id-ID')}</td><td><button class="btn btn-warning btn-sm edit-jns" data-id="${r.id}" data-nama="${r.nama}" data-biaya="${r.biaya}"><i class="fas fa-edit"></i></button> <button class="btn btn-danger btn-sm del-jns" data-id="${r.id}"><i class="fas fa-trash"></i></button></td></tr>`;
         });
-        document.querySelectorAll('.edit-jns').forEach(btn => btn.addEventListener('click', function() {
-          editJenis(this.dataset.id, this.dataset.nama, this.dataset.biaya);
-        }));
-        document.querySelectorAll('.del-jns').forEach(btn => btn.addEventListener('click', function() {
-          hapusJenis(this.dataset.id);
-        }));
+        document.querySelectorAll('.edit-jns').forEach(btn => btn.addEventListener('click', function() { editJenis(this.dataset.id, this.dataset.nama, this.dataset.biaya); }));
+        document.querySelectorAll('.del-jns').forEach(btn => btn.addEventListener('click', function() { hapusJenis(this.dataset.id); }));
       } catch (err) { console.error(err); }
       hideLoader();
     }
@@ -630,36 +594,16 @@
       try {
         const id = document.getElementById('jns-id').value;
         const obj = { nama: document.getElementById('jns-nama').value, biaya: Number(document.getElementById('jns-biaya').value) };
-        if (id === '') {
-          const newId = await generateId('JNS-', 'jenisBarangCounter', 3);
-          await db.collection('jenisBarang').doc(newId).set(obj);
-        } else {
-          await db.collection('jenisBarang').doc(id).update(obj);
-        }
+        if (id === '') { const newId = await generateId('JNS-', 'jenisBarangCounter', 3); await db.collection('jenisBarang').doc(newId).set(obj); } 
+        else { await db.collection('jenisBarang').doc(id).update(obj); }
         closeModal('modal-jenis'); loadJenisBarang(); loadJenisDropdown(); showToast('Disimpan!');
       } catch (err) { console.error(err); alert('Error: ' + err.message); }
       hideLoader();
     }
 
-    function editJenis(id, nama, biaya) {
-      document.getElementById('jns-id').value = id;
-      document.getElementById('jns-nama').value = nama;
-      document.getElementById('jns-biaya').value = biaya;
-      openModal('modal-jenis');
-    }
+    function editJenis(id, nama, biaya) { document.getElementById('jns-id').value = id; document.getElementById('jns-nama').value = nama; document.getElementById('jns-biaya').value = biaya; openModal('modal-jenis'); }
+    async function hapusJenis(id) { if (confirm('Yakin hapus?')) { showLoader(); try { await db.collection('jenisBarang').doc(id).delete(); loadJenisBarang(); loadJenisDropdown(); showToast('Dihapus!'); } catch (err) { console.error(err); } hideLoader(); } }
 
-    async function hapusJenis(id) {
-      if (confirm('Yakin hapus?')) {
-        showLoader();
-        try { await db.collection('jenisBarang').doc(id).delete(); loadJenisBarang(); loadJenisDropdown(); showToast('Dihapus!'); }
-        catch (err) { console.error(err); }
-        hideLoader();
-      }
-    }
-
-    /* ============================================================
-       SPAREPART
-       ============================================================ */
     async function loadSparepart() {
       showLoader();
       try {
@@ -667,25 +611,14 @@
         const data = [];
         snapshot.forEach(doc => data.push({ kode: doc.id, ...doc.data() }));
         sparepartDataGlobal = data;
-
         const tb = document.querySelector('#table-sparepart tbody');
         tb.innerHTML = '';
         if (data.length === 0) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center">Belum ada data</td></tr>'; }
         data.forEach(r => {
-          tb.innerHTML += `<tr>
-            <td>${r.kode}</td><td>${r.nama}</td><td>${r.stok}</td>
-            <td>Rp ${Number(r.hargabeli).toLocaleString('id-ID')}</td><td>Rp ${Number(r.hargajual).toLocaleString('id-ID')}</td>
-            <td>
-              <button class="btn btn-warning btn-sm edit-spr" data-kode="${r.kode}" data-nama="${r.nama}" data-stok="${r.stok}" data-hbeli="${r.hargabeli}" data-hjual="${r.hargajual}"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-danger btn-sm del-spr" data-kode="${r.kode}"><i class="fas fa-trash"></i></button>
-            </td></tr>`;
+          tb.innerHTML += `<tr><td>${r.kode}</td><td>${r.nama}</td><td>${r.stok}</td><td>Rp ${Number(r.hargabeli).toLocaleString('id-ID')}</td><td>Rp ${Number(r.hargajual).toLocaleString('id-ID')}</td><td><button class="btn btn-warning btn-sm edit-spr" data-kode="${r.kode}" data-nama="${r.nama}" data-stok="${r.stok}" data-hbeli="${r.hargabeli}" data-hjual="${r.hargajual}"><i class="fas fa-edit"></i></button> <button class="btn btn-danger btn-sm del-spr" data-kode="${r.kode}"><i class="fas fa-trash"></i></button></td></tr>`;
         });
-        document.querySelectorAll('.edit-spr').forEach(btn => btn.addEventListener('click', function() {
-          editSparepart(this.dataset.kode, this.dataset.nama, this.dataset.stok, this.dataset.hbeli, this.dataset.hjual);
-        }));
-        document.querySelectorAll('.del-spr').forEach(btn => btn.addEventListener('click', function() {
-          hapusSparepart(this.dataset.kode);
-        }));
+        document.querySelectorAll('.edit-spr').forEach(btn => btn.addEventListener('click', function() { editSparepart(this.dataset.kode, this.dataset.nama, this.dataset.stok, this.dataset.hbeli, this.dataset.hjual); }));
+        document.querySelectorAll('.del-spr').forEach(btn => btn.addEventListener('click', function() { hapusSparepart(this.dataset.kode); }));
       } catch (err) { console.error(err); }
       hideLoader();
     }
@@ -700,64 +633,30 @@
       e.preventDefault(); showLoader();
       try {
         const kode = document.getElementById('spr-kode').value;
-        const obj = {
-          nama: document.getElementById('spr-nama').value,
-          jenis: '-',
-          stok: Number(document.getElementById('spr-stok').value),
-          hargabeli: Number(document.getElementById('spr-hbeli').value),
-          hargajual: Number(document.getElementById('spr-hjual').value)
-        };
-        if (kode === '') {
-          const newKode = await generateId('SPR-', 'sparepartCounter', 3);
-          await db.collection('sparepart').doc(newKode).set(obj);
-        } else {
-          await db.collection('sparepart').doc(kode).update(obj);
-        }
+        const obj = { nama: document.getElementById('spr-nama').value, jenis: '-', stok: Number(document.getElementById('spr-stok').value), hargabeli: Number(document.getElementById('spr-hbeli').value), hargajual: Number(document.getElementById('spr-hjual').value) };
+        if (kode === '') { const newKode = await generateId('SPR-', 'sparepartCounter', 3); await db.collection('sparepart').doc(newKode).set(obj); } 
+        else { await db.collection('sparepart').doc(kode).update(obj); }
         closeModal('modal-sparepart'); loadSparepart(); showToast('Disimpan!');
       } catch (err) { console.error(err); alert('Error: ' + err.message); }
       hideLoader();
     }
 
-    function editSparepart(kode, nama, stok, hbeli, hjual) {
-      document.getElementById('spr-kode').value = kode;
-      document.getElementById('spr-nama').value = nama;
-      document.getElementById('spr-stok').value = stok;
-      document.getElementById('spr-hbeli').value = hbeli;
-      document.getElementById('spr-hjual').value = hjual;
-      openModal('modal-sparepart');
-    }
+    function editSparepart(kode, nama, stok, hbeli, hjual) { document.getElementById('spr-kode').value = kode; document.getElementById('spr-nama').value = nama; document.getElementById('spr-stok').value = stok; document.getElementById('spr-hbeli').value = hbeli; document.getElementById('spr-hjual').value = hjual; openModal('modal-sparepart'); }
+    async function hapusSparepart(kode) { if (confirm('Yakin hapus?')) { showLoader(); try { await db.collection('sparepart').doc(kode).delete(); loadSparepart(); showToast('Dihapus!'); } catch (err) { console.error(err); } hideLoader(); } }
 
-    async function hapusSparepart(kode) {
-      if (confirm('Yakin hapus?')) {
-        showLoader();
-        try { await db.collection('sparepart').doc(kode).delete(); loadSparepart(); showToast('Dihapus!'); }
-        catch (err) { console.error(err); }
-        hideLoader();
-      }
-    }
-
-    /* ============================================================
-       TEKNISI
-       ============================================================ */
     async function loadTeknisi() {
       showLoader();
       try {
         const snapshot = await db.collection('teknisi').get();
         const data = [];
         snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
-
         const tb = document.querySelector('#table-teknisi tbody');
         tb.innerHTML = '';
         data.forEach(r => {
           const b = r.status === 'Aktif' ? 'bg-green' : 'bg-red';
-          tb.innerHTML += `<tr>
-            <td>${r.id}</td><td>${r.nama}</td><td>${r.hp}</td><td><span class="badge ${b}">${r.status}</span></td>
-            <td><button class="btn btn-warning btn-sm edit-tkn" data-id="${r.id}" data-nama="${r.nama}" data-hp="${r.hp}" data-status="${r.status}"><i class="fas fa-edit"></i></button></td>
-          </tr>`;
+          tb.innerHTML += `<tr><td>${r.id}</td><td>${r.nama}</td><td>${r.hp}</td><td><span class="badge ${b}">${r.status}</span></td><td><button class="btn btn-warning btn-sm edit-tkn" data-id="${r.id}" data-nama="${r.nama}" data-hp="${r.hp}" data-status="${r.status}"><i class="fas fa-edit"></i></button></td></tr>`;
         });
-        document.querySelectorAll('.edit-tkn').forEach(btn => btn.addEventListener('click', function() {
-          editTeknisi(this.dataset.id, this.dataset.nama, this.dataset.hp, this.dataset.status);
-        }));
+        document.querySelectorAll('.edit-tkn').forEach(btn => btn.addEventListener('click', function() { editTeknisi(this.dataset.id, this.dataset.nama, this.dataset.hp, this.dataset.status); }));
       } catch (err) { console.error(err); }
       hideLoader();
     }
@@ -767,28 +666,15 @@
       try {
         const id = document.getElementById('tkn-id').value;
         const obj = { nama: document.getElementById('tkn-nama').value, hp: document.getElementById('tkn-hp').value, status: document.getElementById('tkn-status').value };
-        if (id === '') {
-          const newId = await generateId('TKN-', 'teknisiCounter', 3);
-          await db.collection('teknisi').doc(newId).set(obj);
-        } else {
-          await db.collection('teknisi').doc(id).update(obj);
-        }
+        if (id === '') { const newId = await generateId('TKN-', 'teknisiCounter', 3); await db.collection('teknisi').doc(newId).set(obj); } 
+        else { await db.collection('teknisi').doc(id).update(obj); }
         closeModal('modal-teknisi'); loadTeknisi(); showToast('Disimpan!');
       } catch (err) { console.error(err); alert('Error: ' + err.message); }
       hideLoader();
     }
 
-    function editTeknisi(id, nama, hp, status) {
-      document.getElementById('tkn-id').value = id;
-      document.getElementById('tkn-nama').value = nama;
-      document.getElementById('tkn-hp').value = hp;
-      document.getElementById('tkn-status').value = status;
-      openModal('modal-teknisi');
-    }
+    function editTeknisi(id, nama, hp, status) { document.getElementById('tkn-id').value = id; document.getElementById('tkn-nama').value = nama; document.getElementById('tkn-hp').value = hp; document.getElementById('tkn-status').value = status; openModal('modal-teknisi'); }
 
-    /* ============================================================
-       BARANG SIAP KERJA (SERVICE)
-       ============================================================ */
     async function loadKerja() {
       showLoader();
       await loadJenisDropdown();
@@ -797,22 +683,14 @@
         const data = [];
         snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() }));
         serviceDataGlobal = data;
-
         const tb = document.querySelector('#table-kerja tbody');
         tb.innerHTML = '';
         const kerja = data.filter(d => d.status !== 'Lunas' && d.status !== 'Diambil');
         if (kerja.length === 0) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;">Belum ada barang.</td></tr>';
         kerja.forEach(r => {
           let b = 'bg-blue';
-          if (r.status==='READY') b='bg-cyan'; if (r.status==='TERTUNDA') b='bg-orange';
-          if (r.status==='BATAL') b='bg-red'; if (r.status==='FINISH') b='bg-green';
-          tb.innerHTML += `<tr>
-            <td>${r.noserv}</td><td>${r.tgl}</td><td>${r.pelanggan}</td><td>${r.jenis} - ${r.merk}</td>
-            <td><span class="badge ${b}">${r.status}</span></td><td>${r.komponen || '-'}</td>
-            <td>
-              <button class="btn btn-warning btn-sm" onclick="editKerja('${r.noserv}')"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-primary btn-sm" onclick="cetakTandaTerima('${r.noserv}')"><i class="fas fa-print"></i></button>
-            </td></tr>`;
+          if (r.status==='READY') b='bg-cyan'; if (r.status==='TERTUNDA') b='bg-orange'; if (r.status==='BATAL') b='bg-red'; if (r.status==='FINISH') b='bg-green';
+          tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.tgl}</td><td>${r.pelanggan}</td><td>${r.jenis} - ${r.merk}</td><td><span class="badge ${b}">${r.status}</span></td><td>${r.komponen || '-'}</td><td><button class="btn btn-warning btn-sm" onclick="editKerja('${r.noserv}')"><i class="fas fa-edit"></i></button> <button class="btn btn-primary btn-sm" onclick="cetakTandaTerima('${r.noserv}')"><i class="fas fa-print"></i></button></td></tr>`;
         });
       } catch (err) { console.error(err); }
       hideLoader();
@@ -822,34 +700,14 @@
       e.preventDefault(); showLoader();
       try {
         const noserv = await generateId('SRV-', 'serviceCounter', 6);
-        const obj = {
-          noserv: noserv,
-          tgl: getFormattedDate(),
-          pelanggan: document.getElementById('trm-pelanggan').value,
-          hp: document.getElementById('trm-hp').value,
-          jenis: document.getElementById('trm-jenis').value,
-          merk: document.getElementById('trm-merk').value,
-          model: '',
-          keluhan: document.getElementById('trm-keluhan').value,
-          estimasi: Number(document.getElementById('trm-estimasi').value),
-          status: 'Diterima',
-          komponen: '',
-          biayaJasa: 0,
-          biayaSparepart: 0,
-          totalBayar: 0,
-          tglLunas: '',
-          tglAmbil: '',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
+        const obj = { noserv: noserv, tgl: getFormattedDate(), pelanggan: document.getElementById('trm-pelanggan').value, hp: document.getElementById('trm-hp').value, jenis: document.getElementById('trm-jenis').value, merk: document.getElementById('trm-merk').value, model: '', keluhan: document.getElementById('trm-keluhan').value, estimasi: Number(document.getElementById('trm-estimasi').value), status: 'Diterima', komponen: '', biayaJasa: 0, biayaSparepart: 0, totalBayar: 0, tglLunas: '', tglAmbil: '', createdAt: firebase.firestore.FieldValue.serverTimestamp() };
         await db.collection('service').doc(noserv).set(obj);
-        showToast('Barang berhasil diterima!');
-        closeModal('modal-terima');
-        document.getElementById('form-terima').reset();
-        loadKerja();
+        showToast('Barang berhasil diterima!'); closeModal('modal-terima'); document.getElementById('form-terima').reset(); loadKerja();
       } catch (err) { console.error(err); alert('Error: ' + err.message); }
       hideLoader();
     }
 
+    // DIPERBARUI: Cetak Tanda Terima Lengkap
     function cetakTandaTerima(noserv) {
       const s = serviceDataGlobal.find(d => d.noserv === noserv);
       if (!s) return;
@@ -857,7 +715,11 @@
       document.getElementById('tt-tgl').innerText = s.tgl;
       document.getElementById('tt-pelanggan').innerText = s.pelanggan;
       document.getElementById('tt-hp').innerText = s.hp;
-      document.getElementById('tt-tbody').innerHTML = `<tr><td>${s.jenis}</td><td>${s.merk} ${s.model || ''}</td><td>${s.keluhan}</td><td>Rp ${Number(s.estimasi).toLocaleString('id-ID')}</td></tr>`;
+      document.getElementById('tt-jenis').innerText = s.jenis;
+      document.getElementById('tt-merk').innerText = s.merk + (s.model ? ' ' + s.model : '');
+      document.getElementById('tt-keluhan').innerText = s.keluhan;
+      
+      document.getElementById('tt-tbody').innerHTML = `<tr><td style="font-weight:bold; font-size:14px;">Rp ${Number(s.estimasi).toLocaleString('id-ID')}</td></tr>`;
       window.print();
     }
 
@@ -875,18 +737,8 @@
       document.getElementById('krj-status').value = s.status;
       currentBiayaJasa = Number(s.estimasi || 0);
       document.getElementById('krj-biaya-jasa').value = 'Rp ' + currentBiayaJasa.toLocaleString('id-ID');
-
-      terpasangList = s.komponen && s.komponen !== '' ? s.komponen.split(', ').map(x => {
-        const parts = x.split(' (');
-        const nama = parts[0];
-        const rest = parts[1] ? parts[1].replace(')','') : '1@0';
-        const qtyParts = rest.split('@');
-        return { kode: 'TEMP', nama: nama, harga: Number(qtyParts[1] || 0), qty: Number(qtyParts[0] || 1) };
-      }) : [];
-
-      renderTerpasang();
-      loadSparepartDropdown();
-      openModal('modal-kerja');
+      terpasangList = s.komponen && s.komponen !== '' ? s.komponen.split(', ').map(x => { const parts = x.split(' ('); const nama = parts[0]; const rest = parts[1] ? parts[1].replace(')','') : '1@0'; const qtyParts = rest.split('@'); return { kode: 'TEMP', nama: nama, harga: Number(qtyParts[1] || 0), qty: Number(qtyParts[0] || 1) }; }) : [];
+      renderTerpasang(); loadSparepartDropdown(); openModal('modal-kerja');
     }
 
     async function loadSparepartDropdown() {
@@ -896,9 +748,7 @@
         snapshot.forEach(doc => sparepartDataGlobal.push({ kode: doc.id, ...doc.data() }));
         const sel = document.getElementById('krj-spr-kode');
         sel.innerHTML = '<option value="">Pilih Sparepart...</option>';
-        sparepartDataGlobal.filter(d => d.stok > 0).forEach(d => {
-          sel.innerHTML += `<option value="${d.kode}">${d.nama} - Stok: ${d.stok}</option>`;
-        });
+        sparepartDataGlobal.filter(d => d.stok > 0).forEach(d => { sel.innerHTML += `<option value="${d.kode}">${d.nama} - Stok: ${d.stok}</option>`; });
       } catch (err) { console.error(err); }
     }
 
@@ -909,15 +759,9 @@
       const spr = sparepartDataGlobal.find(d => d.kode === kode);
       if (spr.stok < qty) return alert("Stok tidak cukup!");
       const exist = terpasangList.find(x => x.kode === spr.kode);
-      if (exist) {
-        if (Number(exist.qty) + qty > spr.stok) return alert("Stok tidak cukup!");
-        exist.qty = Number(exist.qty) + qty;
-      } else {
-        terpasangList.push({ kode: spr.kode, nama: spr.nama, harga: Number(spr.hargajual), qty: qty });
-      }
-      renderTerpasang();
-      document.getElementById('krj-spr-kode').value = '';
-      document.getElementById('krj-spr-qty').value = 1;
+      if (exist) { if (Number(exist.qty) + qty > spr.stok) return alert("Stok tidak cukup!"); exist.qty = Number(exist.qty) + qty; } 
+      else { terpasangList.push({ kode: spr.kode, nama: spr.nama, harga: Number(spr.hargajual), qty: qty }); }
+      renderTerpasang(); document.getElementById('krj-spr-kode').value = ''; document.getElementById('krj-spr-qty').value = 1;
     }
 
     function hapusTerpasang(index) { terpasangList.splice(index, 1); renderTerpasang(); }
@@ -926,15 +770,8 @@
       const tb = document.getElementById('tbl-terpasang');
       tb.innerHTML = '';
       let totalSparepart = 0;
-      if (terpasangList.length === 0) {
-        tb.innerHTML = '<tr><td colspan="5" style="text-align:center">Belum ada sparepart</td></tr>';
-      } else {
-        terpasangList.forEach((t, i) => {
-          const sub = t.harga * t.qty;
-          totalSparepart += sub;
-          tb.innerHTML += `<tr><td>${t.nama}</td><td>Rp ${Number(t.harga).toLocaleString('id-ID')}</td><td>${t.qty}</td><td>Rp ${Number(sub).toLocaleString('id-ID')}</td><td><button type="button" class="btn btn-danger btn-sm" onclick="hapusTerpasang(${i})"><i class="fas fa-times"></i></button></td></tr>`;
-        });
-      }
+      if (terpasangList.length === 0) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center">Belum ada sparepart</td></tr>'; } 
+      else { terpasangList.forEach((t, i) => { const sub = t.harga * t.qty; totalSparepart += sub; tb.innerHTML += `<tr><td>${t.nama}</td><td>Rp ${Number(t.harga).toLocaleString('id-ID')}</td><td>${t.qty}</td><td>Rp ${Number(sub).toLocaleString('id-ID')}</td><td><button type="button" class="btn btn-danger btn-sm" onclick="hapusTerpasang(${i})"><i class="fas fa-times"></i></button></td></tr>`; }); }
       document.getElementById('total-sparepart').innerText = 'Rp ' + Number(totalSparepart).toLocaleString('id-ID');
       const totalEstimasi = currentBiayaJasa + totalSparepart;
       document.getElementById('total-estimasi').innerText = 'Rp ' + Number(totalEstimasi).toLocaleString('id-ID');
@@ -942,13 +779,7 @@
 
     async function transaksiSparepart(kode, qty) {
       const ref = db.collection('sparepart').doc(kode);
-      return db.runTransaction(async (transaction) => {
-        const doc = await transaction.get(ref);
-        if (!doc.exists) throw new Error('Sparepart ' + kode + ' tidak ditemukan');
-        const newStok = (doc.data().stok || 0) - qty;
-        if (newStok < 0) throw new Error('Stok ' + kode + ' tidak cukup');
-        transaction.update(ref, { stok: newStok });
-      });
+      return db.runTransaction(async (transaction) => { const doc = await transaction.get(ref); if (!doc.exists) throw new Error('Sparepart ' + kode + ' tidak ditemukan'); const newStok = (doc.data().stok || 0) - qty; if (newStok < 0) throw new Error('Stok ' + kode + ' tidak cukup'); transaction.update(ref, { stok: newStok }); });
     }
 
     async function saveUpdateKerja(e) {
@@ -957,34 +788,22 @@
         const noserv = document.getElementById('krj-noserv').value;
         const status = document.getElementById('krj-status').value;
         const komponenStr = terpasangList.map(t => `${t.nama} (${t.qty})@${t.harga}`).join(', ');
-
         await db.collection('service').doc(noserv).update({ status: status, komponen: komponenStr });
-
-        for (const t of terpasangList) {
-          if (t.kode !== 'TEMP') {
-            await transaksiSparepart(t.kode, t.qty);
-          }
-        }
+        for (const t of terpasangList) { if (t.kode !== 'TEMP') { await transaksiSparepart(t.kode, t.qty); } }
         closeModal('modal-kerja'); loadKerja(); showToast('Update Berhasil!');
       } catch (err) { console.error(err); alert('Error: ' + err.message); }
       hideLoader();
     }
 
-    /* ============================================================
-       PENYELESAIAN
-       ============================================================ */
     async function loadPenyelesaianForm() {
       showLoader();
       try {
         const snapshot = await db.collection('service').get();
         const data = [];
         snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() }));
-
         const sel = document.getElementById('pen-noserv');
         sel.innerHTML = '<option value="">Pilih No Service</option>';
-        data.filter(d => d.status === 'FINISH').forEach(d => {
-          sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan} (${d.jenis})</option>`;
-        });
+        data.filter(d => d.status === 'FINISH').forEach(d => { sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan} (${d.jenis})</option>`; });
       } catch (err) { console.error(err); }
       hideLoader();
     }
@@ -996,25 +815,12 @@
         const jasa = Number(document.getElementById('pen-jasa').value);
         const sparepart = Number(document.getElementById('pen-sparepart').value);
         const total = jasa + sparepart;
-
-        await db.collection('service').doc(noserv).update({
-          biayaJasa: jasa,
-          biayaSparepart: sparepart,
-          totalBayar: total,
-          status: 'Lunas',
-          tglLunas: getFormattedDate()
-        });
-
-        showToast('Lunas!');
-        loadPenyelesaianForm();
-        document.getElementById('form-penyelesaian').reset();
+        await db.collection('service').doc(noserv).update({ biayaJasa: jasa, biayaSparepart: sparepart, totalBayar: total, status: 'Lunas', tglLunas: getFormattedDate() });
+        showToast('Lunas!'); loadPenyelesaianForm(); document.getElementById('form-penyelesaian').reset();
       } catch (err) { console.error(err); alert('Error: ' + err.message); }
       hideLoader();
     }
 
-    /* ============================================================
-       PENGAMBILAN
-       ============================================================ */
     async function loadPengambilanForm() {
       showLoader();
       try {
@@ -1022,12 +828,9 @@
         const data = [];
         snapshot.forEach(doc => data.push({ noserv: doc.id, ...doc.data() }));
         serviceDataGlobal = data;
-
         const sel = document.getElementById('ambil-noserv');
         sel.innerHTML = '<option value="">Pilih No Service</option>';
-        data.filter(d => d.status === 'Lunas').forEach(d => {
-          sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan}</option>`;
-        });
+        data.filter(d => d.status === 'Lunas').forEach(d => { sel.innerHTML += `<option value="${d.noserv}">${d.noserv} - ${d.pelanggan}</option>`; });
       } catch (err) { console.error(err); }
       hideLoader();
     }
@@ -1036,15 +839,8 @@
       e.preventDefault(); showLoader();
       try {
         const noserv = document.getElementById('ambil-noserv').value;
-
-        await db.collection('service').doc(noserv).update({
-          status: 'Diambil',
-          tglAmbil: getFormattedDate()
-        });
-
-        showToast('Diambil!');
-        loadPengambilanForm();
-        printSST(noserv);
+        await db.collection('service').doc(noserv).update({ status: 'Diambil', tglAmbil: getFormattedDate() });
+        showToast('Diambil!'); loadPengambilanForm(); printSST(noserv);
       } catch (err) { console.error(err); alert('Error: ' + err.message); }
       hideLoader();
     }
@@ -1059,9 +855,6 @@
       window.print();
     }
 
-    /* ============================================================
-       LAPORAN
-       ============================================================ */
     async function loadLaporan() {
       showLoader();
       try {
@@ -1069,90 +862,48 @@
         const snapshot = await db.collection('service').get();
         const allData = [];
         snapshot.forEach(doc => allData.push(doc.data()));
-
-        const now = new Date();
-        const todayStr = getFormattedDate();
-        const curMonth = String(now.getMonth() + 1).padStart(2, '0');
-        const curYear = String(now.getFullYear());
-
+        const now = new Date(); const todayStr = getFormattedDate();
+        const curMonth = String(now.getMonth() + 1).padStart(2, '0'); const curYear = String(now.getFullYear());
         let filtered = allData.filter(s => s.status === 'Lunas' || s.status === 'Diambil');
-
-        filtered = filtered.filter(s => {
-          const dateStr = s.tglLunas || s.tgl || '';
-          const parts = dateStr.split('/');
-          if (type === 'harian') return dateStr === todayStr;
-          if (type === 'bulanan') return parts[1] === curMonth && parts[2] === curYear;
-          if (type === 'tahunan') return parts[2] === curYear;
-          return true;
-        });
-
+        filtered = filtered.filter(s => { const dateStr = s.tglLunas || s.tgl || ''; const parts = dateStr.split('/'); if (type === 'harian') return dateStr === todayStr; if (type === 'bulanan') return parts[1] === curMonth && parts[2] === curYear; if (type === 'tahunan') return parts[2] === curYear; return true; });
         const tb = document.querySelector('#table-laporan tbody');
         tb.innerHTML = '';
         if (filtered.length === 0) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center">Tidak ada data</td></tr>'; }
-        filtered.forEach(r => {
-          tb.innerHTML += `<tr>
-            <td>${r.noserv}</td><td>${r.pelanggan}</td>
-            <td>Rp ${Number(r.biayaJasa || 0).toLocaleString('id-ID')}</td>
-            <td>Rp ${Number(r.biayaSparepart || 0).toLocaleString('id-ID')}</td>
-            <td>Rp ${Number(r.totalBayar || 0).toLocaleString('id-ID')}</td>
-            <td>${r.tglLunas || r.tgl}</td></tr>`;
-        });
+        filtered.forEach(r => { tb.innerHTML += `<tr><td>${r.noserv}</td><td>${r.pelanggan}</td><td>Rp ${Number(r.biayaJasa || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.biayaSparepart || 0).toLocaleString('id-ID')}</td><td>Rp ${Number(r.totalBayar || 0).toLocaleString('id-ID')}</td><td>${r.tglLunas || r.tgl}</td></tr>`; });
       } catch (err) { console.error(err); }
       hideLoader();
     }
 
     function exportData(type) {
       const data = document.getElementById('table-laporan').outerHTML;
-      if (type === 'excel') {
-        const blob = new Blob(['\ufeff', data], { type: 'application/vnd.ms-excel' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'Laporan.xls'; a.click();
-      } else {
-        const win = window.open('', '_blank');
-        win.document.write('<html><title>Laporan</title><style>table{width:100%;border-collapse:collapse}th,td{border:1px solid #000;padding:8px;}</style><body>');
-        win.document.write(data);
-        win.document.write('</body></html>');
-        win.print();
-      }
+      if (type === 'excel') { const blob = new Blob(['\ufeff', data], { type: 'application/vnd.ms-excel' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Laporan.xls'; a.click(); } 
+      else { const win = window.open('', '_blank'); win.document.write('<html><title>Laporan</title><style>table{width:100%;border-collapse:collapse}th,td{border:1px solid #000;padding:8px;}</style><body>'); win.document.write(data); win.document.write('</body></html>'); win.print(); }
     }
 
-    /* ============================================================
-       SEED DATA AWAL (otomatis saat pertama kali)
-       ============================================================ */
     async function seedInitialData() {
       try {
         const usersSnap = await db.collection('users').limit(1).get();
         if (usersSnap.empty) {
           await db.collection('users').doc('admin').set({ username: 'admin', password: 'admin123', nama: 'Administrator' });
-
           await db.collection('jenisBarang').doc('JNS-001').set({ nama: 'TV LED', biaya: 75000 });
           await db.collection('jenisBarang').doc('JNS-002').set({ nama: 'Kipas Angin', biaya: 50000 });
           await db.collection('jenisBarang').doc('JNS-003').set({ nama: 'Rice Cooker', biaya: 40000 });
           await db.collection('jenisBarang').doc('JNS-004').set({ nama: 'DVD Player', biaya: 35000 });
-
           await db.collection('sparepart').doc('SPR-001').set({ nama: 'Kapasitor CBB61', jenis: '-', stok: 50, hargabeli: 5000, hargajual: 10000 });
           await db.collection('sparepart').doc('SPR-002').set({ nama: 'IC Regulator', jenis: '-', stok: 30, hargabeli: 15000, hargajual: 25000 });
           await db.collection('sparepart').doc('SPR-003').set({ nama: 'Elco 400V 100uF', jenis: '-', stok: 40, hargabeli: 8000, hargajual: 15000 });
           await db.collection('sparepart').doc('SPR-004').set({ nama: 'Fuse 2A', jenis: '-', stok: 100, hargabeli: 2000, hargajual: 5000 });
           await db.collection('sparepart').doc('SPR-005').set({ nama: 'Remote Universal', jenis: '-', stok: 20, hargabeli: 25000, hargajual: 40000 });
-
           await db.collection('teknisi').doc('TKN-001').set({ nama: 'Ahmad Rizki', hp: '081234567890', status: 'Aktif' });
-
           await db.collection('counters').doc('jenisBarangCounter').set({ nextNo: 4 });
           await db.collection('counters').doc('sparepartCounter').set({ nextNo: 6 });
           await db.collection('counters').doc('teknisiCounter').set({ nextNo: 2 });
           await db.collection('counters').doc('serviceCounter').set({ nextNo: 1 });
-
           console.log('Data awal berhasil dibuat.');
         }
-      } catch (err) {
-        console.error('Seed error:', err);
-      }
+      } catch (err) { console.error('Seed error:', err); }
     }
 
-    /* ============================================================
-       INISIALISASI APLIKASI
-       ============================================================ */
     window.onload = async function() {
       hideLoader();
       await seedInitialData();
