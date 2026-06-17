@@ -2,7 +2,7 @@
 <html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>ServiceElektronik Pro - Sistem Manajemen Service</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,6 +15,7 @@
         tailwind.config = { theme: { extend: { fontFamily: { 'display': ['Space Grotesk', 'sans-serif'], 'mono': ['JetBrains Mono', 'monospace'] } } } }
     </script>
     <style>
+        /* ===== CSS VARIABLES DARK/LIGHT ===== */
         :root, [data-theme="dark"] {
             --bg:#080D19;--bg2:#0E1525;--card:#131B2E;--card2:#192236;--border:#1F2D47;
             --text:#E2E8F0;--muted:#64748B;--accent:#10B981;--accent2:#34D399;
@@ -29,20 +30,23 @@
             --input-bg:#F8FAFC;--receipt-bg:#fff;--receipt-text:#111;
             --shadow:0 4px 12px rgba(0,0,0,0.08);
         }
+
         * { box-sizing:border-box;margin:0;padding:0; }
         body { font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background 0.3s,color 0.3s; }
         ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:var(--bg2); } ::-webkit-scrollbar-thumb { background:var(--border);border-radius:3px; } ::-webkit-scrollbar-thumb:hover { background:var(--accent); }
-        
-        #loginPage { position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity 0.4s; }
+
+        /* ===== LOGIN PAGE ===== */
+        #loginPage { position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity 0.4s;padding:16px; }
         #loginPage.hidden { opacity:0;pointer-events:none; }
-        .login-box { background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px;width:90%;max-width:420px;box-shadow:var(--shadow); }
+        .login-box { background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 24px;width:100%;max-width:420px;box-shadow:var(--shadow); }
         .login-box h1 { font-size:28px;font-weight:700;text-align:center;margin-bottom:6px; }
         .login-box p.sub { text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px; }
 
+        /* ===== APP LAYOUT ===== */
         #appLayout { display:none; }
-        #appLayout.show { display:flex; }
-        .sidebar { width:270px;height:100vh;background:var(--bg2);border-right:1px solid var(--border);position:fixed;left:0;top:0;z-index:50;transition:transform 0.3s ease,background 0.3s;overflow-y:auto; }
-        .main-content { margin-left:270px;flex:1;min-height:100vh;transition:background 0.3s;width:100%; }
+        #appLayout.show { display:block; }
+        .sidebar { width:270px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);position:fixed;left:0;top:0;z-index:50;transition:transform 0.3s ease,background 0.3s;overflow-y:auto; }
+        .main-content { margin-left:270px;min-height:100vh;transition:background 0.3s; }
         .nav-item { display:flex;align-items:center;gap:12px;padding:11px 20px;margin:3px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s ease;color:var(--muted);font-weight:500;font-size:14px; }
         .nav-item:hover { background:rgba(16,185,129,0.08);color:var(--text); }
         .nav-item.active { background:rgba(16,185,129,0.15);color:var(--accent);box-shadow:inset 3px 0 0 var(--accent); }
@@ -64,6 +68,7 @@
         .btn-info:hover { background:rgba(6,182,212,0.25);transform:translateY(-1px); }
         .btn-info-sm { background:rgba(6,182,212,0.15);color:var(--info);padding:6px 14px;border-radius:7px;border:1px solid rgba(6,182,212,0.3);font-weight:500;font-size:12px;cursor:pointer;transition:all 0.2s;font-family:inherit; }
         .btn-info-sm:hover { background:rgba(6,182,212,0.25); }
+        .btn-disabled { background:rgba(100,116,139,0.1);color:rgba(100,116,139,0.4);padding:6px 14px;border-radius:7px;border:1px solid rgba(100,116,139,0.15);font-weight:500;font-size:12px;cursor:not-allowed;font-family:inherit; }
         .form-input { width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;font-family:inherit;transition:border-color 0.2s,background 0.3s;outline:none; }
         .form-input:focus { border-color:var(--accent);box-shadow:0 0 0 3px rgba(16,185,129,0.1); }
         .form-input::placeholder { color:var(--muted); }
@@ -75,12 +80,12 @@
         thead th { background:var(--bg2);padding:12px 16px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);text-align:left;border-bottom:1px solid var(--border); }
         tbody td { padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(31,45,71,0.3);vertical-align:middle; }
         tbody tr { transition:background 0.15s; } tbody tr:hover { background:rgba(16,185,129,0.04); }
-        .modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s; }
+        .modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;padding:16px; }
         .modal-overlay.show { opacity:1;pointer-events:all; }
-        .modal-box { background:var(--card);border:1px solid var(--border);border-radius:16px;width:92%;max-width:560px;max-height:85vh;overflow-y:auto;transform:translateY(20px);transition:transform 0.25s; }
+        .modal-box { background:var(--card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;transform:translateY(20px);transition:transform 0.25s;padding:0; }
         .modal-overlay.show .modal-box { transform:translateY(0); }
-        .toast-container { position:fixed;top:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px; }
-        .toast { padding:14px 20px;border-radius:10px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:slideIn 0.3s ease,fadeOut 0.3s ease 2.7s;min-width:280px;box-shadow:var(--shadow); }
+        .toast-container { position:fixed;top:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px;max-width:90%; }
+        .toast { padding:14px 20px;border-radius:10px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:slideIn 0.3s ease,fadeOut 0.3s ease 2.7s;min-width:200px;box-shadow:var(--shadow);word-break:break-word; }
         .toast-success { background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.3);color:var(--accent2); }
         .toast-error { background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);color:#F87171; }
         .toast-info { background:rgba(6,182,212,0.2);border:1px solid rgba(6,182,212,0.3);color:#22D3EE; }
@@ -89,29 +94,14 @@
         @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5} }
         .page-section { display:none;animation:pageIn 0.3s ease; } .page-section.active { display:block; }
         @keyframes pageIn { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
-        
-        /* RESPONSIVE MOBILE STYLES */
-        @media (max-width:768px) { 
-            .sidebar { transform:translateX(-100%); z-index:999; } 
-            .sidebar.open { transform:translateX(0); } 
-            .main-content { margin-left:0!important; } 
-            .mobile-toggle { display:flex!important; }
-            .main-content header { padding: 15px!important; }
-            .main-content > div { padding: 15px!important; }
-            .stat-card { padding: 15px; }
-            .hide-mobile { display: none!important; }
-        }
         .mobile-toggle { display:none!important; }
-        
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 998; display: none; }
-        .sidebar-overlay.show { display: block; }
-
         .receipt-box { background:var(--receipt-bg);color:var(--receipt-text);padding:30px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;max-width:350px;margin:0 auto; }
         .receipt-box h3 { text-align:center;font-size:16px;margin-bottom:4px; }
         .receipt-box .divider { border-top:1px dashed #555;margin:10px 0; }
         @media print { body * { visibility:hidden!important; } .print-receipt,.print-receipt * { visibility:visible!important; } .print-receipt { position:absolute;left:0;top:0;width:100%;background:#fff!important;padding:0!important;margin:0!important; } .receipt-box { max-width:100%!important;border-radius:0!important;margin:0!important;padding:20px!important; } .no-print { display:none!important; } }
 
-        .theme-toggle { width:52px;height:28px;border-radius:14px;background:var(--border);position:relative;cursor:pointer;transition:background 0.3s;border:none;flex-shrink: 0; }
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle { width:52px;height:28px;border-radius:14px;background:var(--border);position:relative;cursor:pointer;transition:background 0.3s;border:none;flex-shrink:0; }
         .theme-toggle::after { content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--accent);transition:transform 0.3s; }
         [data-theme="light"] .theme-toggle::after { transform:translateX(24px); }
         .theme-toggle i { position:absolute;top:50%;transform:translateY(-50%);font-size:12px; }
@@ -119,13 +109,43 @@
         .theme-toggle .fa-sun { right:8px;color:#F59E0B;opacity:0.3;transition:opacity 0.3s; }
         [data-theme="light"] .theme-toggle .fa-moon { opacity:0.3; }
         [data-theme="light"] .theme-toggle .fa-sun { opacity:1; }
+
+        /* ===== RESPONSIVE TWEAKS ===== */
+        @media (max-width:768px) {
+            .sidebar { transform:translateX(-100%);width:280px; }
+            .sidebar.open { transform:translateX(0); }
+            .main-content { margin-left:0; }
+            .mobile-toggle { display:flex!important; }
+            .main-content .p-8 { padding:16px; }
+            header.px-8 { padding-left:16px;padding-right:16px; }
+            .grid-cols-1.sm\:grid-cols-2 { grid-template-columns:1fr; }
+            .lg\:grid-cols-3, .lg\:grid-cols-4 { grid-template-columns:1fr; }
+            .lg\:col-span-2 { grid-column:auto; }
+            .flex-wrap.gap-4 { flex-direction:column;align-items:stretch; }
+            .modal-box { max-width:100%;margin:10px; }
+            .receipt-box { max-width:100%; }
+            .stat-card { padding:16px; }
+            .data-card .overflow-x-auto { overflow-x:auto; }
+            table { font-size:12px; }
+            thead th, tbody td { padding:8px 8px; }
+            .btn-primary, .btn-secondary, .btn-info { padding:8px 16px;font-size:13px; }
+            .form-input { font-size:14px;padding:10px 12px; }
+            .login-box { padding:24px 16px; }
+        }
+        @media (max-width:480px) {
+            .main-content .p-8 { padding:12px; }
+            header .flex.items-center.gap-4 { gap:8px; }
+            .nav-item { padding:10px 16px;margin:2px 8px;font-size:13px; }
+            .stat-card .text-2xl { font-size:20px; }
+            .toast-container { top:10px;right:10px;left:10px; }
+            .toast { min-width:auto;width:100%; }
+        }
     </style>
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('show')"></div>
 
-    <!-- LOGIN PAGE -->
+    <!-- ===== LOGIN PAGE ===== -->
     <div id="loginPage">
         <div class="login-box">
             <div class="flex justify-center mb-4"><div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-bolt" style="color:var(--accent);font-size:32px"></i></div></div>
@@ -141,7 +161,7 @@
         </div>
     </div>
 
-    <!-- APP LAYOUT -->
+    <!-- ===== APP LAYOUT ===== -->
     <div id="appLayout">
         <aside class="sidebar" id="sidebar">
             <div class="p-6 border-b" style="border-color:var(--border)"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-bolt" style="color:var(--accent);font-size:18px"></i></div><div><h1 class="text-base font-bold" style="color:var(--text)">ServicePro</h1><p class="text-xs" style="color:var(--muted)">Elektronik Management</p></div></div></div>
@@ -152,7 +172,7 @@
                 <div class="nav-item" data-page="daftar" onclick="navigate('daftar')"><i class="fas fa-list-check"></i> Daftar Barang Service</div>
                 <div class="nav-item" data-page="pengambilan" onclick="navigate('pengambilan')"><i class="fas fa-hand-holding"></i> Pengambilan Barang</div>
                 <p class="px-8 py-2 mt-3 text-xs font-semibold uppercase tracking-wider" style="color:var(--muted);opacity:0.5">Pengaturan</p>
-                <div class="nav-item" data-page="jenis" onclick="navigate('jenis')"><i class="fas fa-tags"></i> Jenis & Biaya Service</div>
+                <div class="nav-item" data-page="jenis" onclick="navigate('jenis')"><i class="fas fa-tags"></i> Jenis &amp; Biaya Service</div>
                 <div class="nav-item" data-page="stok" onclick="navigate('stok')"><i class="fas fa-warehouse"></i> Stok Sparepart</div>
                 <p class="px-8 py-2 mt-3 text-xs font-semibold uppercase tracking-wider" style="color:var(--muted);opacity:0.5">Laporan</p>
                 <div class="nav-item" data-page="riwayat" onclick="navigate('riwayat')"><i class="fas fa-clock-rotate-left"></i> Riwayat Service</div>
@@ -170,112 +190,47 @@
         </aside>
 
         <main class="main-content">
-            <header class="sticky top-0 z-40 px-8 py-4 flex items-center justify-between" style="background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)">
-                <div class="flex items-center gap-4">
-                    <button class="mobile-toggle items-center justify-center w-10 h-10 rounded-lg" style="background:var(--card);border:1px solid var(--border)" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show')"><i class="fas fa-bars" style="color:var(--muted)"></i></button>
-                    <h2 class="text-lg font-bold" id="pageTitle">Dashboard</h2>
-                </div>
-                <div class="flex items-center gap-3 sm:gap-4">
+            <header class="sticky top-0 z-40 px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between" style="background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)">
+                <div class="flex items-center gap-3"><button class="mobile-toggle items-center justify-center w-10 h-10 rounded-lg" style="background:var(--card);border:1px solid var(--border)" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars" style="color:var(--muted)"></i></button><h2 class="text-lg font-bold" id="pageTitle">Dashboard</h2></div>
+                <div class="flex items-center gap-3">
                     <button class="theme-toggle" onclick="toggleTheme()" title="Ganti Tema" aria-label="Ganti tema terang/gelap">
                         <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
                     </button>
-                    <span class="text-xs font-mono px-3 py-1 rounded-full hide-mobile" style="background:rgba(16,185,129,0.1);color:var(--accent)" id="clockDisplay">--:--:--</span>
+                    <span class="text-xs font-mono px-3 py-1 rounded-full hidden sm:inline-block" style="background:rgba(16,185,129,0.1);color:var(--accent)" id="clockDisplay">--:--:--</span>
                     <div class="w-2 h-2 rounded-full" style="background:var(--accent);animation:pulse 2s infinite"></div>
                 </div>
             </header>
 
             <div class="p-4 sm:p-8">
-                <!-- DASHBOARD -->
-                <section class="page-section active" id="page-dashboard">
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8" id="dashStats"></div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                        <div class="lg:col-span-2 data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Pendapatan 7 Hari Terakhir</h3></div><div class="p-5"><canvas id="revenueChart" height="220"></canvas></div></div>
-                        <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Distribusi Status Service</h3></div><div class="p-5"><canvas id="statusChart" height="220"></canvas></div></div>
-                    </div>
-                    <div class="data-card mt-5"><div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Service Terbaru</h3><button class="btn-secondary btn-sm" onclick="navigate('daftar')">Lihat Semua <i class="fas fa-arrow-right ml-1"></i></button></div><div class="overflow-x-auto"><table><thead><tr><th>No. Service</th><th>Pelanggan</th><th>Barang</th><th>Status</th><th>Tanggal</th></tr></thead><tbody id="dashRecentTable"></tbody></table></div></div>
-                </section>
-
-                <!-- TERIMA BARANG -->
-                <section class="page-section" id="page-terima">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 data-card">
-                            <div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold">Form Penerimaan Barang</h3><p class="text-xs mt-1" style="color:var(--muted)">Isi data barang yang diterima untuk service</p></div>
-                            <form id="formTerima" class="p-5 space-y-4" onsubmit="return simpanTerima(event)">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label">Nama Pelanggan</label><input type="text" class="form-input" id="tNama" placeholder="Nama lengkap" required></div><div><label class="form-label">No. Telepon</label><input type="tel" class="form-input" id="tTelp" placeholder="08xxxxxxxxxx" required></div></div>
-                                <div><label class="form-label">Alamat</label><textarea class="form-input" id="tAlamat" rows="2" placeholder="Alamat lengkap pelanggan..." required></textarea></div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label">Jenis Barang</label><select class="form-input" id="tJenis" required><option value="">Pilih jenis barang</option></select></div><div><label class="form-label">Merek / Model</label><input type="text" class="form-input" id="tMerek" placeholder="Contoh: Samsung UA43" required></div></div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label">Type</label><input type="text" class="form-input" id="tType" placeholder="Contoh: UA43T6500AKXXD" required></div><div><label class="form-label">No. Seri</label><input type="text" class="form-input" id="tSeri" placeholder="SN perangkat"></div></div>
-                                <div><label class="form-label">Keluhan / Masalah</label><textarea class="form-input" id="tKeluhan" rows="3" placeholder="Deskripsikan keluhan pelanggan..." required></textarea></div>
-                                <div><label class="form-label">Kelengkapan Barang</label><input type="text" class="form-input" id="tKelengkapan" placeholder="Contoh: Charger, Remote, Kabel HDMI" required></div>
-                                <div><label class="form-label">Estimasi Biaya (Rp)</label><input type="number" class="form-input" id="tEstimasi" placeholder="0" min="0"></div>
-                                <div class="pt-2 flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-check"></i> Simpan & Terima</button><button type="reset" class="btn-secondary">Reset</button></div>
-                            </form>
-                        </div>
-                        <div>
-                            <div class="data-card mb-5"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Panduan Singkat</h3></div><div class="p-5 space-y-4 text-sm" style="color:var(--muted)"><div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">1</div><p>Isi data pelanggan dan barang dengan lengkap</p></div><div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">2</div><p>Pilih jenis barang sesuai kategori yang tersedia</p></div><div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">3</div><p>Cantumkan kelengkapan barang yang diterima</p></div><div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">4</div><p>Bukti titip bisa diunduh setelah simpan</p></div></div></div>
-                            <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Barang Diterima Hari Ini</h3></div><div class="p-5" id="terimaHariIni"><p class="text-sm" style="color:var(--muted)">Belum ada barang hari ini</p></div></div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- DAFTAR BARANG -->
-                <section class="page-section" id="page-daftar">
-                    <div class="data-card"><div class="p-5 border-b flex flex-wrap items-center justify-between gap-4" style="border-color:var(--border)"><div class="flex items-center gap-3 flex-wrap"><input type="text" class="form-input" style="width:240px" placeholder="Cari no service / pelanggan..." id="searchDaftar" oninput="renderDaftar()"><select class="form-input" style="width:160px" id="filterStatus" onchange="renderDaftar()"><option value="">Semua Status</option><option value="masuk">Masuk</option><option value="diperiksa">Diperiksa</option><option value="proses">Dalam Proses</option><option value="selesai">Selesai</option><option value="diambil">Diambil</option></select></div><button class="btn-primary" onclick="navigate('terima')"><i class="fas fa-plus"></i> Terima Barang Baru</button></div><div class="overflow-x-auto"><table><thead><tr><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Type</th><th>No. Seri</th><th>Kelengkapan</th><th>Keluhan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="daftarTable"></tbody></table></div></div>
-                </section>
-
-                <!-- PENGAMBILAN BARANG -->
-                <section class="page-section" id="page-pengambilan">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Cari Barang</h3></div><div class="p-5 space-y-4"><div><label class="form-label">Nomor Service</label><input type="text" class="form-input" id="cariNoService" placeholder="SVC-XXXXXXXX"></div><button class="btn-primary w-full" onclick="cariPengambilan()"><i class="fas fa-search"></i> Cari</button></div><div class="px-5 pb-5"><p class="text-xs mb-3 font-semibold" style="color:var(--muted)">Barang Siap Diambil</p><div id="listSiapAmbil" class="space-y-2"></div></div></div>
-                        <div class="lg:col-span-2">
-                            <div class="data-card mb-5" id="detailPengambilan" style="display:none"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Detail Service</h3></div><div class="p-5" id="detailAmbilContent"></div></div>
-                            <div class="data-card mb-5" id="formPengambilanCard" style="display:none"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Form Pengambilan</h3></div><form class="p-5 space-y-4" id="formAmbil" onsubmit="return prosesPengambilan(event)"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label">Biaya Service (Rp)</label><input type="number" class="form-input" id="aBiaya" required min="0"></div><div><label class="form-label">Total Biaya Sparepart (Rp)</label><input type="number" class="form-input" id="aSparepart" value="0" min="0" readonly style="background:var(--card2);cursor:not-allowed"></div></div><div class="p-4 rounded-xl" style="background:var(--bg2);border:1px solid var(--border)"><div class="flex items-center justify-between mb-3"><h4 class="text-sm font-semibold" style="color:var(--accent)"><i class="fas fa-puzzle-piece mr-2"></i>Sparepart Digunakan</h4><button type="button" class="btn-secondary btn-sm" onclick="tambahBarisSparepart()"><i class="fas fa-plus"></i> Tambah</button></div><div class="overflow-x-auto"><table><thead><tr><th style="background:transparent;padding:8px 6px;font-size:11px">Sparepart</th><th style="background:transparent;padding:8px 6px;font-size:11px">Harga</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:70px">Stok</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:80px">Qty</th><th style="background:transparent;padding:8px 6px;font-size:11px">Subtotal</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:40px"></th></tr></thead><tbody id="sparepartPickerBody"><tr id="sparepartEmptyRow"><td colspan="6" class="text-center py-3 text-xs" style="color:var(--muted)">Klik "Tambah" untuk memilih sparepart</td></tr></tbody></table></div></div><div><label class="form-label">Catatan Teknisi</label><textarea class="form-input" id="aCatatan" rows="2" placeholder="Hasil perbaikan..."></textarea></div><div class="flex gap-3 flex-wrap"><button type="submit" class="btn-primary"><i class="fas fa-hand-holding"></i> Proses Pengambilan</button><button type="button" class="btn-secondary" onclick="cetakStruk()"><i class="fas fa-print"></i> Cetak Struk</button><button type="button" class="btn-info" onclick="downloadStrukPDF()"><i class="fas fa-file-pdf"></i> Download PDF</button></div></form></div>
-                            <div id="strukContainer" style="display:none" class="data-card p-5 print-receipt"></div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- JENIS SERVICE -->
-                <section class="page-section" id="page-jenis">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Tambah Jenis Barang</h3></div><form class="p-5 space-y-4" id="formJenis" onsubmit="return simpanJenis(event)"><div><label class="form-label">Nama Jenis Barang</label><input type="text" class="form-input" id="jNama" placeholder="Contoh: Televisi LED" required></div><div><label class="form-label">Biaya Service Dasar (Rp)</label><input type="number" class="form-input" id="jBiaya" placeholder="0" required min="0"></div><div><label class="form-label">Deskripsi</label><textarea class="form-input" id="jDeskripsi" rows="2" placeholder="Keterangan tambahan..."></textarea></div><button type="submit" class="btn-primary w-full"><i class="fas fa-plus"></i> Simpan Jenis</button></form></div><div class="lg:col-span-2 data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Daftar Jenis Barang & Biaya</h3></div><div class="overflow-x-auto"><table><thead><tr><th>Nama Jenis</th><th>Biaya Dasar</th><th>Deskripsi</th><th>Aksi</th></tr></thead><tbody id="jenisTable"></tbody></table></div></div></div>
-                </section>
-
-                <!-- STOK SPAREPART -->
-                <section class="page-section" id="page-stok">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Tambah Sparepart</h3></div><form class="p-5 space-y-4" id="formStok" onsubmit="return simpanSparepart(event)"><div><label class="form-label">Nama Sparepart</label><input type="text" class="form-input" id="sNama" placeholder="Contoh: Kapasitor 450V" required></div><div class="grid grid-cols-2 gap-3"><div><label class="form-label">Jumlah</label><input type="number" class="form-input" id="sJumlah" placeholder="0" required min="0"></div><div><label class="form-label">Harga (Rp)</label><input type="number" class="form-input" id="sHarga" placeholder="0" required min="0"></div></div><div><label class="form-label">Kategori</label><input type="text" class="form-input" id="sKategori" placeholder="Contoh: Kapasitor, IC, Kabel"></div><button type="submit" class="btn-primary w-full"><i class="fas fa-plus"></i> Simpan Sparepart</button></form></div><div class="lg:col-span-2 data-card"><div class="p-5 border-b flex flex-wrap items-center justify-between gap-4" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Daftar Stok Sparepart</h3><input type="text" class="form-input" style="width:200px" placeholder="Cari sparepart..." id="searchStok" oninput="renderStok()"></div><div class="overflow-x-auto"><table><thead><tr><th>Nama</th><th>Kategori</th><th>Stok</th><th>Harga</th><th>Aksi</th></tr></thead><tbody id="stokTable"></tbody></table></div></div></div>
-                </section>
-
-                <!-- RIWAYAT -->
-                <section class="page-section" id="page-riwayat">
-                    <div class="data-card"><div class="p-5 border-b flex flex-wrap items-center justify-between gap-4" style="border-color:var(--border)"><div class="flex items-center gap-3 flex-wrap"><input type="date" class="form-input" style="width:170px" id="riwayatDari" onchange="renderRiwayat()"><span class="text-sm" style="color:var(--muted)">s/d</span><input type="date" class="form-input" style="width:170px" id="riwayatSampai" onchange="renderRiwayat()"><input type="text" class="form-input" style="width:200px" placeholder="Cari..." id="searchRiwayat" oninput="renderRiwayat()"></div></div><div class="overflow-x-auto"><table><thead><tr><th>No. Service</th><th>Tgl Masuk</th><th>Tgl Ambil</th><th>Pelanggan</th><th>Barang</th><th>Total Biaya</th><th>Struk</th></tr></thead><tbody id="riwayatTable"></tbody></table></div></div>
-                </section>
-
-                <!-- LAPORAN -->
-                <section class="page-section" id="page-laporan">
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-6" id="laporanStats"></div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6"><div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Pendapatan Bulanan</h3></div><div class="p-5"><canvas id="monthlyChart" height="250"></canvas></div></div><div class="data-card"><div class="p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Jenis Barang Terbanyak</h3></div><div class="p-5"><canvas id="jenisChart" height="250"></canvas></div></div></div>
-                    <div class="data-card"><div class="p-5 border-b flex flex-wrap items-center justify-between gap-4" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Detail Laporan</h3><div class="flex gap-2 flex-wrap"><input type="month" class="form-input" style="width:180px" id="laporanBulan" onchange="renderLaporan()"><button class="btn-primary btn-sm" onclick="exportLaporan()"><i class="fas fa-download"></i> Export</button></div></div><div class="overflow-x-auto"><table><thead><tr><th>No</th><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Biaya Service</th><th>Sparepart</th><th>Total</th></tr></thead><tbody id="laporanTable"></tbody></table></div><div class="p-5 flex justify-end" id="laporanTotal"></div></div>
-                </section>
+                <section class="page-section active" id="page-dashboard"><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6 sm:mb-8" id="dashStats"></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5"><div class="lg:col-span-2 data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Pendapatan 7 Hari Terakhir</h3></div><div class="p-4 sm:p-5"><canvas id="revenueChart" height="220"></canvas></div></div><div class="data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Distribusi Status Service</h3></div><div class="p-4 sm:p-5"><canvas id="statusChart" height="220"></canvas></div></div></div><div class="data-card mt-4 sm:mt-5"><div class="p-4 sm:p-5 border-b flex flex-wrap items-center justify-between gap-2" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Service Terbaru</h3><button class="btn-secondary btn-sm" onclick="navigate('daftar')">Lihat Semua <i class="fas fa-arrow-right ml-1"></i></button></div><div class="overflow-x-auto"><table><thead><tr><th>No. Service</th><th>Pelanggan</th><th>Barang</th><th>Status</th><th>Tanggal</th></tr></thead><tbody id="dashRecentTable"></tbody></table></div></div></section>
+                <section class="page-section" id="page-terima"><div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"><div class="lg:col-span-2 data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold">Form Penerimaan Barang</h3><p class="text-xs mt-1" style="color:var(--muted)">Isi data barang yang diterima untuk service</p></div><form id="formTerima" class="p-4 sm:p-5 space-y-4" onsubmit="return simpanTerima(event)"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label">Nama Pelanggan</label><input type="text" class="form-input" id="tNama" placeholder="Nama lengkap" required></div><div><label class="form-label">No. Telepon</label><input type="tel" class="form-input" id="tTelp" placeholder="08xxxxxxxxxx" required></div></div><div><label class="form-label">Alamat</label><textarea class="form-input" id="tAlamat" rows="2" placeholder="Alamat lengkap pelanggan..." required></textarea></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label">Jenis Barang</label><select class="form-input" id="tJenis" required><option value="">Pilih jenis barang</option></select></div><div><label class="form-label">Merek / Model</label><input type="text" class="form-input" id="tMerek" placeholder="Contoh: Samsung UA43" required></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label">Type</label><input type="text" class="form-input" id="tType" placeholder="Contoh: UA43T6500AKXXD" required></div><div><label class="form-label">No. Seri</label><input type="text" class="form-input" id="tSeri" placeholder="SN perangkat"></div></div><div><label class="form-label">Keluhan / Masalah</label><textarea class="form-input" id="tKeluhan" rows="3" placeholder="Deskripsikan keluhan pelanggan..." required></textarea></div><div><label class="form-label">Kelengkapan Barang</label><input type="text" class="form-input" id="tKelengkapan" placeholder="Contoh: Charger, Remote, Kabel HDMI" required></div><div><label class="form-label">Estimasi Biaya (Rp)</label><input type="number" class="form-input" id="tEstimasi" placeholder="0" min="0"></div><div class="pt-2 flex flex-wrap gap-3"><button type="submit" class="btn-primary"><i class="fas fa-check"></i> Simpan & Terima</button><button type="reset" class="btn-secondary">Reset</button></div></form></div><div><div class="data-card mb-4 sm:mb-5"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Panduan Singkat</h3></div><div class="p-4 sm:p-5 space-y-4 text-sm" style="color:var(--muted)"><div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">1</div><p>Isi data pelanggan dan barang dengan lengkap</p></div><div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">2</div><p>Pilih jenis barang sesuai kategori yang tersedia</p></div><div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">3</div><p>Cantumkan kelengkapan barang yang diterima</p></div><div class="flex gap-3"><div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background:rgba(16,185,129,0.15);color:var(--accent)">4</div><p>Bukti titip bisa diunduh setelah simpan</p></div></div></div><div class="data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Barang Diterima Hari Ini</h3></div><div class="p-4 sm:p-5" id="terimaHariIni"><p class="text-sm" style="color:var(--muted)">Belum ada barang hari ini</p></div></div></div></div></section>
+                <section class="page-section" id="page-daftar"><div class="data-card"><div class="p-4 sm:p-5 border-b flex flex-wrap items-center justify-between gap-3" style="border-color:var(--border)"><div class="flex items-center gap-3 flex-wrap"><input type="text" class="form-input" style="width:200px;max-width:100%" placeholder="Cari no service / pelanggan..." id="searchDaftar" oninput="renderDaftar()"><select class="form-input" style="width:150px;max-width:100%" id="filterStatus" onchange="renderDaftar()"><option value="">Semua Status</option><option value="masuk">Masuk</option><option value="diperiksa">Diperiksa</option><option value="proses">Dalam Proses</option><option value="selesai">Selesai</option><option value="diambil">Diambil</option></select></div><button class="btn-primary" onclick="navigate('terima')"><i class="fas fa-plus"></i> Terima Barang Baru</button></div><div class="overflow-x-auto"><table><thead><tr><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Type</th><th>No. Seri</th><th>Kelengkapan</th><th>Keluhan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="daftarTable"></tbody></table></div></div></section>
+                <section class="page-section" id="page-pengambilan"><div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"><div class="data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Cari Barang</h3></div><div class="p-4 sm:p-5 space-y-4"><div><label class="form-label">Nomor Service</label><input type="text" class="form-input" id="cariNoService" placeholder="SVC-XXXXXXXX"></div><button class="btn-primary w-full" onclick="cariPengambilan()"><i class="fas fa-search"></i> Cari</button></div><div class="px-4 pb-4 sm:px-5 sm:pb-5"><p class="text-xs mb-3 font-semibold" style="color:var(--muted)">Barang Siap Diambil</p><div id="listSiapAmbil" class="space-y-2"></div></div></div><div class="lg:col-span-2"><div class="data-card mb-4 sm:mb-5" id="detailPengambilan" style="display:none"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Detail Service</h3></div><div class="p-4 sm:p-5" id="detailAmbilContent"></div></div><div class="data-card mb-4 sm:mb-5" id="formPengambilanCard" style="display:none"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Form Pengambilan</h3></div><form class="p-4 sm:p-5 space-y-4" id="formAmbil" onsubmit="return prosesPengambilan(event)"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label">Biaya Service (Rp)</label><input type="number" class="form-input" id="aBiaya" required min="0"></div><div><label class="form-label">Total Biaya Sparepart (Rp)</label><input type="number" class="form-input" id="aSparepart" value="0" min="0" readonly style="background:var(--card2);cursor:not-allowed"></div></div><div class="p-3 sm:p-4 rounded-xl" style="background:var(--bg2);border:1px solid var(--border)"><div class="flex items-center justify-between mb-3"><h4 class="text-sm font-semibold" style="color:var(--accent)"><i class="fas fa-puzzle-piece mr-2"></i>Sparepart Digunakan</h4><button type="button" class="btn-secondary btn-sm" onclick="tambahBarisSparepart()"><i class="fas fa-plus"></i> Tambah</button></div><div class="overflow-x-auto"><table><thead><tr><th style="background:transparent;padding:8px 6px;font-size:11px">Sparepart</th><th style="background:transparent;padding:8px 6px;font-size:11px">Harga</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:70px">Stok</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:80px">Qty</th><th style="background:transparent;padding:8px 6px;font-size:11px">Subtotal</th><th style="background:transparent;padding:8px 6px;font-size:11px;width:40px"></th></tr></thead><tbody id="sparepartPickerBody"><tr id="sparepartEmptyRow"><td colspan="6" class="text-center py-3 text-xs" style="color:var(--muted)">Klik "Tambah" untuk memilih sparepart</td></tr></tbody></table></div></div><div><label class="form-label">Catatan Teknisi</label><textarea class="form-input" id="aCatatan" rows="2" placeholder="Hasil perbaikan..."></textarea></div><div class="flex flex-wrap gap-3"><button type="submit" class="btn-primary"><i class="fas fa-hand-holding"></i> Proses Pengambilan</button><button type="button" class="btn-secondary" onclick="cetakStruk()"><i class="fas fa-print"></i> Cetak Struk</button><button type="button" class="btn-info" onclick="downloadStrukPDF()"><i class="fas fa-file-pdf"></i> Download PDF</button></div></form></div><div id="strukContainer" style="display:none" class="data-card p-4 sm:p-5 print-receipt"></div></div></div></section>
+                <section class="page-section" id="page-jenis"><div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"><div class="data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Tambah Jenis Barang</h3></div><form class="p-4 sm:p-5 space-y-4" id="formJenis" onsubmit="return simpanJenis(event)"><div><label class="form-label">Nama Jenis Barang</label><input type="text" class="form-input" id="jNama" placeholder="Contoh: Televisi LED" required></div><div><label class="form-label">Biaya Service Dasar (Rp)</label><input type="number" class="form-input" id="jBiaya" placeholder="0" required min="0"></div><div><label class="form-label">Deskripsi</label><textarea class="form-input" id="jDeskripsi" rows="2" placeholder="Keterangan tambahan..."></textarea></div><button type="submit" class="btn-primary w-full"><i class="fas fa-plus"></i> Simpan Jenis</button></form></div><div class="lg:col-span-2 data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Daftar Jenis Barang & Biaya</h3></div><div class="overflow-x-auto"><table><thead><tr><th>Nama Jenis</th><th>Biaya Dasar</th><th>Deskripsi</th><th>Aksi</th></tr></thead><tbody id="jenisTable"></tbody></table></div></div></div></section>
+                <section class="page-section" id="page-stok"><div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"><div class="data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Tambah Sparepart</h3></div><form class="p-4 sm:p-5 space-y-4" id="formStok" onsubmit="return simpanSparepart(event)"><div><label class="form-label">Nama Sparepart</label><input type="text" class="form-input" id="sNama" placeholder="Contoh: Kapasitor 450V" required></div><div class="grid grid-cols-2 gap-3"><div><label class="form-label">Jumlah</label><input type="number" class="form-input" id="sJumlah" placeholder="0" required min="0"></div><div><label class="form-label">Harga (Rp)</label><input type="number" class="form-input" id="sHarga" placeholder="0" required min="0"></div></div><div><label class="form-label">Kategori</label><input type="text" class="form-input" id="sKategori" placeholder="Contoh: Kapasitor, IC, Kabel"></div><button type="submit" class="btn-primary w-full"><i class="fas fa-plus"></i> Simpan Sparepart</button></form></div><div class="lg:col-span-2 data-card"><div class="p-4 sm:p-5 border-b flex flex-wrap items-center justify-between gap-3" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Daftar Stok Sparepart</h3><input type="text" class="form-input" style="width:180px;max-width:100%" placeholder="Cari sparepart..." id="searchStok" oninput="renderStok()"></div><div class="overflow-x-auto"><table><thead><tr><th>Nama</th><th>Kategori</th><th>Stok</th><th>Harga</th><th>Aksi</th></tr></thead><tbody id="stokTable"></tbody></table></div></div></div></section>
+                <section class="page-section" id="page-riwayat"><div class="data-card"><div class="p-4 sm:p-5 border-b flex flex-wrap items-center justify-between gap-3" style="border-color:var(--border)"><div class="flex items-center gap-3 flex-wrap"><input type="date" class="form-input" style="width:150px;max-width:100%" id="riwayatDari" onchange="renderRiwayat()"><span class="text-sm" style="color:var(--muted)">s/d</span><input type="date" class="form-input" style="width:150px;max-width:100%" id="riwayatSampai" onchange="renderRiwayat()"><input type="text" class="form-input" style="width:170px;max-width:100%" placeholder="Cari..." id="searchRiwayat" oninput="renderRiwayat()"></div></div><div class="overflow-x-auto"><table><thead><tr><th>No. Service</th><th>Tgl Masuk</th><th>Tgl Ambil</th><th>Pelanggan</th><th>Barang</th><th>Total Biaya</th><th>Struk</th></tr></thead><tbody id="riwayatTable"></tbody></table></div></div></section>
+                <section class="page-section" id="page-laporan"><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-4 sm:mb-6" id="laporanStats"></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-6"><div class="data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Pendapatan Bulanan</h3></div><div class="p-4 sm:p-5"><canvas id="monthlyChart" height="250"></canvas></div></div><div class="data-card"><div class="p-4 sm:p-5 border-b" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Jenis Barang Terbanyak</h3></div><div class="p-4 sm:p-5"><canvas id="jenisChart" height="250"></canvas></div></div></div><div class="data-card"><div class="p-4 sm:p-5 border-b flex flex-wrap items-center justify-between gap-3" style="border-color:var(--border)"><h3 class="font-semibold text-sm">Detail Laporan</h3><div class="flex gap-2 flex-wrap"><input type="month" class="form-input" style="width:160px;max-width:100%" id="laporanBulan" onchange="renderLaporan()"><button class="btn-primary btn-sm" onclick="exportLaporan()"><i class="fas fa-download"></i> Export</button></div></div><div class="overflow-x-auto"><table><thead><tr><th>No</th><th>No. Service</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th><th>Biaya Service</th><th>Sparepart</th><th>Total</th></tr></thead><tbody id="laporanTable"></tbody></table></div><div class="p-4 sm:p-5 flex justify-end" id="laporanTotal"></div></div></section>
             </div>
         </main>
     </div>
 
-    <!-- MODAL -->
-    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="p-5 border-b flex items-center justify-between" style="border-color:var(--border)"><h3 class="font-semibold" id="modalTitle">Edit</h3><button onclick="closeModal()" style="color:var(--muted);font-size:18px;background:none;border:none;cursor:pointer"><i class="fas fa-xmark"></i></button></div><div class="p-5" id="modalBody"></div></div></div>
+    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="p-4 sm:p-5 border-b flex items-center justify-between" style="border-color:var(--border)"><h3 class="font-semibold" id="modalTitle">Edit</h3><button onclick="closeModal()" style="color:var(--muted);font-size:18px;background:none;border:none;cursor:pointer"><i class="fas fa-xmark"></i></button></div><div class="p-4 sm:p-5" id="modalBody"></div></div></div>
 
     <script>
-    // ===== FIREBASE & GLOBAL =====
+    // ===== FIREBASE =====
     const firebaseConfig={apiKey:"AIzaSyALL4Gow1dY0jW7Kf6R6DfyrW_WbaH5nXE",authDomain:"service-elektronik-41369.firebaseapp.com",projectId:"service-elektronik-41369",storageBucket:"service-elektronik-41369.firebasestorage.app",messagingSenderId:"356056353058",appId:"1:356056353058:web:befadc3180e8f33419bd7b"};
     firebase.initializeApp(firebaseConfig);const db=firebase.firestore();
 
+    // ===== GLOBAL STATE =====
     let currentPage='dashboard',allServices=[],allJenis=[],allSparepart=[],selectedAmbilId=null;
     let revenueChartInstance=null,statusChartInstance=null,monthlyChartInstance=null,jenisChartInstance=null;
     let sparepartRowCounter=0,savedSparepartDrafts={};
     let isLoggedIn=false,currentUser=null;
-
-    const USERS=[{username:'admin',password:'admin123',name:'Admin',role:'Operator'},{username:'teknisi',password:'teknisi123',name:'Teknisi',role:'Teknisi'}];
+    let unsubscribeServices=null,unsubscribeJenis=null,unsubscribeSparepart=null;
 
     // ===== AUTH & THEME =====
+    const USERS=[{username:'admin',password:'admin123',name:'Admin',role:'Operator'},{username:'teknisi',password:'teknisi123',name:'Teknisi',role:'Teknisi'}];
+
     function handleLogin(e){
         e.preventDefault();
         const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;
@@ -288,18 +243,80 @@
             document.getElementById('userAvatar').textContent=found.name.charAt(0).toUpperCase();
             document.getElementById('loginError').classList.add('hidden');
             document.getElementById('loginForm').reset();
-            init();
-        }else{document.getElementById('loginError').classList.remove('hidden');}
+            initRealtimeListeners();
+        }else{
+            document.getElementById('loginError').classList.remove('hidden');
+        }
         return false;
     }
+
     function handleLogout(){
         if(!confirm('Yakin ingin keluar?'))return;
         isLoggedIn=false;currentUser=null;selectedAmbilId=null;savedSparepartDrafts={};
+        if(unsubscribeServices) unsubscribeServices();
+        if(unsubscribeJenis) unsubscribeJenis();
+        if(unsubscribeSparepart) unsubscribeSparepart();
         document.getElementById('loginPage').classList.remove('hidden');
         document.getElementById('appLayout').classList.remove('show');
     }
-    function toggleTheme(){const h=document.documentElement,c=h.getAttribute('data-theme'),n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('theme',n);}
-    function loadTheme(){const s=localStorage.getItem('theme');if(s)document.documentElement.setAttribute('data-theme',s);}
+
+    function toggleTheme(){
+        const html=document.documentElement;
+        const current=html.getAttribute('data-theme');
+        const next=current==='dark'?'light':'dark';
+        html.setAttribute('data-theme',next);
+        localStorage.setItem('theme',next);
+    }
+
+    function loadTheme(){
+        const saved=localStorage.getItem('theme');
+        if(saved)document.documentElement.setAttribute('data-theme',saved);
+    }
+
+    // ===== REALTIME LISTENERS =====
+    function initRealtimeListeners() {
+        if(unsubscribeServices) unsubscribeServices();
+        unsubscribeServices = db.collection('services')
+            .orderBy('tanggalMasuk', 'desc')
+            .onSnapshot((snapshot) => {
+                allServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                refreshCurrentPage();
+            }, (error) => {
+                console.error('Services listener error:', error);
+                showToast('Gagal memuat data service: ' + error.message, 'error');
+            });
+
+        if(unsubscribeJenis) unsubscribeJenis();
+        unsubscribeJenis = db.collection('jenisBarang')
+            .orderBy('nama')
+            .onSnapshot((snapshot) => {
+                allJenis = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                refreshCurrentPage();
+            }, (error) => {
+                console.error('Jenis listener error:', error);
+            });
+
+        if(unsubscribeSparepart) unsubscribeSparepart();
+        unsubscribeSparepart = db.collection('sparepart')
+            .orderBy('nama')
+            .onSnapshot((snapshot) => {
+                allSparepart = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                refreshCurrentPage();
+            }, (error) => {
+                console.error('Sparepart listener error:', error);
+            });
+    }
+
+    function refreshCurrentPage() {
+        if (currentPage === 'dashboard') renderDashboard();
+        else if (currentPage === 'terima') renderTerima();
+        else if (currentPage === 'daftar') renderDaftar();
+        else if (currentPage === 'pengambilan') renderPengambilan();
+        else if (currentPage === 'jenis') renderJenis();
+        else if (currentPage === 'stok') renderStok();
+        else if (currentPage === 'riwayat') renderRiwayat();
+        else if (currentPage === 'laporan') renderLaporan();
+    }
 
     // ===== UTILS =====
     function formatRupiah(n){if(!n&&n!==0)return'Rp 0';return'Rp '+Number(n).toLocaleString('id-ID');}
@@ -311,297 +328,77 @@
     function openModal(t,b){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').innerHTML=b;document.getElementById('modalOverlay').classList.add('show');}
     function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
 
-    // ===== NAVIGASI & DATA =====
-    function navigate(page){
-        currentPage=page;
-        document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-        const section=document.getElementById(`page-${page}`);if(section)section.classList.add('active');
-        const navItem=document.querySelector(`.nav-item[data-page="${page}"]`);if(navItem)navItem.classList.add('active');
-        const titles={dashboard:'Dashboard',terima:'Terima Barang',daftar:'Daftar Barang Service',pengambilan:'Pengambilan Barang',jenis:'Jenis Barang & Biaya Service',stok:'Stok Sparepart',riwayat:'Riwayat Service',laporan:'Laporan'};
-        document.getElementById('pageTitle').textContent=titles[page]||'Dashboard';
-        document.getElementById('sidebar').classList.remove('open');
-        document.getElementById('sidebarOverlay').classList.remove('show');
-        
-        if(page==='dashboard')renderDashboard();else if(page==='daftar')renderDaftar();else if(page==='pengambilan')renderPengambilan();else if(page==='jenis')renderJenis();else if(page==='stok')renderStok();else if(page==='riwayat')renderRiwayat();else if(page==='laporan')renderLaporan();else if(page==='terima')renderTerima();
-    }
-    async function loadAllData(){try{const[svcSnap,jenisSnap,spareSnap]=await Promise.all([db.collection('services').orderBy('tanggalMasuk','desc').get(),db.collection('jenisBarang').orderBy('nama').get(),db.collection('sparepart').orderBy('nama').get()]);allServices=svcSnap.docs.map(d=>({id:d.id,...d.data()}));allJenis=jenisSnap.docs.map(d=>({id:d.id,...d.data()}));allSparepart=spareSnap.docs.map(d=>({id:d.id,...d.data()}));}catch(err){console.error(err);showToast('Gagal memuat data: '+err.message,'error');}}
-
-    // ===== DASHBOARD =====
-    async function renderDashboard(){
-        await loadAllData();
-        const tM=allServices.length,tP=allServices.filter(s=>s.status==='proses').length,tS=allServices.filter(s=>s.status==='selesai').length,tD=allServices.filter(s=>s.status==='diambil');
-        const pn=tD.reduce((a,s)=>a+(Number(s.biayaService||0)+Number(s.biayaSparepart||0)),0);
-        document.getElementById('dashStats').innerHTML=`
-            <div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(6,182,212,0.15)"><i class="fas fa-boxes-stacked" style="color:#06B6D4"></i></div><span class="text-xs font-mono" style="color:var(--muted)">TOTAL</span></div><p class="text-2xl font-bold">${tM}</p><p class="text-xs mt-1" style="color:var(--muted)">Barang Diterima</p></div>
-            <div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(245,158,11,0.15)"><i class="fas fa-gears" style="color:#F59E0B"></i></div><span class="text-xs font-mono" style="color:var(--muted)">AKTIF</span></div><p class="text-2xl font-bold">${tP}</p><p class="text-xs mt-1" style="color:var(--muted)">Dalam Proses</p></div>
-            <div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-circle-check" style="color:#10B981"></i></div><span class="text-xs font-mono" style="color:var(--muted)">SELESAI</span></div><p class="text-2xl font-bold">${tS}</p><p class="text-xs mt-1" style="color:var(--muted)">Siap Diambil</p></div>
-            <div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(139,92,246,0.15)"><i class="fas fa-money-bill-wave" style="color:#A78BFA"></i></div><span class="text-xs font-mono" style="color:var(--muted)">PENDAPATAN</span></div><p class="text-xl font-bold">${formatRupiah(pn)}</p><p class="text-xs mt-1" style="color:var(--muted)">Total Terbayar</p></div>`;
-        
-        // Recent Table
-        const recent=allServices.slice(0,5);
-        document.getElementById('dashRecentTable').innerHTML=recent.length?recent.map(s=>`<tr><td class="font-mono text-xs">${s.noService}</td><td>${s.namaPelanggan}</td><td>${s.jenisBarang} ${s.merek}</td><td>${statusBadge(s.status)}</td><td class="text-xs">${formatDate(s.tanggalMasuk)}</td></tr>`).join(''):'<tr><td colspan="5" class="text-center py-4 text-sm" style="color:var(--muted)">Belum ada data</td></tr>';
-        
-        // Charts
-        renderDashboardCharts();
-    }
-
-    function renderDashboardCharts(){
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-        const textColor = isDark ? '#94A3B8' : '#64748B';
-
-        // Revenue Chart
-        const last7=[];const now=new Date();
-        for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const key=d.toISOString().slice(0,10);const rev=allServices.filter(s=>s.status==='diambil'&&s.tanggalAmbil&&s.tanggalAmbil.toDate().toISOString().slice(0,10)===key).reduce((a,s)=>a+Number(s.biayaService||0)+Number(s.biayaSparepart||0),0);last7.push({label:d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}),value:rev});}
-        if(revenueChartInstance)revenueChartInstance.destroy();
-        revenueChartInstance=new Chart(document.getElementById('revenueChart'),{type:'bar',data:{labels:last7.map(d=>d.label),datasets:[{label:'Pendapatan',data:last7.map(d=>d.value),backgroundColor:'rgba(16,185,129,0.3)',borderColor:'#10B981',borderWidth:2,borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:textColor,callback:v=>formatRupiah(v)},grid:{color:gridColor}},x:{ticks:{color:textColor},grid:{display:false}}}}});
-
-        // Status Chart
-        const statusCount=['masuk','diperiksa','proses','selesai','diambil'].map(st=>({label:st,value:allServices.filter(s=>s.status===st).length}));
-        if(statusChartInstance)statusChartInstance.destroy();
-        statusChartInstance=new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:statusCount.map(s=>s.label),datasets:[{data:statusCount.map(s=>s.value),backgroundColor:['#06B6D4','#F59E0B','#A78BFA','#10B981','#94A3B8'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:textColor,padding:12,font:{size:11}}}}}});
-    }
-
-    // ===== TERIMA BARANG =====
-    async function renderTerima(){
-        await loadAllData();
-        const sel=document.getElementById('tJenis');sel.innerHTML='<option value="">Pilih jenis barang</option>'+allJenis.map(j=>`<option value="${j.nama}">${j.nama}</option>`).join('');
-        const todayStr=new Date().toISOString().slice(0,10);
-        const todaySvc=allServices.filter(s=>s.tanggalMasuk&&s.tanggalMasuk.toDate().toISOString().slice(0,10)===todayStr);
-        document.getElementById('terimaHariIni').innerHTML=todaySvc.length?todaySvc.map(s=>`<div class="p-3 rounded-lg mb-2" style="background:var(--bg);border:1px solid var(--border)"><p class="text-xs font-semibold">${s.noService}</p><p class="text-xs" style="color:var(--muted)">${s.namaPelanggan} - ${s.jenisBarang}</p></div>`).join(''):'<p class="text-sm" style="color:var(--muted)">Belum ada barang hari ini</p>';
-    }
-    async function simpanTerima(e){
-        e.preventDefault();
-        const data={noService:generateNoService(),namaPelanggan:document.getElementById('tNama').value.trim(),noTelp:document.getElementById('tTelp').value.trim(),alamat:document.getElementById('tAlamat').value.trim(),jenisBarang:document.getElementById('tJenis').value,merek:document.getElementById('tMerek').value.trim(),typeBarang:document.getElementById('tType').value.trim(),noSeri:document.getElementById('tSeri').value.trim(),keluhan:document.getElementById('tKeluhan').value.trim(),kelengkapan:document.getElementById('tKelengkapan').value.trim(),estimasiBiaya:Number(document.getElementById('tEstimasi').value)||0,status:'masuk',tanggalMasuk:firebase.firestore.FieldValue.serverTimestamp()};
-        try{await db.collection('services').add(data);showToast('Barang berhasil diterima!');document.getElementById('formTerima').reset();renderTerima();}catch(err){showToast('Gagal: '+err.message,'error');}
-        return false;
-    }
-
-    // ===== DAFTAR BARANG =====
-    async function renderDaftar(){
-        await loadAllData();
-        const q=document.getElementById('searchDaftar').value.toLowerCase(),f=document.getElementById('filterStatus').value;
-        let filtered=allServices;
-        if(q)filtered=filtered.filter(s=>s.noService.toLowerCase().includes(q)||s.namaPelanggan.toLowerCase().includes(q));
-        if(f)filtered=filtered.filter(s=>s.status===f);
-        document.getElementById('daftarTable').innerHTML=filtered.length?filtered.map(s=>`<tr>
-            <td class="font-mono text-xs">${s.noService}</td><td class="text-xs">${formatDate(s.tanggalMasuk)}</td><td>${s.namaPelanggan}</td><td>${s.jenisBarang} ${s.merek}</td><td class="text-xs">${s.typeBarang||'-'}</td><td class="text-xs">${s.noSeri||'-'}</td><td class="text-xs">${s.kelengkapan||'-'}</td><td class="text-xs">${s.keluhan||'-'}</td><td>${statusBadge(s.status)}</td>
-            <td><div class="flex gap-2 flex-wrap">
-                ${s.status==='masuk'?`<button class="btn-warn" onclick="ubahStatus('${s.id}','diperiksa')">Periksa</button>`:''}
-                ${s.status==='diperiksa'?`<button class="btn-warn" onclick="ubahStatus('${s.id}','proses')">Proses</button>`:''}
-                ${s.status==='proses'?`<button class="btn-info-sm" onclick="ubahStatus('${s.id}','selesai')">Selesai</button>`:''}
-                ${s.status==='selesai'?`<button class="btn-info-sm" onclick="navigate('pengambilan');document.getElementById('cariNoService').value='${s.noService}';cariPengambilan()">Ambil</button>`:''}
-                <button class="btn-secondary btn-sm" onclick="editService('${s.id}')"><i class="fas fa-edit"></i></button>
-                <button class="btn-danger btn-sm" onclick="hapusService('${s.id}')"><i class="fas fa-trash"></i></button>
-                <button class="btn-secondary btn-sm" onclick="downloadBuktiTitip(allServices.find(x=>x.id==='${s.id}'))"><i class="fas fa-file-pdf"></i></button>
-            </div></td></tr>`).join(''):'<tr><td colspan="10" class="text-center py-4 text-sm" style="color:var(--muted)">Tidak ada data</td></tr>';
-    }
-    async function ubahStatus(id,status){try{await db.collection('services').doc(id).update({status});showToast('Status diperbarui');renderDaftar();}catch(err){showToast('Gagal: '+err.message,'error');}}
-    function editService(id){
-        const s=allServices.find(x=>x.id===id);if(!s)return;
-        openModal('Edit Service',`<form onsubmit="return simpanEditService(event,'${id}')" class="space-y-4">
-            <div><label class="form-label">Nama Pelanggan</label><input type="text" class="form-input" id="eNama" value="${s.namaPelanggan}" required></div>
-            <div><label class="form-label">No. Telepon</label><input type="tel" class="form-input" id="eTelp" value="${s.noTelp||''}" required></div>
-            <div><label class="form-label">Alamat</label><textarea class="form-input" id="eAlamat" rows="2" required>${s.alamat||''}</textarea></div>
-            <div><label class="form-label">Merek</label><input type="text" class="form-input" id="eMerek" value="${s.merek||''}" required></div>
-            <div><label class="form-label">Keluhan</label><textarea class="form-input" id="eKeluhan" rows="2" required>${s.keluhan||''}</textarea></div>
-            <button type="submit" class="btn-primary w-full">Simpan Perubahan</button></form>`);
-    }
-    async function simpanEditService(e,id){
-        e.preventDefault();
-        const data={namaPelanggan:document.getElementById('eNama').value.trim(),noTelp:document.getElementById('eTelp').value.trim(),alamat:document.getElementById('eAlamat').value.trim(),merek:document.getElementById('eMerek').value.trim(),keluhan:document.getElementById('eKeluhan').value.trim()};
-        try{await db.collection('services').doc(id).update(data);showToast('Data diperbarui');closeModal();renderDaftar();}catch(err){showToast('Gagal: '+err.message,'error');}return false;
-    }
-    async function hapusService(id){if(!confirm('Yakin hapus data ini?'))return;try{await db.collection('services').doc(id).delete();showToast('Data dihapus');renderDaftar();}catch(err){showToast('Gagal: '+err.message,'error');}}
-
-    // ===== PENGAMBILAN BARANG =====
-    async function renderPengambilan(){
-        await loadAllData();
-        const siapAmbil=allServices.filter(s=>s.status==='selesai');
-        document.getElementById('listSiapAmbil').innerHTML=siapAmbil.length?siapAmbil.map(s=>`<div class="p-3 rounded-lg cursor-pointer" style="background:var(--bg);border:1px solid var(--border)" onclick="document.getElementById('cariNoService').value='${s.noService}';cariPengambilan()"><p class="text-xs font-semibold">${s.noService}</p><p class="text-xs" style="color:var(--muted)">${s.namaPelanggan} - ${s.jenisBarang}</p></div>`).join(''):'<p class="text-xs" style="color:var(--muted)">Tidak ada barang siap diambil</p>';
-    }
-    async function cariPengambilan(){
-        await loadAllData();
-        const no=document.getElementById('cariNoService').value.trim();
-        const s=allServices.find(x=>x.noService===no);
-        if(!s){showToast('Barang tidak ditemukan','error');return;}
-        selectedAmbilId=s.id;
-        document.getElementById('detailPengambilan').style.display='block';
-        document.getElementById('detailAmbilContent').innerHTML=`<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div><span class="font-semibold" style="color:var(--muted)">No. Service:</span><br>${s.noService}</div>
-            <div><span class="font-semibold" style="color:var(--muted)">Pelanggan:</span><br>${s.namaPelanggan}</div>
-            <div><span class="font-semibold" style="color:var(--muted)">Barang:</span><br>${s.jenisBarang} ${s.merek}</div>
-            <div><span class="font-semibold" style="color:var(--muted)">Status:</span><br>${statusBadge(s.status)}</div>
-        </div>`;
-        if(s.status==='selesai'){
-            document.getElementById('formPengambilanCard').style.display='block';
-            document.getElementById('aBiaya').value=s.estimasiBiaya||0;
-            sparepartRowCounter=0;savedSparepartDrafts[selectedAmbilId]=[];
-            document.getElementById('sparepartPickerBody').innerHTML='<tr id="sparepartEmptyRow"><td colspan="6" class="text-center py-3 text-xs" style="color:var(--muted)">Klik "Tambah" untuk memilih sparepart</td></tr>';
-            hitungSparepart();
-        }else{
-            document.getElementById('formPengambilanCard').style.display='none';
-            if(s.status==='diambil')showToast('Barang sudah diambil','info');
-            else showToast('Barang belum selesai dikerjakan','error');
-        }
-    }
-    function tambahBarisSparepart(){
-        const emptyRow=document.getElementById('sparepartEmptyRow');if(emptyRow)emptyRow.remove();
-        sparepartRowCounter++;
-        const rid=sparepartRowCounter;
-        const opts=allSparepart.map(sp=>`<option value="${sp.id}" data-harga="${sp.harga}" data-stok="${sp.jumlah}">${sp.nama} (Stok: ${sp.jumlah})</option>`).join('');
-        const tr=document.createElement('tr');tr.id=`spRow_${rid}`;
-        tr.innerHTML=`<td><select class="form-input text-xs" id="spSel_${rid}" onchange="pilihSparepart(${rid})"><option value="">Pilih</option>${opts}</select></td>
-            <td class="text-xs" id="spHrg_${rid}">Rp 0</td><td class="text-xs" id="spStk_${rid}">0</td>
-            <td><input type="number" class="form-input text-xs" id="spQty_${rid}" value="1" min="1" onchange="hitungSparepart()" style="width:70px"></td>
-            <td class="text-xs font-semibold" id="spSub_${rid}">Rp 0</td>
-            <td><button type="button" class="btn-danger btn-sm" onclick="hapusBarisSparepart(${rid})"><i class="fas fa-times"></i></button></td>`;
-        document.getElementById('sparepartPickerBody').appendChild(tr);
-    }
-    function pilihSparepart(rid){
-        const sel=document.getElementById(`spSel_${rid}`);const opt=sel.options[sel.selectedIndex];
-        const h=Number(opt.getAttribute('data-harga'))||0,s=Number(opt.getAttribute('data-stok'))||0;
-        document.getElementById(`spHrg_${rid}`).textContent=formatRupiah(h);
-        document.getElementById(`spStk_${rid}`).textContent=s;
-        hitungSparepart();
-    }
-    function hapusBarisSparepart(rid){document.getElementById(`spRow_${rid}`).remove();hitungSparepart();}
-    function hitungSparepart(){
-        let total=0;const drafts=[];
-        document.querySelectorAll('#sparepartPickerBody tr').forEach(tr=>{
-            const rid=tr.id.replace('spRow_','');
-            const sel=document.getElementById(`spSel_${rid}`);
-            const qty=Number(document.getElementById(`spQty_${rid}`?.replace('#',''))?.value)||1;
-            if(sel&&sel.value){
-                const sp=allSparepart.find(x=>x.id===sel.value);
-                if(sp){
-                    const sub=Number(sp.harga)*qty;
-                    document.getElementById(`spSub_${rid}`).textContent=formatRupiah(sub);
-                    total+=sub;
-                    drafts.push({sparepartId:sp.id,qty,subtotal:sub});
-                }
-            }
-        });
-        if(selectedAmbilId)savedSparepartDrafts[selectedAmbilId]=drafts;
-        document.getElementById('aSparepart').value=total;
-    }
-    async function prosesPengambilan(e){
-        e.preventDefault();if(!selectedAmbilId)return;
-        const biaya=Number(document.getElementById('aBiaya').value)||0,sparepart=Number(document.getElementById('aSparepart').value)||0;
-        const catatan=document.getElementById('aCatatan').value.trim();
-        const drafts=savedSparepartDrafts[selectedAmbilId]||[];
-        const sparepartDetails=drafts.map(d=>{const sp=allSparepart.find(x=>x.id===d.sparepartId);return sp?{nama:sp.nama,harga:sp.harga,qty:d.qty,subtotal:d.subtotal}:null}).filter(Boolean);
-        
-        try{
-            const batch=db.batch();
-            const svcRef=db.collection('services').doc(selectedAmbilId);
-            batch.update(svcRef,{status:'diambil',biayaService:biaya,biayaSparepart:sparepart,catatanTeknisi:catatan,sparepartDigunakan:sparepartDetails,tanggalAmbil:firebase.firestore.FieldValue.serverTimestamp()});
-            
-            for(const d of drafts){
-                const sp=allSparepart.find(x=>x.id===d.sparepartId);
-                if(sp){const spRef=db.collection('sparepart').doc(sp.id);batch.update(spRef,{jumlah:firebase.firestore.FieldValue.increment(-d.qty)});}
-            }
-            await batch.commit();
-            showToast('Pengambilan berhasil diproses!');
-            selectedAmbilId=null;savedSparepartDrafts={};
-            renderPengambilan();
-        }catch(err){showToast('Gagal: '+err.message,'error');}
-        return false;
-    }
-    function cetakStruk(){window.print();}
-    
-    // ===== JENIS BARANG =====
-    async function renderJenis(){
-        await loadAllData();
-        document.getElementById('jenisTable').innerHTML=allJenis.length?allJenis.map(j=>`<tr><td>${j.nama}</td><td>${formatRupiah(j.biaya)}</td><td class="text-xs">${j.deskripsi||'-'}</td><td><button class="btn-danger btn-sm" onclick="hapusJenis('${j.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan="4" class="text-center py-4 text-sm" style="color:var(--muted)">Tidak ada data</td></tr>';
-    }
-    async function simpanJenis(e){
-        e.preventDefault();
-        const data={nama:document.getElementById('jNama').value.trim(),biaya:Number(document.getElementById('jBiaya').value),deskripsi:document.getElementById('jDeskripsi').value.trim()};
-        try{await db.collection('jenisBarang').add(data);showToast('Jenis barang ditambahkan');document.getElementById('formJenis').reset();renderJenis();}catch(err){showToast('Gagal: '+err.message,'error');}return false;
-    }
-    async function hapusJenis(id){if(!confirm('Hapus jenis barang ini?'))return;try{await db.collection('jenisBarang').doc(id).delete();showToast('Dihapus');renderJenis();}catch(err){showToast('Gagal','error');}}
-
-    // ===== STOK SPAREPART =====
-    async function renderStok(){
-        await loadAllData();
-        const q=document.getElementById('searchStok').value.toLowerCase();
-        let filtered=allSparepart;if(q)filtered=filtered.filter(s=>s.nama.toLowerCase().includes(q)||s.kategori?.toLowerCase().includes(q));
-        document.getElementById('stokTable').innerHTML=filtered.length?filtered.map(s=>`<tr><td>${s.nama}</td><td class="text-xs">${s.kategori||'-'}</td><td>${s.jumlah}</td><td>${formatRupiah(s.harga)}</td><td><button class="btn-danger btn-sm" onclick="hapusSparepart('${s.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan="5" class="text-center py-4 text-sm" style="color:var(--muted)">Tidak ada data</td></tr>';
-    }
-    async function simpanSparepart(e){
-        e.preventDefault();
-        const data={nama:document.getElementById('sNama').value.trim(),jumlah:Number(document.getElementById('sJumlah').value),harga:Number(document.getElementById('sHarga').value),kategori:document.getElementById('sKategori').value.trim()};
-        try{await db.collection('sparepart').add(data);showToast('Sparepart ditambahkan');document.getElementById('formStok').reset();renderStok();}catch(err){showToast('Gagal','error');}return false;
-    }
-    async function hapusSparepart(id){if(!confirm('Hapus sparepart ini?'))return;try{await db.collection('sparepart').doc(id).delete();showToast('Dihapus');renderStok();}catch(err){showToast('Gagal','error');}}
-
-    // ===== RIWAYAT =====
-    async function renderRiwayat(){
-        await loadAllData();
-        const dari=document.getElementById('riwayatDari').value,sampai=document.getElementById('riwayatSampai').value,q=document.getElementById('searchRiwayat').value.toLowerCase();
-        let filtered=allServices.filter(s=>s.status==='diambil');
-        if(dari)filtered=filtered.filter(s=>s.tanggalAmbil&&s.tanggalAmbil.toDate().toISOString().slice(0,10)>=dari);
-        if(sampai)filtered=filtered.filter(s=>s.tanggalAmbil&&s.tanggalAmbil.toDate().toISOString().slice(0,10)<=sampai);
-        if(q)filtered=filtered.filter(s=>s.noService.toLowerCase().includes(q)||s.namaPelanggan.toLowerCase().includes(q));
-        document.getElementById('riwayatTable').innerHTML=filtered.length?filtered.map(s=>`<tr><td class="font-mono text-xs">${s.noService}</td><td class="text-xs">${formatDate(s.tanggalMasuk)}</td><td class="text-xs">${formatDate(s.tanggalAmbil)}</td><td>${s.namaPelanggan}</td><td>${s.jenisBarang} ${s.merek}</td><td>${formatRupiah(Number(s.biayaService||0)+Number(s.biayaSparepart||0))}</td><td><button class="btn-info-sm" onclick="downloadStrukRiwayatPDF('${s.id}')"><i class="fas fa-file-pdf"></i></button></td></tr>`).join(''):'<tr><td colspan="7" class="text-center py-4 text-sm" style="color:var(--muted)">Tidak ada riwayat</td></tr>';
-    }
-
-    // ===== LAPORAN =====
-    async function renderLaporan(){
-        await loadAllData();
-        const bulan=document.getElementById('laporanBulan').value;
-        let filtered=allServices.filter(s=>s.status==='diambil');
-        if(bulan)filtered=filtered.filter(s=>s.tanggalAmbil&&s.tanggalAmbil.toDate().toISOString().slice(0,7)===bulan);
-        
-        const totSvc=filtered.length,totRev=filtered.reduce((a,s)=>a+Number(s.biayaService||0)+Number(s.biayaSparepart||0),0),avgRev=filtered.length?totRev/filtered.length:0;
-        document.getElementById('laporanStats').innerHTML=`
-            <div class="stat-card"><p class="text-xs font-semibold" style="color:var(--muted)">TOTAL SERVICE</p><p class="text-xl font-bold mt-2">${totSvc}</p></div>
-            <div class="stat-card"><p class="text-xs font-semibold" style="color:var(--muted)">PENDAPATAN</p><p class="text-xl font-bold mt-2">${formatRupiah(totRev)}</p></div>
-            <div class="stat-card"><p class="text-xs font-semibold" style="color:var(--muted)">RATA-RATA</p><p class="text-xl font-bold mt-2">${formatRupiah(avgRev)}</p></div>
-            <div class="stat-card"><p class="text-xs font-semibold" style="color:var(--muted)">SPAREPART</p><p class="text-xl font-bold mt-2">${filtered.reduce((a,s)=>a+Number(s.biayaSparepart||0),0)}</p></div>`;
-        
-        document.getElementById('laporanTable').innerHTML=filtered.length?filtered.map((s,i)=>`<tr><td>${i+1}</td><td class="font-mono text-xs">${s.noService}</td><td class="text-xs">${formatDate(s.tanggalAmbil)}</td><td>${s.namaPelanggan}</td><td>${s.jenisBarang} ${s.merek}</td><td>${formatRupiah(s.biayaService)}</td><td>${formatRupiah(s.biayaSparepart)}</td><td class="font-semibold">${formatRupiah(Number(s.biayaService||0)+Number(s.biayaSparepart||0))}</td></tr>`).join(''):'<tr><td colspan="8" class="text-center py-4 text-sm" style="color:var(--muted)">Tidak ada data</td></tr>';
-        document.getElementById('laporanTotal').innerHTML=`<p class="text-sm font-semibold">Total Pendapatan: <span style="color:var(--accent)">${formatRupiah(totRev)}</span></p>`;
-        
-        renderLaporanCharts(filtered);
-    }
-    function renderLaporanCharts(data){
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-        const textColor = isDark ? '#94A3B8' : '#64748B';
-
-        // Monthly
-        const monthlyData={};
-        data.forEach(s=>{if(s.tanggalAmbil){const m=s.tanggalAmbil.toDate().toISOString().slice(0,7);monthlyData[m]=(monthlyData[m]||0)+Number(s.biayaService||0)+Number(s.biayaSparepart||0);}});
-        if(monthlyChartInstance)monthlyChartInstance.destroy();
-        monthlyChartInstance=new Chart(document.getElementById('monthlyChart'),{type:'line',data:{labels:Object.keys(monthlyData),datasets:[{label:'Pendapatan',data:Object.values(monthlyData),borderColor:'#10B981',backgroundColor:'rgba(16,185,129,0.1)',fill:true,tension:0.4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{color:textColor,callback:v=>formatRupiah(v)},grid:{color:gridColor}},x:{ticks:{color:textColor},grid:{display:false}}}}});
-
-        // Jenis
-        const jenisData={};
-        data.forEach(s=>{jenisData[s.jenisBarang]=(jenisData[s.jenisBarang]||0)+1;});
-        if(jenisChartInstance)jenisChartInstance.destroy();
-        jenisChartInstance=new Chart(document.getElementById('jenisChart'),{type:'bar',data:{labels:Object.keys(jenisData),datasets:[{label:'Jumlah',data:Object.values(jenisData),backgroundColor:['#06B6D4','#F59E0B','#A78BFA','#10B981','#EF4444','#EC4899'],borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:textColor},grid:{color:gridColor}},x:{ticks:{color:textColor},grid:{display:false}}}}});
-    }
-    function exportLaporan(){
-        let csv='No,No Service,Tanggal,Pelanggan,Barang,Biaya Service,Sparepart,Total\n';
-        const rows=document.querySelectorAll('#laporanTable tr');
-        rows.forEach(r=>{const cols=r.querySelectorAll('td');if(cols.length>0){csv+=Array.from(cols).map(c=>`"${c.textContent.trim()}"`).join(',')+'\n';}});
-        const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='laporan_service.csv';a.click();URL.revokeObjectURL(url);
-        showToast('Laporan berhasil diexport');
-    }
-
-    // ===== PDF GENERATORS =====
+    // ===== PDF =====
     function downloadBuktiTitip(sd){const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:[80,200]});const pW=80,mL=4,mR=4,cW=pW-mL-mR;let y=6;const d=sd.tanggalMasuk?.toDate?sd.tanggalMasuk.toDate():new Date(),tg=d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}),jm=d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});function ct(t,yp,s,st){doc.setFontSize(s);doc.setFont('helvetica',st==='bold'?'bold':'normal');const tw=doc.getTextWidth(t);doc.text(t,mL+(cW-tw)/2,yp);}function dl(yp){doc.setLineDashPattern([1.5,1],0);doc.line(mL,yp,pW-mR,yp);doc.setLineDashPattern([],0);}function af(l,v,yp,lw){doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(l,mL,yp);doc.setFont('helvetica','normal');const w=lw||22,ln=doc.splitTextToSize(v||'-',cW-w);doc.text(ln,mL+w,yp);return Math.max(4,ln.length*3.5);}ct('SERVICE PRO',y,12,'bold');y+=5;ct('Service Elektronik Profesional',y,6,'normal');y+=4;ct('BUKTI TITIP BARANG',y,9,'bold');y+=6;dl(y);y+=4;y+=af('No. Service',sd.noService,y);y+=af('Tanggal',`${tg} ${jm}`,y);y+=2;dl(y);y+=4;doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('IDENTITAS PELANGGAN',mL,y);y+=5;[['Nama',sd.namaPelanggan],['Telepon',sd.noTelp],['Alamat',sd.alamat]].forEach(([l,v])=>{y+=af(l,v,y);});y+=2;dl(y);y+=4;doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('DATA BARANG',mL,y);y+=5;[['Jenis',sd.jenisBarang],['Merek',sd.merek],['Type',sd.typeBarang],['No. Seri',sd.noSeri],['Kelengkapan',sd.kelengkapan],['Keluhan',sd.keluhan]].forEach(([l,v])=>{y+=af(l,v,y,26);});y+=2;dl(y);y+=4;doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text('Estimasi Biaya',mL,y);doc.setFont('helvetica','normal');doc.text(formatRupiah(sd.estimasiBiaya),mL+26,y);y+=6;dl(y);y+=5;doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Petugas,',mL+2,y);doc.text('Pemilik,',mL+cW-25,y);y+=16;doc.text('(.................)',mL+2,y);doc.text('(.................)',mL+cW-25,y);y+=6;dl(y);y+=4;ct('Simpan bukti ini sebagai tanda penitipan',y,6,'normal');y+=3;ct('Barang yang tidak diambil lebih dari 30 hari',y,6,'normal');y+=3;ct('menjadi hak bengkel service.',y,6,'normal');doc.save(`Bukti_Titip_${sd.noService}.pdf`);showToast('Bukti titip berhasil diunduh');}
 
     function downloadStrukPDF(){if(!selectedAmbilId){showToast('Pilih barang terlebih dahulu','error');return;}const s=allServices.find(x=>x.id===selectedAmbilId);if(!s)return;const bs=Number(document.getElementById('aBiaya').value)||0,bp=Number(document.getElementById('aSparepart').value)||0,ct2=document.getElementById('aCatatan').value.trim(),tl=bs+bp;const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:[80,280]});const pW=80,mL=4,mR=4,cW=pW-mL-mR;let y=6;const nw=new Date(),tg=nw.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}),jm=nw.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});function cte(t,yp,s,st){doc.setFontSize(s);doc.setFont('helvetica',st==='bold'?'bold':'normal');const tw=doc.getTextWidth(t);doc.text(t,mL+(cW-tw)/2,yp);}function dle(yp){doc.setLineDashPattern([1.5,1],0);doc.line(mL,yp,pW-mR,yp);doc.setLineDashPattern([],0);}function afe(l,v,yp,lw){doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(l,mL,yp);doc.setFont('helvetica','normal');const w=lw||22,ln=doc.splitTextToSize(v||'-',cW-w);doc.text(ln,mL+w,yp);return Math.max(4,ln.length*3.5);}cte('SERVICE PRO',y,12,'bold');y+=5;cte('Service Elektronik Profesional',y,6,'normal');y+=4;cte('STRUK PENGAMBILAN BARANG',y,8,'bold');y+=6;dle(y);y+=4;y+=afe('No. Service',s.noService,y);y+=afe('Tanggal',tg,y);y+=afe('Jam',jm,y);y+=2;dle(y);y+=4;doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('PELANGGAN',mL,y);y+=5;y+=afe('Nama',s.namaPelanggan,y);y+=afe('Telepon',s.noTelp||'-',y);y+=afe('Alamat',s.alamat||'-',y,22);y+=2;dle(y);y+=4;doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('BARANG',mL,y);y+=5;y+=afe('Jenis',s.jenisBarang,y);y+=afe('Merek',s.merek,y);y+=afe('Type',s.typeBarang||'-',y);y+=afe('No. Seri',s.noSeri||'-',y,22);y+=afe('Kelengkapan',s.kelengkapan||'-',y,22);y+=afe('Keluhan',s.keluhan||'-',y,22);if(ct2)y+=afe('Catatan',ct2,y,22);y+=2;dle(y);y+=4;const rows=savedSparepartDrafts[selectedAmbilId]||[];if(rows.length>0&&rows.some(r=>r.sparepartId)){doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('SPAREPART',mL,y);y+=5;rows.forEach(row=>{const sp=allSparepart.find(x=>x.id===row.sparepartId);if(sp){const sub=Number(sp.harga)*row.qty;doc.setFontSize(7);doc.setFont('helvetica','normal');const nl=doc.splitTextToSize(`${sp.nama} x${row.qty}`,cW-22);doc.text(nl,mL,y);const ss=formatRupiah(sub);doc.text(ss,pW-mR-doc.getTextWidth(ss),y);y+=Math.max(4,nl.length*3.5);}});y+=2;dle(y);y+=4;}doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text('Biaya Service',mL,y);doc.setFont('helvetica','normal');const bs1=formatRupiah(bs);doc.text(bs1,pW-mR-doc.getTextWidth(bs1),y);y+=4;doc.setFont('helvetica','bold');doc.text('Biaya Sparepart',mL,y);doc.setFont('helvetica','normal');const bp1=formatRupiah(bp);doc.text(bp1,pW-mR-doc.getTextWidth(bp1),y);y+=5;dle(y);y+=4;doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('TOTAL',mL,y);const ts1=formatRupiah(tl);doc.text(ts1,pW-mR-doc.getTextWidth(ts1),y);y+=6;dle(y);y+=5;doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Petugas,',mL+2,y);doc.text('Pemilik,',mL+cW-25,y);y+=16;doc.text('(.................)',mL+2,y);doc.text('(.................)',mL+cW-25,y);y+=6;dle(y);y+=4;cte('Terima kasih atas kepercayaan Anda',y,6,'normal');y+=3;cte('Barang yang telah diterima bukan tanggung jawab bengkel',y,5.5,'normal');doc.save(`Struk_${s.noService}.pdf`);showToast('Struk PDF berhasil diunduh');}
 
     function downloadStrukRiwayatPDF(id){const s=allServices.find(x=>x.id===id);if(!s)return;const bs=Number(s.biayaService||0),bp=Number(s.biayaSparepart||0),ct2=s.catatanTeknisi||'',tl=bs+bp;const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:[80,280]});const pW=80,mL=4,mR=4,cW=pW-mL-mR;let y=6;const dA=s.tanggalAmbil?.toDate?s.tanggalAmbil.toDate():new Date(),tg=dA.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}),jm=dA.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});function cte(t,yp,s,st){doc.setFontSize(s);doc.setFont('helvetica',st==='bold'?'bold':'normal');const tw=doc.getTextWidth(t);doc.text(t,mL+(cW-tw)/2,yp);}function dle(yp){doc.setLineDashPattern([1.5,1],0);doc.line(mL,yp,pW-mR,yp);doc.setLineDashPattern([],0);}function afe(l,v,yp,lw){doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(l,mL,yp);doc.setFont('helvetica','normal');const w=lw||22,ln=doc.splitTextToSize(v||'-',cW-w);doc.text(ln,mL+w,yp);return Math.max(4,ln.length*3.5);}cte('SERVICE PRO',y,12,'bold');y+=5;cte('Service Elektronik Profesional',y,6,'normal');y+=4;cte('STRUK PENGAMBILAN BARANG',y,8,'bold');y+=6;dle(y);y+=4;y+=afe('No. Service',s.noService,y);y+=afe('Tanggal',tg,y);y+=afe('Jam',jm,y);y+=2;dle(y);y+=4;doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('PELANGGAN',mL,y);y+=5;y+=afe('Nama',s.namaPelanggan,y);y+=afe('Telepon',s.noTelp||'-',y);y+=afe('Alamat',s.alamat||'-',y,22);y+=2;dle(y);y+=4;doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('BARANG',mL,y);y+=5;y+=afe('Jenis',s.jenisBarang,y);y+=afe('Merek',s.merek,y);y+=afe('Type',s.typeBarang||'-',y);y+=afe('No. Seri',s.noSeri||'-',y,22);y+=afe('Kelengkapan',s.kelengkapan||'-',y,22);y+=afe('Keluhan',s.keluhan||'-',y,22);if(ct2)y+=afe('Catatan',ct2,y,22);y+=2;dle(y);y+=4;if(s.sparepartDigunakan&&s.sparepartDigunakan.length>0){doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('SPAREPART',mL,y);y+=5;s.sparepartDigunakan.forEach(sp=>{doc.setFontSize(7);doc.setFont('helvetica','normal');const nl=doc.splitTextToSize(`${sp.nama} x${sp.qty}`,cW-22);doc.text(nl,mL,y);const ss=formatRupiah(sp.subtotal);doc.text(ss,pW-mR-doc.getTextWidth(ss),y);y+=Math.max(4,nl.length*3.5);});y+=2;dle(y);y+=4;}doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text('Biaya Service',mL,y);doc.setFont('helvetica','normal');const bs1=formatRupiah(bs);doc.text(bs1,pW-mR-doc.getTextWidth(bs1),y);y+=4;doc.setFont('helvetica','bold');doc.text('Biaya Sparepart',mL,y);doc.setFont('helvetica','normal');const bp1=formatRupiah(bp);doc.text(bp1,pW-mR-doc.getTextWidth(bp1),y);y+=5;dle(y);y+=4;doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('TOTAL',mL,y);const ts1=formatRupiah(tl);doc.text(ts1,pW-mR-doc.getTextWidth(ts1),y);y+=6;dle(y);y+=5;doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Petugas,',mL+2,y);doc.text('Pemilik,',mL+cW-25,y);y+=16;doc.text('(.................)',mL+2,y);doc.text('(.................)',mL+cW-25,y);y+=6;dle(y);y+=4;cte('Terima kasih atas kepercayaan Anda',y,6,'normal');y+=3;cte('Barang yang telah diterima bukan tanggung jawab bengkel',y,5.5,'normal');doc.save(`Struk_${s.noService}.pdf`);showToast('Struk PDF berhasil diunduh');}
 
-    // ===== CLOCK & INIT =====
-    function updateClock(){document.getElementById('clockDisplay').textContent=new Date().toLocaleTimeString('id-ID');}
-    function init(){loadTheme();setInterval(updateClock,1000);updateClock();navigate('dashboard');}
+    // ===== NAVIGASI =====
+    function navigate(page){currentPage=page;document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const section=document.getElementById(`page-${page}`);if(section)section.classList.add('active');const navItem=document.querySelector(`.nav-item[data-page="${page}"]`);if(navItem)navItem.classList.add('active');const titles={dashboard:'Dashboard',terima:'Terima Barang',daftar:'Daftar Barang Service',pengambilan:'Pengambilan Barang',jenis:'Jenis Barang & Biaya Service',stok:'Stok Sparepart',riwayat:'Riwayat Service',laporan:'Laporan'};document.getElementById('pageTitle').textContent=titles[page]||'Dashboard';document.getElementById('sidebar').classList.remove('open');refreshCurrentPage();}
+
+    // ===== DASHBOARD =====
+    function renderDashboard(){const tM=allServices.length,tP=allServices.filter(s=>s.status==='proses').length,tS=allServices.filter(s=>s.status==='selesai').length,tD=allServices.filter(s=>s.status==='diambil'),pn=tD.reduce((a,s)=>a+(Number(s.biayaService||0)+Number(s.biayaSparepart||0)),0);document.getElementById('dashStats').innerHTML=`<div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(6,182,212,0.15)"><i class="fas fa-boxes-stacked" style="color:#06B6D4"></i></div><span class="text-xs font-mono" style="color:var(--muted)">TOTAL</span></div><p class="text-2xl font-bold">${tM}</p><p class="text-xs mt-1" style="color:var(--muted)">Barang Diterima</p></div><div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(245,158,11,0.15)"><i class="fas fa-gears" style="color:#F59E0B"></i></div><span class="text-xs font-mono" style="color:var(--muted)">AKTIF</span></div><p class="text-2xl font-bold">${tP}</p><p class="text-xs mt-1" style="color:var(--muted)">Sedang Dikerjakan</p></div><div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-circle-check" style="color:#10B981"></i></div><span class="text-xs font-mono" style="color:var(--muted)">SIAP</span></div><p class="text-2xl font-bold">${tS}</p><p class="text-xs mt-1" style="color:var(--muted)">Siap Diambil</p></div><div class="stat-card"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.15)"><i class="fas fa-money-bill-wave" style="color:#34D399"></i></div><span class="text-xs font-mono" style="color:var(--muted)">POMAS</span></div><p class="text-2xl font-bold">${formatRupiah(pn)}</p><p class="text-xs mt-1" style="color:var(--muted)">Total Pendapatan</p></div>`;const rc=allServices.slice(0,5);document.getElementById('dashRecentTable').innerHTML=rc.length?rc.map(s=>`<tr><td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td><td>${s.namaPelanggan}</td><td>${s.merek||'-'}</td><td>${statusBadge(s.status)}</td><td class="text-xs" style="color:var(--muted)">${formatDate(s.tanggalMasuk)}</td></tr>`).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--muted)">Belum ada data</td></tr>';renderRevenueChart();renderStatusChart();}
+    function renderRevenueChart(){const ctx=document.getElementById('revenueChart').getContext('2d');if(revenueChartInstance)revenueChartInstance.destroy();const days=[],revs=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}));const ds=d.toDateString();revs.push(allServices.filter(s=>{if(s.status!=='diambil'||!s.tanggalAmbil)return false;const t=s.tanggalAmbil.toDate?s.tanggalAmbil.toDate():new Date(s.tanggalAmbil);return t.toDateString()===ds;}).reduce((a,s)=>a+Number(s.biayaService||0)+Number(s.biayaSparepart||0),0));}revenueChartInstance=new Chart(ctx,{type:'bar',data:{labels:days,datasets:[{label:'Pendapatan',data:revs,backgroundColor:'rgba(16,185,129,0.3)',borderColor:'#10B981',borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#64748B',callback:v=>'Rp '+(v/1000)+'k'},grid:{color:'rgba(31,45,71,0.5)'}},x:{ticks:{color:'#64748B'},grid:{display:false}}}}});}
+    function renderStatusChart(){const ctx=document.getElementById('statusChart').getContext('2d');if(statusChartInstance)statusChartInstance.destroy();const c={masuk:0,diperiksa:0,proses:0,selesai:0,diambil:0};allServices.forEach(s=>{if(c[s.status]!==undefined)c[s.status]++;});statusChartInstance=new Chart(ctx,{type:'doughnut',data:{labels:['Masuk','Diperiksa','Proses','Selesai','Diambil'],datasets:[{data:Object.values(c),backgroundColor:['#06B6D4','#F59E0B','#A78BFA','#10B981','#64748B'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{color:'#94A3B8',padding:12,font:{size:11}}}},cutout:'65%'}});}
+
+    // ===== TERIMA BARANG =====
+    function renderTerima(){const sel=document.getElementById('tJenis');sel.innerHTML='<option value="">Pilih jenis barang</option>';allJenis.forEach(j=>{sel.innerHTML+=`<option value="${j.nama}" data-biaya="${j.biaya}">${j.nama} - ${formatRupiah(j.biaya)}</option>`;});sel.onchange=function(){const o=sel.options[sel.selectedIndex];if(o.dataset.biaya)document.getElementById('tEstimasi').value=o.dataset.biaya;};const td=new Date().toDateString(),hi=allServices.filter(s=>{const d=s.tanggalMasuk?.toDate?s.tanggalMasuk.toDate():null;return d&&d.toDateString()===td;}),ct=document.getElementById('terimaHariIni');if(hi.length===0)ct.innerHTML='<p class="text-sm" style="color:var(--muted)">Belum ada barang hari ini</p>';else ct.innerHTML=hi.map(s=>`<div class="flex items-center justify-between py-2 border-b" style="border-color:var(--border)"><div><p class="text-sm font-semibold">${s.noService}</p><p class="text-xs" style="color:var(--muted)">${s.merek} - ${s.namaPelanggan}</p></div>${statusBadge(s.status)}</div>`).join('');}
+    async function simpanTerima(e){e.preventDefault();const ns=generateNoService(),data={noService:ns,namaPelanggan:document.getElementById('tNama').value.trim(),noTelp:document.getElementById('tTelp').value.trim(),alamat:document.getElementById('tAlamat').value.trim(),jenisBarang:document.getElementById('tJenis').value,merek:document.getElementById('tMerek').value.trim(),typeBarang:document.getElementById('tType').value.trim(),keluhan:document.getElementById('tKeluhan').value.trim(),kelengkapan:document.getElementById('tKelengkapan').value.trim(),noSeri:document.getElementById('tSeri').value.trim(),estimasiBiaya:Number(document.getElementById('tEstimasi').value)||0,status:'masuk',tanggalMasuk:firebase.firestore.FieldValue.serverTimestamp(),biayaService:0,biayaSparepart:0,catatanTeknisi:'',tanggalAmbil:null};try{const docRef=await db.collection('services').add(data);showToast(`Barang diterima! No: ${ns}`);data.tanggalMasuk=new Date();data.id=docRef.id;downloadBuktiTitip(data);document.getElementById('formTerima').reset();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+
+    // ===== DAFTAR BARANG =====
+    function renderDaftar(){const search=(document.getElementById('searchDaftar')?.value||'').toLowerCase(),filter=document.getElementById('filterStatus')?.value||'';let data=allServices;if(filter)data=data.filter(s=>s.status===filter);if(search)data=data.filter(s=>(s.noService||'').toLowerCase().includes(search)||(s.namaPelanggan||'').toLowerCase().includes(search)||(s.merek||'').toLowerCase().includes(search));const tbody=document.getElementById('daftarTable');if(data.length===0){tbody.innerHTML='<tr><td colspan="10" class="text-center py-8" style="color:var(--muted)">Tidak ada data</td></tr>';return;}tbody.innerHTML=data.map(s=>{const id=s.status==='diambil';return`<tr><td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td><td class="text-xs" style="color:var(--muted)">${formatDate(s.tanggalMasuk)}</td><td><div class="font-semibold text-sm">${s.namaPelanggan}</div><div class="text-xs" style="color:var(--muted)">${s.noTelp||''}</div><div class="text-xs" style="color:var(--muted)">${s.alamat?s.alamat.substring(0,30)+(s.alamat.length>30?'...':''):''}</div></td><td><div class="text-sm">${s.jenisBarang}</div><div class="text-xs" style="color:var(--muted)">${s.merek}</div></td><td class="text-xs font-mono">${s.typeBarang||'-'}</td><td class="text-xs font-mono">${s.noSeri||'-'}</td><td class="text-xs" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.kelengkapan||'-'}">${s.kelengkapan||'-'}</td><td class="text-xs" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.keluhan}">${s.keluhan}</td><td>${statusBadge(s.status)}</td><td><div class="flex gap-1 flex-wrap">${id?'<span class="btn-disabled" title="Final"><i class="fas fa-lock"></i></span>':`<button class="btn-secondary btn-sm" onclick="ubahStatus('${s.id}','${s.status}')" title="Ubah Status"><i class="fas fa-arrows-rotate"></i></button>`}<button class="btn-secondary btn-sm" onclick="editService('${s.id}')" title="Edit"><i class="fas fa-pen"></i></button><button class="btn-warn" onclick="downloadBuktiTitip(allServices.find(x=>x.id==='${s.id}'))" title="PDF"><i class="fas fa-file-pdf"></i></button>${id?'<span class="btn-disabled" title="Final"><i class="fas fa-trash"></i></span>':`<button class="btn-danger btn-sm" onclick="hapusService('${s.id}')" title="Hapus"><i class="fas fa-trash"></i></button>`}</div></td></tr>`;}).join('');}
+    async function ubahStatus(id,cs){if(cs==='diambil'){showToast('Status diambil tidak dapat diubah','error');return;}const fl=['masuk','diperiksa','proses','selesai'],idx=fl.indexOf(cs),ns=idx<fl.length-1?fl[idx+1]:fl[0];try{await db.collection('services').doc(id).update({status:ns});showToast(`Status diubah ke: ${ns.toUpperCase()}`);}catch(err){showToast('Gagal: '+err.message,'error');}}
+    function editService(id){const s=allServices.find(x=>x.id===id);if(!s)return;const id2=s.status==='diambil';openModal('Edit Service',`<form id="formEditService" class="space-y-4" onsubmit="return simpanEditService(event,'${id}')"><div><label class="form-label">Nama Pelanggan</label><input type="text" class="form-input" id="eNama" value="${s.namaPelanggan}" required></div><div><label class="form-label">No. Telepon</label><input type="tel" class="form-input" id="eTelp" value="${s.noTelp||''}"></div><div><label class="form-label">Alamat</label><textarea class="form-input" id="eAlamat" rows="2">${s.alamat||''}</textarea></div><div class="grid grid-cols-2 gap-3"><div><label class="form-label">Jenis Barang</label><input type="text" class="form-input" id="eJenis" value="${s.jenisBarang||''}"></div><div><label class="form-label">Merek</label><input type="text" class="form-input" id="eMerek" value="${s.merek||''}"></div></div><div class="grid grid-cols-2 gap-3"><div><label class="form-label">Type</label><input type="text" class="form-input" id="eType" value="${s.typeBarang||''}"></div><div><label class="form-label">No. Seri</label><input type="text" class="form-input" id="eSeri" value="${s.noSeri||''}"></div></div><div><label class="form-label">Kelengkapan</label><input type="text" class="form-input" id="eKelengkapan" value="${s.kelengkapan||''}"></div><div><label class="form-label">Keluhan</label><textarea class="form-input" id="eKeluhan" rows="2">${s.keluhan||''}</textarea></div><div><label class="form-label">Status</label>${id2?'<input type="text" class="form-input" value="Diambil (Final)" readonly style="background:var(--card2);cursor:not-allowed">':`<select class="form-input" id="eStatus"><option value="masuk" ${s.status==='masuk'?'selected':''}>Masuk</option><option value="diperiksa" ${s.status==='diperiksa'?'selected':''}>Diperiksa</option><option value="proses" ${s.status==='proses'?'selected':''}>Dalam Proses</option><option value="selesai" ${s.status==='selesai'?'selected':''}>Selesai</option></select>`}</div><div class="flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" class="btn-secondary" onclick="closeModal()">Batal</button></div></form>`);}
+    async function simpanEditService(e,id){e.preventDefault();const s=allServices.find(x=>x.id===id),id2=s&&s.status==='diambil',ud={namaPelanggan:document.getElementById('eNama').value.trim(),noTelp:document.getElementById('eTelp').value.trim(),alamat:document.getElementById('eAlamat').value.trim(),jenisBarang:document.getElementById('eJenis').value.trim(),merek:document.getElementById('eMerek').value.trim(),typeBarang:document.getElementById('eType').value.trim(),noSeri:document.getElementById('eSeri').value.trim(),kelengkapan:document.getElementById('eKelengkapan').value.trim(),keluhan:document.getElementById('eKeluhan').value.trim()};if(!id2&&document.getElementById('eStatus'))ud.status=document.getElementById('eStatus').value;try{await db.collection('services').doc(id).update(ud);showToast('Data diperbarui');closeModal();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    async function hapusService(id){const s=allServices.find(x=>x.id===id);if(s&&s.status==='diambil'){showToast('Status diambil tidak dapat dihapus','error');return;}if(!confirm('Yakin hapus?'))return;try{await db.collection('services').doc(id).delete();showToast('Dihapus');}catch(err){showToast('Gagal: '+err.message,'error');}}
+
+    // ===== PENGAMBILAN BARANG =====
+    function renderPengambilan(){const siapAmbil=allServices.filter(s=>s.status==='selesai');const container=document.getElementById('listSiapAmbil');if(siapAmbil.length===0){container.innerHTML='<p class="text-xs" style="color:var(--muted)">Tidak ada barang siap diambil</p>';}else{container.innerHTML=siapAmbil.map(s=>{const hasDraft=savedSparepartDrafts[s.id]&&savedSparepartDrafts[s.id].length>0;return`<button class="w-full text-left p-3 rounded-lg transition-all ${hasDraft?'border-amber-500':'hover:border-emerald-500'}" style="background:var(--bg);border:1px solid ${hasDraft?'rgba(245,158,11,0.5)':'var(--border)'}" onclick="pilihPengambilan('${s.id}')"><div class="flex items-center justify-between"><div><p class="font-mono text-xs font-semibold" style="color:var(--accent)">${s.noService}</p><p class="text-xs mt-1">${s.namaPelanggan} - ${s.merek}</p></div>${hasDraft?'<span class="text-xs px-2 py-1 rounded-full" style="background:rgba(245,158,11,0.15);color:#F59E0B"><i class="fas fa-puzzle-piece mr-1"></i>Ada Sparepart</span>':''}</div></button>`;}).join('');}document.getElementById('detailPengambilan').style.display='none';document.getElementById('formPengambilanCard').style.display='none';document.getElementById('strukContainer').style.display='none';if(selectedAmbilId&&savedSparepartDrafts[selectedAmbilId]){sparepartRows=savedSparepartDrafts[selectedAmbilId].map(r=>{sparepartRowCounter=Math.max(sparepartRowCounter,r.rowId);return{...r};});}else{sparepartRows=[];}renderSparepartPicker();}
+    function cariPengambilan(){const no=document.getElementById('cariNoService').value.trim().toUpperCase();const f=allServices.find(s=>s.noService.toUpperCase()===no);if(!f){showToast('Nomor service tidak ditemukan','error');return;}if(f.status!=='selesai'){showToast(`Barang belum siap diambil. Status: ${f.status.toUpperCase()}`,'info');return;}pilihPengambilan(f.id);}
+    function pilihPengambilan(id){selectedAmbilId=id;const s=allServices.find(x=>x.id===id);if(!s)return;document.getElementById('detailPengambilan').style.display='block';document.getElementById('detailAmbilContent').innerHTML=`<div class="grid grid-cols-2 gap-4 text-sm"><div><span class="form-label">No. Service</span><p class="font-mono font-semibold" style="color:var(--accent)">${s.noService}</p></div><div><span class="form-label">Status</span><p>${statusBadge(s.status)}</p></div><div><span class="form-label">Pelanggan</span><p>${s.namaPelanggan}</p></div><div><span class="form-label">Telepon</span><p>${s.noTelp||'-'}</p></div><div class="col-span-2"><span class="form-label">Alamat</span><p>${s.alamat||'-'}</p></div><div><span class="form-label">Jenis Barang</span><p>${s.jenisBarang}</p></div><div><span class="form-label">Merek</span><p>${s.merek}</p></div><div><span class="form-label">Type</span><p>${s.typeBarang||'-'}</p></div><div><span class="form-label">No. Seri</span><p>${s.noSeri||'-'}</p></div><div class="col-span-2"><span class="form-label">Kelengkapan</span><p>${s.kelengkapan||'-'}</p></div><div class="col-span-2"><span class="form-label">Keluhan</span><p>${s.keluhan}</p></div><div><span class="form-label">Tanggal Masuk</span><p>${formatDateTime(s.tanggalMasuk)}</p></div><div><span class="form-label">Estimasi Biaya</span><p class="font-semibold">${formatRupiah(s.estimasiBiaya)}</p></div></div>`;document.getElementById('formPengambilanCard').style.display='block';document.getElementById('aBiaya').value=s.estimasiBiaya||0;document.getElementById('aCatatan').value='';document.getElementById('strukContainer').style.display='none';if(savedSparepartDrafts[id]){sparepartRows=savedSparepartDrafts[id].map(r=>{sparepartRowCounter=Math.max(sparepartRowCounter,r.rowId);return{...r};});}else{sparepartRows=[];}renderSparepartPicker();hitungTotalSparepart();}
+    function tambahBarisSparepart(){if(allSparepart.length===0){showToast('Stok sparepart kosong.','info');return;}sparepartRowCounter++;sparepartRows.push({rowId:sparepartRowCounter,sparepartId:'',qty:1});saveSparepartDraft();renderSparepartPicker();}
+    function hapusBarisSparepart(rowId){sparepartRows=sparepartRows.filter(r=>r.rowId!==rowId);saveSparepartDraft();renderSparepartPicker();hitungTotalSparepart();}
+    function onSparepartSelect(rowId,sparepartId){const row=sparepartRows.find(r=>r.rowId===rowId);if(row){row.sparepartId=sparepartId;row.qty=1;}saveSparepartDraft();renderSparepartPicker();hitungTotalSparepart();}
+    function onQtyChange(rowId,qty){const row=sparepartRows.find(r=>r.rowId===rowId);if(row){row.qty=Math.max(1,Number(qty)||1);}saveSparepartDraft();renderSparepartPicker();hitungTotalSparepart();}
+    function saveSparepartDraft(){if(!selectedAmbilId)return;savedSparepartDrafts[selectedAmbilId]=sparepartRows.map(r=>({rowId:r.rowId,sparepartId:r.sparepartId,qty:r.qty}));}
+    function renderSparepartPicker(){const tbody=document.getElementById('sparepartPickerBody');if(sparepartRows.length===0){tbody.innerHTML=`<tr id="sparepartEmptyRow"><td colspan="6" class="text-center py-3 text-xs" style="color:var(--muted)">Klik "Tambah" untuk memilih sparepart</td></tr>`;return;}const av=allSparepart.filter(s=>Number(s.jumlah)>0);tbody.innerHTML=sparepartRows.map(row=>{const sp=allSparepart.find(s=>s.id===row.sparepartId);const h=sp?Number(sp.harga):0,st=sp?Number(sp.jumlah):0,sub=h*row.qty,w=sp&&row.qty>st;const opts=av.map(s=>`<option value="${s.id}" ${s.id===row.sparepartId?'selected':''}>${s.nama} (Stok: ${s.jumlah})</option>`).join('');return`<tr><td style="padding:4px 4px"><select class="form-input" style="font-size:12px;padding:6px 8px;min-width:140px" onchange="onSparepartSelect(${row.rowId},this.value)"><option value="">-- Pilih --</option>${opts}</select></td><td style="padding:4px 4px"><span class="font-mono text-xs" style="color:${sp?'var(--accent)':'var(--muted)'}">${sp?formatRupiah(h):'-'}</span></td><td style="padding:4px 4px"><span class="font-mono text-xs" style="color:${w?'var(--danger)':'var(--text)'}">${sp?st:'-'}</span></td><td style="padding:4px 4px"><input type="number" class="form-input" style="font-size:12px;padding:5px 8px;width:70px;text-align:center" value="${row.qty}" min="1" max="${st||999}" onchange="onQtyChange(${row.rowId},this.value)" ${!sp?'disabled':''}></td><td style="padding:4px 4px"><span class="font-mono text-xs font-bold" style="color:var(--accent2)">${sp?formatRupiah(sub):'-'}</span></td><td style="padding:4px 4px;text-align:center"><button type="button" class="btn-danger btn-sm" style="padding:4px 8px" onclick="hapusBarisSparepart(${row.rowId})"><i class="fas fa-times"></i></button></td></tr>`;}).join('');}
+    function hitungTotalSparepart(){let t=0;sparepartRows.forEach(r=>{const sp=allSparepart.find(s=>s.id===r.sparepartId);if(sp)t+=Number(sp.harga)*r.qty;});document.getElementById('aSparepart').value=t;}
+    async function prosesPengambilan(e){e.preventDefault();if(!selectedAmbilId)return;const ur=sparepartRows.find(r=>!r.sparepartId);if(ur){showToast('Pilih sparepart terlebih dahulu atau hapus baris kosong','error');return;}for(const row of sparepartRows){const sp=allSparepart.find(s=>s.id===row.sparepartId);if(sp&&row.qty>Number(sp.jumlah)){showToast(`Stok "${sp.nama}" tidak mencukupi`,'error');return;}}const bs=Number(document.getElementById('aBiaya').value)||0,bp=Number(document.getElementById('aSparepart').value)||0,ct=document.getElementById('aCatatan').value.trim();try{await db.collection('services').doc(selectedAmbilId).update({status:'diambil',biayaService:bs,biayaSparepart:bp,catatanTeknisi:ct,tanggalAmbil:firebase.firestore.FieldValue.serverTimestamp(),sparepartDigunakan:sparepartRows.map(r=>{const sp=allSparepart.find(s=>s.id===r.sparepartId);return{sparepartId:r.sparepartId,nama:sp?sp.nama:'Unknown',qty:r.qty,harga:sp?Number(sp.harga):0,subtotal:sp?Number(sp.harga)*r.qty:0};})});const batch=db.batch();for(const row of sparepartRows){const sp=allSparepart.find(s=>s.id===row.sparepartId);if(sp){const newStok=Math.max(0,Number(sp.jumlah)-row.qty);batch.update(db.collection('sparepart').doc(row.sparepartId),{jumlah:newStok});}}await batch.commit();delete savedSparepartDrafts[selectedAmbilId];selectedAmbilId=null;showToast('Barang berhasil diambil! Stok sparepart berkurang secara realtime');}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    function cetakStruk(){if(!selectedAmbilId)return;const s=allServices.find(x=>x.id===selectedAmbilId);if(!s)return;const b=Number(document.getElementById('aBiaya').value)||0,sp=Number(document.getElementById('aSparepart').value)||0,t=b+sp;let sd='';const rows=savedSparepartDrafts[selectedAmbilId]||[];if(rows.length>0){sd='<div class="divider"></div><p style="font-weight:bold;margin-bottom:4px">Sparepart:</p>';rows.forEach(row=>{const s2=allSparepart.find(x=>x.id===row.sparepartId);if(s2)sd+=`<p>- ${s2.nama} x${row.qty} = ${formatRupiah(Number(s2.harga)*row.qty)}</p>`;});}const container=document.getElementById('strukContainer');container.style.display='block';container.innerHTML=`<div class="receipt-box" id="receiptContent"><h3>SERVICE PRO</h3><p style="text-align:center;font-size:10px;color:#666">Service Elektronik Profesional</p><div class="divider"></div><p>No : ${s.noService}</p><p>Tgl: ${new Date().toLocaleDateString('id-ID')}</p><div class="divider"></div><p>Pelanggan: ${s.namaPelanggan}</p><p>Alamat   : ${s.alamat||'-'}</p><p>Barang   : ${s.jenisBarang}</p><p>Merek    : ${s.merek}</p><p>Type     : ${s.typeBarang||'-'}</p><p>No. Seri : ${s.noSeri||'-'}</p><p>Kelengkapan: ${s.kelengkapan||'-'}</p><p>Keluhan  : ${s.keluhan}</p>${sd}<div class="divider"></div><p>Biaya Service  : ${formatRupiah(b)}</p><p>Biaya Sparepart: ${formatRupiah(sp)}</p><div class="divider"></div><p style="font-size:14px;font-weight:bold">TOTAL: ${formatRupiah(t)}</p><div class="divider"></div><p style="text-align:center;font-size:10px;color:#666">Terima kasih atas kepercayaan Anda</p></div><div class="mt-4 text-center no-print"><button class="btn-primary" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button></div>`;}
+
+    // ===== JENIS BARANG =====
+    function renderJenis(){const tb=document.getElementById('jenisTable');if(allJenis.length===0){tb.innerHTML='<tr><td colspan="4" class="text-center py-8" style="color:var(--muted)">Belum ada data.</td></tr>';}else{tb.innerHTML=allJenis.map(j=>`<tr><td class="font-semibold">${j.nama}</td><td class="font-mono font-semibold" style="color:var(--accent)">${formatRupiah(j.biaya)}</td><td class="text-sm" style="color:var(--muted)">${j.deskripsi||'-'}</td><td><div class="flex gap-1"><button class="btn-secondary btn-sm" onclick="editJenis('${j.id}')"><i class="fas fa-pen"></i></button><button class="btn-danger btn-sm" onclick="hapusJenis('${j.id}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');}}
+    async function simpanJenis(e){e.preventDefault();try{await db.collection('jenisBarang').add({nama:document.getElementById('jNama').value.trim(),biaya:Number(document.getElementById('jBiaya').value)||0,deskripsi:document.getElementById('jDeskripsi').value.trim()});showToast('Jenis barang ditambahkan');document.getElementById('formJenis').reset();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    function editJenis(id){const j=allJenis.find(x=>x.id===id);if(!j)return;openModal('Edit Jenis',`<form class="space-y-4" onsubmit="return simpanEditJenis(event,'${id}')"><div><label class="form-label">Nama</label><input type="text" class="form-input" id="ejNama" value="${j.nama}" required></div><div><label class="form-label">Biaya (Rp)</label><input type="number" class="form-input" id="ejBiaya" value="${j.biaya}" required min="0"></div><div><label class="form-label">Deskripsi</label><textarea class="form-input" id="ejDeskripsi" rows="2">${j.deskripsi||''}</textarea></div><div class="flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" class="btn-secondary" onclick="closeModal()">Batal</button></div></form>`);}
+    async function simpanEditJenis(e,id){e.preventDefault();try{await db.collection('jenisBarang').doc(id).update({nama:document.getElementById('ejNama').value.trim(),biaya:Number(document.getElementById('ejBiaya').value)||0,deskripsi:document.getElementById('ejDeskripsi').value.trim()});showToast('Diperbarui');closeModal();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    async function hapusJenis(id){if(!confirm('Yakin hapus?'))return;try{await db.collection('jenisBarang').doc(id).delete();showToast('Dihapus');}catch(err){showToast('Gagal: '+err.message,'error');}}
+
+    // ===== STOK SPAREPART =====
+    function renderStok(){const search=(document.getElementById('searchStok')?.value||'').toLowerCase();let data=allSparepart;if(search)data=data.filter(s=>s.nama.toLowerCase().includes(search)||(s.kategori||'').toLowerCase().includes(search));const tb=document.getElementById('stokTable');if(data.length===0){tb.innerHTML='<tr><td colspan="5" class="text-center py-8" style="color:var(--muted)">Tidak ada data</td></tr>';}else{tb.innerHTML=data.map(s=>{const sr=Number(s.jumlah)<=5;return`<tr><td class="font-semibold">${s.nama}</td><td class="text-sm" style="color:var(--muted)">${s.kategori||'-'}</td><td><span class="font-mono font-bold" style="${sr?'color:var(--danger)':'color:var(--accent)'}">${s.jumlah}</span>${sr?'<span class="ml-2 text-xs" style="color:var(--danger)"><i class="fas fa-exclamation-triangle"></i></span>':''}</td><td class="font-mono">${formatRupiah(s.harga)}</td><td><div class="flex gap-1"><button class="btn-secondary btn-sm" onclick="editSparepart('${s.id}')"><i class="fas fa-pen"></i></button><button class="btn-secondary btn-sm" onclick="tambahStok('${s.id}')"><i class="fas fa-plus"></i></button><button class="btn-danger btn-sm" onclick="hapusSparepart('${s.id}')"><i class="fas fa-trash"></i></button></div></td></tr>`;}).join('');}}
+    async function simpanSparepart(e){e.preventDefault();try{await db.collection('sparepart').add({nama:document.getElementById('sNama').value.trim(),jumlah:Number(document.getElementById('sJumlah').value)||0,harga:Number(document.getElementById('sHarga').value)||0,kategori:document.getElementById('sKategori').value.trim()});showToast('Sparepart ditambahkan');document.getElementById('formStok').reset();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    function editSparepart(id){const s=allSparepart.find(x=>x.id===id);if(!s)return;openModal('Edit Sparepart',`<form class="space-y-4" onsubmit="return simpanEditSparepart(event,'${id}')"><div><label class="form-label">Nama</label><input type="text" class="form-input" id="esNama" value="${s.nama}" required></div><div class="grid grid-cols-2 gap-3"><div><label class="form-label">Jumlah</label><input type="number" class="form-input" id="esJumlah" value="${s.jumlah}" required min="0"></div><div><label class="form-label">Harga (Rp)</label><input type="number" class="form-input" id="esHarga" value="${s.harga}" required min="0"></div></div><div><label class="form-label">Kategori</label><input type="text" class="form-input" id="esKategori" value="${s.kategori||''}"></div><div class="flex gap-3"><button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button><button type="button" class="btn-secondary" onclick="closeModal()">Batal</button></div></form>`);}
+    async function simpanEditSparepart(e,id){e.preventDefault();try{await db.collection('sparepart').doc(id).update({nama:document.getElementById('esNama').value.trim(),jumlah:Number(document.getElementById('esJumlah').value)||0,harga:Number(document.getElementById('esHarga').value)||0,kategori:document.getElementById('esKategori').value.trim()});showToast('Diperbarui');closeModal();}catch(err){showToast('Gagal: '+err.message,'error');}return false;}
+    async function tambahStok(id){const s=allSparepart.find(x=>x.id===id);if(!s)return;const t=prompt(`Tambah stok "${s.nama}" (saat ini: ${s.jumlah}):`,'1');if(!t||isNaN(t))return;try{await db.collection('sparepart').doc(id).update({jumlah:Number(s.jumlah)+Number(t)});showToast(`Stok +${t}`);}catch(err){showToast('Gagal: '+err.message,'error');}}
+    async function hapusSparepart(id){if(!confirm('Yakin hapus?'))return;try{await db.collection('sparepart').doc(id).delete();showToast('Dihapus');}catch(err){showToast('Gagal: '+err.message,'error');}}
+
+    // ===== RIWAYAT =====
+    function renderRiwayat(){const dari=document.getElementById('riwayatDari')?.value,sampai=document.getElementById('riwayatSampai')?.value,search=(document.getElementById('searchRiwayat')?.value||'').toLowerCase();let data=allServices.filter(s=>s.status==='diambil');if(dari){const d=new Date(dari);data=data.filter(s=>{const t=s.tanggalAmbil?.toDate?s.tanggalAmbil.toDate():null;return t&&t>=d;});}if(sampai){const d=new Date(sampai);d.setDate(d.getDate()+1);data=data.filter(s=>{const t=s.tanggalAmbil?.toDate?s.tanggalAmbil.toDate():null;return t&&t<d;});}if(search)data=data.filter(s=>(s.noService||'').toLowerCase().includes(search)||(s.namaPelanggan||'').toLowerCase().includes(search));const tb=document.getElementById('riwayatTable');if(data.length===0){tb.innerHTML='<tr><td colspan="7" class="text-center py-8" style="color:var(--muted)">Tidak ada riwayat</td></tr>';}else{tb.innerHTML=data.map(s=>{const tl=Number(s.biayaService||0)+Number(s.biayaSparepart||0);return`<tr><td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td><td class="text-xs">${formatDate(s.tanggalMasuk)}</td><td class="text-xs">${formatDate(s.tanggalAmbil)}</td><td>${s.namaPelanggan}</td><td>${s.jenisBarang} - ${s.merek}</td><td class="font-mono font-semibold">${formatRupiah(tl)}</td><td><div class="flex gap-1"><button class="btn-secondary btn-sm" onclick="lihatStrukRiwayat('${s.id}')" title="Lihat"><i class="fas fa-receipt"></i></button><button class="btn-info-sm" onclick="downloadStrukRiwayatPDF('${s.id}')" title="PDF"><i class="fas fa-file-pdf"></i></button></div></td></tr>`;}).join('');}}
+    function lihatStrukRiwayat(id){const s=allServices.find(x=>x.id===id);if(!s)return;const tl=Number(s.biayaService||0)+Number(s.biayaSparepart||0);let sd='';if(s.sparepartDigunakan&&s.sparepartDigunakan.length>0){sd='<div class="divider"></div><p style="font-weight:bold;margin-bottom:4px">Sparepart:</p>';s.sparepartDigunakan.forEach(sp=>{sd+=`<p>- ${sp.nama} x${sp.qty} = ${formatRupiah(sp.subtotal)}</p>`;});}openModal('Struk Service',`<div class="receipt-box"><h3>SERVICE PRO</h3><p style="text-align:center;font-size:10px;color:#666">Service Elektronik Profesional</p><div class="divider"></div><p>No : ${s.noService}</p><p>Tgl: ${formatDate(s.tanggalAmbil)}</p><div class="divider"></div><p>Pelanggan: ${s.namaPelanggan}</p><p>Alamat   : ${s.alamat||'-'}</p><p>Barang   : ${s.jenisBarang}</p><p>Merek    : ${s.merek}</p><p>Type     : ${s.typeBarang||'-'}</p><p>No. Seri : ${s.noSeri||'-'}</p><p>Kelengkapan: ${s.kelengkapan||'-'}</p><p>Keluhan  : ${s.keluhan}</p>${s.catatanTeknisi?`<p>Catatan  : ${s.catatanTeknisi}</p>`:''}${sd}<div class="divider"></div><p>Biaya Service  : ${formatRupiah(s.biayaService)}</p><p>Biaya Sparepart: ${formatRupiah(s.biayaSparepart)}</p><div class="divider"></div><p style="font-size:14px;font-weight:bold">TOTAL: ${formatRupiah(tl)}</p><div class="divider"></div><p style="text-align:center;font-size:10px;color:#666">Terima kasih atas kepercayaan Anda</p></div>`);}
+
+    // ===== LAPORAN =====
+    function renderLaporan(){const diambil=allServices.filter(s=>s.status==='diambil'),tp=diambil.reduce((a,s)=>a+Number(s.biayaService||0)+Number(s.biayaSparepart||0),0),ts=diambil.length,ra=ts>0?Math.round(tp/ts):0,sr=allSparepart.filter(s=>Number(s.jumlah)<=5).length;document.getElementById('laporanStats').innerHTML=`<div class="stat-card"><p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Total Pendapatan</p><p class="text-xl font-bold mt-2">${formatRupiah(tp)}</p></div><div class="stat-card"><p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Service Selesai</p><p class="text-xl font-bold mt-2">${ts}</p></div><div class="stat-card"><p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Rata-rata Biaya</p><p class="text-xl font-bold mt-2">${formatRupiah(ra)}</p></div><div class="stat-card"><p class="text-xs font-semibold uppercase tracking-wider" style="color:var(--muted)">Stok Rendah</p><p class="text-xl font-bold mt-2" style="color:${sr>0?'var(--danger)':'var(--accent)'}">${sr}</p></div>`;const bv=document.getElementById('laporanBulan')?.value;let dl=diambil;if(bv){const[y,m]=bv.split('-').map(Number);dl=diambil.filter(s=>{const t=s.tanggalAmbil?.toDate?s.tanggalAmbil.toDate():null;return t&&t.getFullYear()===y&&(t.getMonth()+1)===m;});}const tb=document.getElementById('laporanTable');let gt=0;if(dl.length===0){tb.innerHTML='<tr><td colspan="8" class="text-center py-8" style="color:var(--muted)">Tidak ada data</td></tr>';}else{tb.innerHTML=dl.map((s,i)=>{const bs=Number(s.biayaService||0),bp=Number(s.biayaSparepart||0),t=bs+bp;gt+=t;return`<tr><td>${i+1}</td><td class="font-mono text-xs" style="color:var(--accent)">${s.noService}</td><td class="text-xs">${formatDate(s.tanggalAmbil)}</td><td>${s.namaPelanggan}</td><td>${s.jenisBarang}</td><td class="font-mono">${formatRupiah(bs)}</td><td class="font-mono">${formatRupiah(bp)}</td><td class="font-mono font-bold">${formatRupiah(t)}</td></tr>`;}).join('');}document.getElementById('laporanTotal').innerHTML=`<div class="text-right"><span class="text-sm" style="color:var(--muted)">Grand Total: </span><span class="text-lg font-bold" style="color:var(--accent)">${formatRupiah(gt)}</span></div>`;renderMonthlyChart();renderJenisChart();}
+    function renderMonthlyChart(){const ctx=document.getElementById('monthlyChart').getContext('2d');if(monthlyChartInstance)monthlyChartInstance.destroy();const ms=[],rvs=[],nw=new Date();for(let i=5;i>=0;i--){const d=new Date(nw.getFullYear(),nw.getMonth()-i,1);ms.push(d.toLocaleDateString('id-ID',{month:'short',year:'2-digit'}));const y=d.getFullYear(),m=d.getMonth();rvs.push(allServices.filter(s=>{if(s.status!=='diambil'||!s.tanggalAmbil)return false;const t=s.tanggalAmbil.toDate?s.tanggalAmbil.toDate():new Date(s.tanggalAmbil);return t.getFullYear()===y&&t.getMonth()===m;}).reduce((a,s)=>a+Number(s.biayaService||0)+Number(s.biayaSparepart||0),0));}monthlyChartInstance=new Chart(ctx,{type:'line',data:{labels:ms,datasets:[{label:'Pendapatan',data:rvs,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,0.1)',fill:true,tension:0.4,pointBackgroundColor:'#10B981',pointRadius:5}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#64748B',callback:v=>'Rp '+(v/1000)+'k'},grid:{color:'rgba(31,45,71,0.5)'}},x:{ticks:{color:'#64748B'},grid:{display:false}}}}});}
+    function renderJenisChart(){const ctx=document.getElementById('jenisChart').getContext('2d');if(jenisChartInstance)jenisChartInstance.destroy();const c={};allServices.forEach(s=>{c[s.jenisBarang]=(c[s.jenisBarang]||0)+1;});const sorted=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,6),colors=['#10B981','#06B6D4','#F59E0B','#A78BFA','#EF4444','#EC4899'];jenisChartInstance=new Chart(ctx,{type:'bar',data:{labels:sorted.map(s=>s[0]),datasets:[{label:'Jumlah',data:sorted.map(s=>s[1]),backgroundColor:colors.map(c=>c+'44'),borderColor:colors,borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748B'},grid:{color:'rgba(31,45,71,0.5)'}},y:{ticks:{color:'#94A3B8',font:{size:11}},grid:{display:false}}}}});}
+    function exportLaporan(){const diambil=allServices.filter(s=>s.status==='diambil'),bv=document.getElementById('laporanBulan')?.value;let data=diambil;if(bv){const[y,m]=bv.split('-').map(Number);data=diambil.filter(s=>{const t=s.tanggalAmbil?.toDate?s.tanggalAmbil.toDate():null;return t&&t.getFullYear()===y&&(t.getMonth()+1)===m;});}if(data.length===0){showToast('Tidak ada data','info');return;}let csv='No,NoService,Tanggal,Pelanggan,Telepon,Alamat,Barang,Merek,Type,NoSeri,Kelengkapan,BiayaService,BiayaSparepart,Total\n';data.forEach((s,i)=>{const bs=Number(s.biayaService||0),bp=Number(s.biayaSparepart||0);csv+=`${i+1},"${s.noService}","${formatDate(s.tanggalAmbil)}","${s.namaPelanggan}","${s.noTelp||''}","${s.alamat||''}","${s.jenisBarang}","${s.merek}","${s.typeBarang||''}","${s.noSeri||''}","${s.kelengkapan||''}",${bs},${bp},${bs+bp}\n`;});const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`laporan_service_${new Date().toISOString().slice(0,10)}.csv`;link.click();showToast('Laporan di-export');}
+
+    function updateClock(){document.getElementById('clockDisplay').textContent=new Date().toLocaleTimeString('id-ID');}setInterval(updateClock,1000);updateClock();
+
+    // ===== INIT =====
+    function initApp(){const nw=new Date();document.getElementById('laporanBulan').value=`${nw.getFullYear()}-${String(nw.getMonth()+1).padStart(2,'0')}`;document.getElementById('riwayatDari').value=`${nw.getFullYear()}-${String(nw.getMonth()+1).padStart(2,'0')}-01`;}
+
+    loadTheme();
     </script>
 </body>
 </html>
