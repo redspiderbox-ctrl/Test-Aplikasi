@@ -1,1 +1,539 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiceDrive - Arsip Elektronik</title>
+    <!-- Tailwind CSS untuk Styling Cepat & Modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { drive: { hover: '#f1f3f4', active: '#e8f0fe', text: '#1f1f1f', blue: '#1a73e8' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #dadce0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #bdc1c6; }
+        
+        .file-card { transition: all 0.2s ease; }
+        .file-card:hover { background-color: #f1f3f4; }
+    </style>
+</head>
+<body class="text-gray-800 font-sans overflow-hidden bg-white">
 
+    <!-- ================= LOGIN SCREEN ================= -->
+    <div id="login-screen" class="fixed inset-0 bg-gray-100 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-200">
+            <div class="text-center mb-8">
+                <i class="fa-solid fa-microchip text-4xl text-blue-600 mb-3"></i>
+                <h1 class="text-2xl font-semibold text-gray-800">ServiceDrive</h1>
+                <p class="text-sm text-gray-500 mt-1">Sistem Arsip Bengkel Elektronik</p>
+            </div>
+            
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="admin / karyawan" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="123456" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+                    Login
+                </button>
+                <p id="login-error" class="text-red-500 text-sm mt-3 text-center hidden">Username atau password salah!</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APPLICATION ================= -->
+    <div id="app-screen" class="hidden h-screen flex flex-col">
+        
+        <!-- HEADER -->
+        <header class="flex items-center justify-between px-4 py-2 border-b border-gray-200 bg-white z-10">
+            <div class="flex items-center gap-4 w-1/4">
+                <button class="md:hidden p-2 rounded-full hover:bg-gray-100" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars text-gray-600"></i>
+                </button>
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-microchip text-2xl text-blue-600"></i>
+                    <span class="text-xl font-medium text-gray-700 hidden sm:block">ServiceDrive</span>
+                </div>
+            </div>
+
+            <!-- SEARCH BAR -->
+            <div class="flex-1 max-w-2xl bg-[#f1f3f4] rounded-full flex items-center px-4 py-2 focus-within:bg-white focus-within:shadow-md transition-all border border-transparent focus-within:border-gray-200">
+                <i class="fa-solid fa-search text-gray-500"></i>
+                <input type="text" id="search-input" placeholder="Cari file, pelanggan, atau nota..." class="bg-transparent border-none outline-none w-full ml-3 text-gray-700" oninput="filterFiles()">
+            </div>
+
+            <div class="w-1/4 flex justify-end items-center gap-3">
+                <span id="user-display" class="text-sm font-medium text-gray-600 hidden md:block">Admin</span>
+                <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold cursor-pointer hover:ring-2 hover:ring-blue-300" onclick="logout()">
+                    A
+                </div>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- SIDEBAR -->
+            <aside id="sidebar" class="w-64 bg-white flex flex-col border-r border-gray-100 transition-transform transform -translate-x-full md:translate-x-0 absolute md:relative z-20 h-full p-3 shadow-lg md:shadow-none">
+                
+                <button onclick="openUploadModal()" class="flex items-center gap-3 bg-white border border-gray-300 shadow-sm rounded-2xl px-5 py-3 hover:bg-gray-50 transition w-32 mb-4 group">
+                    <svg width="24" height="24" viewBox="0 0 24 24"><path fill="#EA4335" d="M14 13v-3h-4v3H7l5 5 5-5h-3z"></path><path fill="#4285F4" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg>
+                    <span class="text-sm font-medium text-gray-700">Baru</span>
+                </button>
+
+                <nav class="flex-1 space-y-1">
+                    <div class="menu-item nav-active flex items-center gap-4 px-4 py-2 rounded-r-full cursor-pointer" onclick="setCategory('Semua', this)">
+                        <i class="fa-solid fa-hard-drive w-5 text-center"></i>
+                        <span class="text-sm font-medium">Semua File</span>
+                    </div>
+                    
+                    <div class="mt-4 mb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategori Service</div>
+                    
+                    <div class="menu-item flex items-center gap-4 px-4 py-2 rounded-r-full cursor-pointer text-gray-600 hover:bg-gray-100" onclick="setCategory('Pelanggan', this)">
+                        <i class="fa-solid fa-users w-5 text-center text-blue-500"></i>
+                        <span class="text-sm font-medium">Data Pelanggan</span>
+                    </div>
+                    <div class="menu-item flex items-center gap-4 px-4 py-2 rounded-r-full cursor-pointer text-gray-600 hover:bg-gray-100" onclick="setCategory('Nota', this)">
+                        <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-green-500"></i>
+                        <span class="text-sm font-medium">Nota / Invoice</span>
+                    </div>
+                    <div class="menu-item flex items-center gap-4 px-4 py-2 rounded-r-full cursor-pointer text-gray-600 hover:bg-gray-100" onclick="setCategory('Foto Kerusakan', this)">
+                        <i class="fa-solid fa-camera-retro w-5 text-center text-purple-500"></i>
+                        <span class="text-sm font-medium">Foto Kerusakan</span>
+                    </div>
+
+                    <div class="mt-4 mb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipe File</div>
+
+                    <div class="menu-item flex items-center gap-4 px-4 py-2 rounded-r-full cursor-pointer text-gray-600 hover:bg-gray-100" onclick="setCategory('Foto', this)">
+                        <i class="fa-regular fa-image w-5 text-center text-red-500"></i>
+                        <span class="text-sm font-medium">Foto & Gambar</span>
+                    </div>
+                    <div class="menu-item flex items-center gap-4 px-4 py-2 rounded-r-full cursor-pointer text-gray-600 hover:bg-gray-100" onclick="setCategory('PDF', this)">
+                        <i class="fa-solid fa-file-pdf w-5 text-center text-red-600"></i>
+                        <span class="text-sm font-medium">Dokumen PDF</span>
+                    </div>
+                </nav>
+
+                <div class="border-t border-gray-200 pt-4 mt-auto">
+                    <div class="px-4 flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fa-solid fa-cloud"></i>
+                        <span>Penyimpanan Drive</span>
+                    </div>
+                    <div class="px-4 mt-2">
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-blue-600 h-1.5 rounded-full" style="width: 45%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">6.7 GB terpakai dari 15 GB</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Overlay for mobile sidebar -->
+            <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden" onclick="toggleSidebar()"></div>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 bg-white rounded-tl-2xl p-4 md:p-6 overflow-y-auto">
+                <div class="flex justify-between items-end mb-6 border-b border-gray-200 pb-2">
+                    <h2 id="category-title" class="text-2xl font-normal text-gray-800">Semua File</h2>
+                    <div class="flex gap-2">
+                        <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full" title="Tampilan Grid"><i class="fa-solid fa-border-all"></i></button>
+                        <button class="p-2 text-gray-400 hover:bg-gray-100 rounded-full" title="Tampilan List"><i class="fa-solid fa-list"></i></button>
+                    </div>
+                </div>
+
+                <!-- LOADING SPINNER -->
+                <div id="loading-indicator" class="hidden flex justify-center items-center py-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-600"></i>
+                </div>
+
+                <!-- FILE GRID -->
+                <div id="file-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <!-- Files will be injected here by JS -->
+                </div>
+                
+                <!-- EMPTY STATE -->
+                <div id="empty-state" class="hidden flex flex-col justify-center items-center py-20 text-center">
+                    <img src="https://ssl.gstatic.com/docs/doclist/images/empty_state_my_drive_v3.svg" alt="Empty" class="w-48 mb-4 opacity-70">
+                    <h3 class="text-lg font-medium text-gray-700">Belum ada file di sini</h3>
+                    <p class="text-sm text-gray-500 mt-1">Gunakan tombol Baru untuk mengupload dokumen service.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ================= MODALS ================= -->
+    
+    <!-- UPLOAD MODAL -->
+    <div id="upload-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-[scale_0.2s_ease-out]">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                <h3 class="text-lg font-semibold text-gray-800">Upload File Baru</h3>
+                <button onclick="closeUploadModal()" class="text-gray-500 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <div class="p-6">
+                <!-- Dropzone Area -->
+                <div class="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center hover:bg-blue-50 transition cursor-pointer mb-4 relative" id="dropzone" onclick="document.getElementById('file-input').click()">
+                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-blue-500 mb-2"></i>
+                    <p class="text-sm text-gray-600 font-medium">Klik untuk memilih file</p>
+                    <p class="text-xs text-gray-400 mt-1">Mendukung Foto (JPG/PNG), PDF, Excel</p>
+                    <input type="file" id="file-input" class="hidden" onchange="handleFileSelect(event)">
+                </div>
+                <div id="selected-file-name" class="text-sm text-blue-600 font-medium mb-4 text-center hidden"></div>
+
+                <!-- Form Metadata untuk Spreadsheet -->
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Kategori File</label>
+                        <select id="upload-category" class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="Foto Kerusakan">Foto Kerusakan (Sebelum/Sesudah)</option>
+                            <option value="Nota">Nota / Invoice</option>
+                            <option value="Pelanggan">Data Pelanggan</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pelanggan / Nomor Nota (Opsional)</label>
+                        <input type="text" id="upload-ref" class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Misal: Bpk. Budi - TV Samsung">
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
+                <button onclick="closeUploadModal()" class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded-md transition">Batal</button>
+                <button onclick="processUpload()" id="btn-upload" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition flex items-center gap-2">
+                    <i class="fa-solid fa-upload"></i> Upload & Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREVIEW MODAL -->
+    <div id="preview-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center backdrop-blur-md">
+        <button onclick="closePreviewModal()" class="absolute top-4 right-4 text-white hover:text-gray-300 bg-gray-800 bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+        <div class="text-white mb-4 absolute top-4 left-4 bg-gray-800 bg-opacity-50 px-4 py-2 rounded-lg" id="preview-title">Nama File.jpg</div>
+        <img id="preview-img" src="" alt="Preview" class="max-h-[80vh] max-w-[90vw] object-contain shadow-2xl rounded-sm">
+        <div class="mt-6 flex gap-4">
+            <button onclick="downloadCurrentPreview()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium transition flex items-center gap-2">
+                <i class="fa-solid fa-download"></i> Download File
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-3">
+        <i class="fa-solid fa-check-circle text-green-400"></i>
+        <span id="toast-msg">Notifikasi</span>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        /* * Konfigurasi Apps Script (Backend)
+         * Ganti URL ini dengan URL Web App dari Google Apps Script Anda nanti.
+         * Apps Script ini yang akan menghubungkan HTML dengan Google Drive & Spreadsheet.
+         */
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYOUR_SCRIPT_ID/exec"; 
+
+        // State Aplikasi
+        let currentUser = null;
+        let currentCategory = 'Semua';
+        let searchQuery = '';
+        let fileToUpload = null;
+        let currentPreviewUrl = '';
+
+        // Data Mockup (Simulasi Data dari Spreadsheet)
+        // Kolom: [ID, Nama File, Jenis, Ukuran, Tanggal Upload, Link Download, Uploader, Kategori]
+        let databaseFiles = [
+            { id: "1", name: "Nota_Servis_TV_Samsung_Bpk_Budi.pdf", type: "PDF", size: "1.2 MB", date: "20/06/2026", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", uploader: "Admin", category: "Nota", ref: "Bpk. Budi" },
+            { id: "2", name: "Sebelum_Service_Layar_Pecah.jpg", type: "Foto", size: "3.5 MB", date: "20/06/2026", url: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=600", uploader: "Karyawan 1", category: "Foto Kerusakan", ref: "TV LG" },
+            { id: "3", name: "Sesudah_Service_Layar_Baru.jpg", type: "Foto", size: "3.1 MB", date: "21/06/2026", url: "https://images.unsplash.com/photo-1552831388-6a0b35077328?w=600", uploader: "Admin", category: "Foto Kerusakan", ref: "TV LG" },
+            { id: "4", name: "Data_Pelanggan_Juni_2026.xlsx", type: "Excel", size: "500 KB", date: "22/06/2026", url: "#", uploader: "Admin", category: "Pelanggan", ref: "Bulanan" },
+            { id: "5", name: "Kipas_Angin_Maspion_Terbakar.jpg", type: "Foto", size: "2.1 MB", date: "22/06/2026", url: "https://images.unsplash.com/photo-1623946270404-ce06c8888b13?w=600", uploader: "Karyawan 1", category: "Foto Kerusakan", ref: "Ibu Siti" },
+            { id: "6", name: "Nota_Servis_Kulkas_Ibu_Siti.pdf", type: "PDF", size: "800 KB", date: "23/06/2026", url: "#", uploader: "Admin", category: "Nota", ref: "Ibu Siti" },
+        ];
+
+        // --- SISTEM LOGIN ---
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorText = document.getElementById('login-error');
+
+            // Simulasi Login (Admin atau Karyawan)
+            if ((user === 'admin' && pass === '123456') || (user === 'karyawan' && pass === '123456')) {
+                currentUser = user;
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+                
+                // Set UI based on user role
+                document.getElementById('user-display').innerText = user === 'admin' ? 'Administrator' : 'Karyawan Teknisi';
+                document.querySelector('.w-8.h-8').innerText = user.charAt(0).toUpperCase();
+                
+                // Load data
+                renderFiles();
+            } else {
+                errorText.classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            if(confirm("Apakah Anda yakin ingin keluar?")) {
+                currentUser = null;
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('app-screen').classList.add('hidden');
+            }
+        }
+
+        // --- MANAJEMEN UI & SIDEBAR ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function setCategory(category, element) {
+            currentCategory = category;
+            document.getElementById('category-title').innerText = category === 'Semua' ? 'Semua File' : category;
+            
+            // Update UI Sidebar Active state
+            document.querySelectorAll('.menu-item').forEach(el => {
+                el.classList.remove('bg-[#e8f0fe]', 'text-blue-700');
+                el.classList.add('text-gray-600', 'hover:bg-gray-100');
+            });
+            
+            element.classList.remove('text-gray-600', 'hover:bg-gray-100');
+            element.classList.add('bg-[#e8f0fe]', 'text-blue-700'); // GDrive active color
+
+            if (window.innerWidth < 768) toggleSidebar(); // Close sidebar on mobile
+            
+            renderFiles();
+        }
+
+        // --- RENDER GRID FILE ---
+        function getIconForType(type) {
+            if (type === 'Foto') return '<i class="fa-regular fa-image text-red-500 text-4xl"></i>';
+            if (type === 'PDF') return '<i class="fa-solid fa-file-pdf text-red-600 text-4xl"></i>';
+            if (type === 'Excel') return '<i class="fa-solid fa-file-excel text-green-600 text-4xl"></i>';
+            if (type === 'Video') return '<i class="fa-solid fa-file-video text-purple-600 text-4xl"></i>';
+            return '<i class="fa-solid fa-file text-gray-500 text-4xl"></i>';
+        }
+
+        function filterFiles() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase();
+            renderFiles();
+        }
+
+        function renderFiles() {
+            const grid = document.getElementById('file-grid');
+            const emptyState = document.getElementById('empty-state');
+            grid.innerHTML = '';
+
+            // Filter logic
+            let filteredFiles = databaseFiles.filter(file => {
+                const matchCategory = currentCategory === 'Semua' || file.category === currentCategory || file.type === currentCategory;
+                const matchSearch = file.name.toLowerCase().includes(searchQuery) || (file.ref && file.ref.toLowerCase().includes(searchQuery));
+                return matchCategory && matchSearch;
+            });
+
+            if (filteredFiles.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            filteredFiles.forEach(file => {
+                // Card HTML
+                const card = document.createElement('div');
+                card.className = "file-card border border-gray-200 rounded-xl p-4 flex flex-col cursor-pointer bg-white group relative h-48";
+                
+                // Menentukan aksi saat di-klik (Preview untuk gambar, Download untuk lainnya)
+                const clickAction = file.type === 'Foto' ? `openPreview('${file.url}', '${file.name}')` : `downloadFile('${file.url}')`;
+
+                card.innerHTML = `
+                    <div class="flex-1 flex items-center justify-center bg-gray-50 rounded-lg mb-3 overflow-hidden" onclick="${clickAction}">
+                        ${file.type === 'Foto' ? `<img src="${file.url}" class="w-full h-full object-cover">` : getIconForType(file.type)}
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex justify-between items-start gap-2">
+                            <h3 class="text-sm font-medium text-gray-800 truncate" title="${file.name}">${file.name}</h3>
+                        </div>
+                        <div class="flex justify-between items-center mt-1">
+                            <p class="text-[11px] text-gray-500">${file.date} • ${file.size}</p>
+                            <button class="w-7 h-7 rounded-full hover:bg-gray-200 flex items-center justify-center text-gray-500 transition opacity-0 group-hover:opacity-100" onclick="downloadFile('${file.url}'); event.stopPropagation();" title="Download">
+                                <i class="fa-solid fa-download text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${file.category === 'Foto Kerusakan' ? '<span class="absolute top-6 left-6 bg-purple-100 text-purple-700 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase">Kerusakan</span>' : ''}
+                    ${file.category === 'Nota' ? '<span class="absolute top-6 left-6 bg-green-100 text-green-700 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase">Nota</span>' : ''}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- SISTEM UPLOAD (SIMULASI) ---
+        function openUploadModal() {
+            document.getElementById('upload-modal').classList.remove('hidden');
+            fileToUpload = null;
+            document.getElementById('selected-file-name').classList.add('hidden');
+            document.getElementById('dropzone').classList.remove('hidden');
+            document.getElementById('file-input').value = '';
+            document.getElementById('upload-ref').value = '';
+        }
+
+        function closeUploadModal() {
+            document.getElementById('upload-modal').classList.add('hidden');
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                fileToUpload = file;
+                document.getElementById('dropzone').classList.add('hidden');
+                document.getElementById('selected-file-name').innerText = `📄 File terpilih: ${file.name}`;
+                document.getElementById('selected-file-name').classList.remove('hidden');
+            }
+        }
+
+        async function processUpload() {
+            if (!fileToUpload) {
+                alert("Pilih file terlebih dahulu!");
+                return;
+            }
+
+            const btn = document.getElementById('btn-upload');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Mengupload...';
+            btn.disabled = true;
+
+            // Kumpulkan Data Form
+            const category = document.getElementById('upload-category').value;
+            const ref = document.getElementById('upload-ref').value;
+            
+            // Menentukan tipe file
+            let type = 'Lainnya';
+            if(fileToUpload.type.includes('image')) type = 'Foto';
+            else if(fileToUpload.type.includes('pdf')) type = 'PDF';
+            else if(fileToUpload.type.includes('spreadsheet') || fileToUpload.type.includes('excel')) type = 'Excel';
+
+            // --- PROSES UPLOAD KE GOOGLE APPS SCRIPT ---
+            const reader = new FileReader();
+            reader.onload = async function() {
+                // Ambil data Base64 saja (buang header data:image/png;base64,)
+                const base64File = reader.result.split(',')[1];
+                
+                // Siapkan data untuk dikirim
+                const formData = new URLSearchParams();
+                formData.append("fileData", base64File);
+                formData.append("mimeType", fileToUpload.type);
+                formData.append("fileName", fileToUpload.name);
+                formData.append("category", category);
+                formData.append("uploader", currentUser);
+                formData.append("ref", ref);
+
+                try {
+                    // Kirim ke Google Apps Script
+                    const response = await fetch(APPS_SCRIPT_URL, { 
+                        method: "POST", 
+                        body: formData 
+                    });
+                    
+                    const result = await response.json();
+
+                    if(result.status === "success") {
+                        // Tambahkan file ke tampilan Grid secara lokal (agar tidak perlu refresh)
+                        const newFile = {
+                            id: result.id,
+                            name: fileToUpload.name,
+                            type: type,
+                            size: (fileToUpload.size / 1024 / 1024).toFixed(2) + " MB",
+                            date: new Date().toLocaleDateString('id-ID'),
+                            url: result.url,
+                            uploader: currentUser,
+                            category: category,
+                            ref: ref
+                        };
+                        
+                        databaseFiles.unshift(newFile);
+                        renderFiles();
+                        
+                        closeUploadModal();
+                        showToast("Upload berhasil! File tersimpan di Drive.");
+                    } else {
+                        alert("Gagal mengupload: " + result.message);
+                    }
+                } catch (error) { 
+                    alert("Terjadi kesalahan jaringan: " + error.message); 
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            };
+            
+            // Baca file sebagai Data URL (Base64)
+            reader.readAsDataURL(fileToUpload);
+        }
+
+        // --- SISTEM PREVIEW & DOWNLOAD ---
+        function openPreview(url, name) {
+            currentPreviewUrl = url;
+            document.getElementById('preview-img').src = url;
+            document.getElementById('preview-title').innerText = name;
+            document.getElementById('preview-modal').classList.remove('hidden');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('preview-modal').classList.add('hidden');
+            currentPreviewUrl = '';
+            document.getElementById('preview-img').src = '';
+        }
+
+        function downloadCurrentPreview() {
+            downloadFile(currentPreviewUrl);
+        }
+
+        function downloadFile(url) {
+            if (url === '#') {
+                showToast("Link download belum tersedia (Simulasi).");
+                return;
+            }
+            window.open(url, '_blank');
+            showToast("Memulai download file...");
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 3000);
+        }
+
+    </script>
+</body>
+</html>
